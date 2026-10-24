@@ -1,0 +1,16 @@
+# Journal-level configuration. Read by tools/generate.py.
+# ASCII only. Values here become Highwire citation_* journal fields.
+
+title = "Computer Security Research"
+# Canonical base URL. Org GitHub Pages site serves at the host root.
+# Article/PDF URLs are derived from this and MUST never change once indexed
+# by Google Scholar (Scholar forbids URL changes; 301 only).
+base_url = "https://computer-security-research.github.io"
+publisher = "Computer Security Research"
+# ISSN: leave empty until assigned. Empty => citation_issn tag omitted
+# (a placeholder ISSN is worse than none for Scholar).
+issn = ""
+# Default license applied to articles that do not override it.
+license = "CC-BY-4.0"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+language = "en"

@@ -1,0 +1,29 @@
+# Bibliographic metadata for this article.
+# Title and abstract are parsed from paper.md (single source of truth).
+# ASCII only.
+
+# TODO(review): confirm authorship and affiliation before publishing.
+authors = [
+  { name = "Patrick Schleizer" },
+]
+
+date = "2026-10-24"
+online_date = "2026-10-24"
+volume = 1
+issue = 1
+firstpage = 1
+language = "en"
+keywords = [
+  "Android security",
+  "independent verification",
+  "mobile forensics",
+  "remote attestation",
+  "rootkit detection",
+  "malware analysis",
+  "device integrity",
+]
+
+# Filled after Zenodo minting. Empty => citation_doi tag omitted (no placeholder).
+doi = ""
+
+license = "CC-BY-4.0"
