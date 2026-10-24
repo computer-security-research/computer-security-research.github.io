@@ -5,7 +5,7 @@ name: build-and-check
 # (VirusTotal of all assets is a separate operator-run pre-publish gate --
 # it needs the vtai.py client and token, which CI does not hold.)
 
-on:
+"on":
   push:
     branches: [master, main]
   pull_request:
