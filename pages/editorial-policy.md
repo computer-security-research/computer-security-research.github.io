@@ -25,6 +25,17 @@ Published articles are kept at stable URLs. Substantive errors are addressed by
 a dated correction notice appended to the article; articles are not silently
 altered, and URLs are not changed.
 
+## Citation style
+
+References follow IEEE numeric style, numbered in order of first appearance and
+cited in text as [1], [2]. Each entry gives the author(s) as initials plus
+surname, the title in quotes, the venue, the year, and a DOI or stable URL; web
+sources additionally give an access date. Sources should be primary and
+verifiable -- peer-reviewed papers, standards, official documentation, patents,
+and recognized grey literature. Question-and-answer threads, wikis, and vendor
+marketing or glossary pages are not acceptable as the sole support for a
+technical claim.
+
 ## Licensing
 
 Authors retain copyright and grant the journal a license to publish. Articles
