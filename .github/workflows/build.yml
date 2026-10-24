@@ -8,23 +8,28 @@ name: build-and-check
 "on":
   push:
     branches: [master, main]
-  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-check:
+    if: vars.CI_ENABLED_ORG_AI_ASSISTED == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Check out content
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           path: content
 
       - name: Check out journal-maker
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: org-ai-assisted/journal-maker
           path: journal-maker
