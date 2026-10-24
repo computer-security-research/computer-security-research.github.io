@@ -46,6 +46,8 @@ A documented and ordinary feature illustrates the mechanism. Many devices permit
 
 The concern is not that an arbitrary outsider can invoke this capability without authorization. The concern is that control of the delivery system is itself powerful. If Google Play's infrastructure were compromised, or if a privileged insider were malicious or coerced, this capability could in principle be abused to push a backdoored version of an application to a specific target. By the same logic, device manufacturers control firmware and system updates, so targeted malicious system upgrades are likewise possible if that control is abused.
 
+Update-related communication is, moreover, not anonymous on devices certified for Google Mobile Services (GMS). Google Play services periodically checks in with Google, transmitting persistent hardware identifiers -- the IMEI, hardware serial number, network MAC address, and Google Services Framework identifier -- that Google documents as associated with the signed-in Google account and used, among other purposes, to determine a device's eligibility for software updates and security patches [24][25]. Whether a particular firmware update is delivered through Google or through the device vendor varies by manufacturer. The AOSP security policy itself grants Google Play services access to the system-update service and to the A/B update engine, confirming its privileged role in the update path on such devices [26].
+
 Network-level anonymization does not neutralize this exposure, because the exposure is at the identity layer rather than the network layer. Using Google Play on a stock Android device requires the device to be signed in to a Google account; the store cannot be browsed or used to install applications without one [23]. Every interaction with Google Play authenticates that account to Google, so each install or update request is bound to a specific, persistent identity. Routing the device's traffic through Tor conceals the network (IP) address from which a request originates, and in that narrow sense remains functional; but the account-based authentication required by the operating system still presents the user's Google identity to Google on every request. The network layer is thus anonymized while the identity layer is not: Tor can hide where a connection comes from, yet the device itself discloses who is making it.
 
 ## 6. Limitations of Internal Storage Access on Non-Rooted Devices
@@ -203,3 +205,9 @@ Stock Android devices systematically limit the owner's ability to inspect, contr
 [22] Forensic Focus. Imaging Locked Motorola Devices via Bootloader Exploit. https://www.forensicfocus.com/articles/imaging-locked-motorola-devices-via-bootloader-exploit/
 
 [23] Google Play Help. Use of Google Play requires signing in to a Google account; installing apps to a linked device from the web. https://support.google.com/googleplay
+
+[24] D. J. Leith. "Mobile Handset Privacy: Measuring the Data iOS and Android Send to Apple and Google." In Proc. SecureComm 2021, Springer LNICST vol. 399. https://www.scss.tcd.ie/Doug.Leith/pubs/apple_google2.pdf
+
+[25] Google. "Android Device Configuration Service." Google Android Help. https://support.google.com/android/answer/9021432
+
+[26] Android Open Source Project. SELinux policy system/sepolicy/private/gmscore_app.te (grants Google Play services access to system_update_service and the A/B update_engine). https://android.googlesource.com/platform/system/sepolicy/+/refs/heads/main/private/gmscore_app.te
