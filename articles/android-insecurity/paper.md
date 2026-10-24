@@ -10,7 +10,7 @@ On a stock Android device the owner is, in practice, obliged to trust Google and
 
 The same constraints bear on ordinary malware investigation. When a device is suspected of infection, the owner typically cannot perform a thorough inspection from a separate, known-clean computer without first unlocking or modifying the device. That modification can alter the evidence under examination, and a well-constructed backdoor could detect the onset of an investigation and erase itself or conceal its traces.
 
-This paper treats these properties not as implementation accidents but as consequences of a design in which administrative capability is deliberately withheld from the owner. It catalogs the resulting verification limits, grounds each in the published technical and forensic literature, and distinguishes claims supported by cited evidence from claims that remain asserted without a specific source.
+This paper treats these properties not as implementation accidents but as consequences of a design in which administrative capability is deliberately withheld from the owner. It catalogs the resulting verification limits, grounds its claims in the available technical and forensic literature where such sources exist, and distinguishes claims supported by cited evidence from claims that remain asserted without a specific source.
 
 ## 2. Background
 
