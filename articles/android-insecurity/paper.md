@@ -52,7 +52,7 @@ Network-level anonymization does not neutralize this exposure, because the expos
 
 ## 6. Limitations of Internal Storage Access on Non-Rooted Devices
 
-Accessing internal storage for purposes such as data recovery or malware and rootkit analysis is not reasonably easy on most stock devices. The guiding principle of malware analysis and backdoor hunting is that a device suspected of compromise should not be relied upon to examine itself; the data should ideally be inspected from a separate, known-clean computer. Stock Android obstructs exactly this.
+Accessing internal storage for purposes such as data recovery or malware and rootkit analysis is not reasonably easy on most stock devices. The guiding principle of malware analysis and backdoor hunting is that a device suspected of compromise should not be relied upon to examine itself; the data should ideally be inspected from a separate, known-clean computer, in keeping with established forensic guidance on sound acquisition and evidence preservation [27]. Stock Android obstructs exactly this.
 
 The obstruction has two roots. First, internal storage is typically a soldered component that cannot be removed without specialized work. Second, Android normally blocks access to many system files and to the private files of other applications unless the device is rooted or unlocked.
 
@@ -60,7 +60,7 @@ Reading the storage with a different device is generally impractical for routine
 
 The available software paths are correspondingly limited. One widely cited approach observes that on sufficiently recent devices a backup facility exists, but notes that it covers only applications that permit backup: applications that disallow backup are simply omitted from the resulting archive [3]. Approaches that would copy a full disk image to a computer do not work on devices that are neither rooted nor rootable [4].
 
-These limitations are compounded when the device uses full-disk encryption, as discussed in Section 10. For most owners, therefore, inspection of internal storage is not reasonably achievable on a stock, non-rooted device.
+These limitations are compounded by storage encryption, which is effectively universal on recent mainstream devices: file-based encryption has been mandatory on devices that launched with Android 10 or later, and has been available since Android 7 [28]. The consequences of encrypted user data are examined further in Section 10. For most owners, therefore, inspection of internal storage is not reasonably achievable on a stock, non-rooted device.
 
 ## 7. Attestation and the Circular Trust Problem
 
@@ -211,3 +211,7 @@ Stock Android devices systematically limit the owner's ability to inspect, contr
 [25] Google. "Android Device Configuration Service." Google Android Help. https://support.google.com/android/answer/9021432
 
 [26] Android Open Source Project. SELinux policy system/sepolicy/private/gmscore_app.te (grants Google Play services access to system_update_service and the A/B update_engine). https://android.googlesource.com/platform/system/sepolicy/+/refs/heads/main/private/gmscore_app.te
+
+[27] R. Ayers, S. Brothers, and W. Jansen. "Guidelines on Mobile Device Forensics." NIST Special Publication 800-101 Revision 1, May 2014. https://doi.org/10.6028/NIST.SP.800-101r1
+
+[28] Android Open Source Project. "File-Based Encryption." Devices that launch with Android 10 and higher are required to use file-based encryption. https://source.android.com/docs/security/encryption/file-based
