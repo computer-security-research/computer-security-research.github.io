@@ -32,6 +32,9 @@ license = "CC-BY-4.0"
 # unresolved; promoting to "published" turns on the no-TODO release-state gate.
 status = "draft"
 
+# Stable online-only article identifier (shown + in citations, never changes).
+article_number = "CSR-2026-001"
+
 # ACM CCS / arXiv subject classification.
 subjects = ["cs.CR", "Security and privacy -> Mobile platform security"]
 
