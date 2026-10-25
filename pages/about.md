@@ -25,5 +25,4 @@ Review and publication practices are described on the
 
 ## Contact
 
-Correspondence: **TODO:** set a vendor-neutral journal contact address at the
-move to the computer-security-research organization.
+Correspondence: adrelanos@kicksecure.com
