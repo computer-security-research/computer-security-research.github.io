@@ -15,6 +15,11 @@ license = "CC-BY-4.0"
 license_url = "https://creativecommons.org/licenses/by/4.0/"
 language = "en"
 
+# Phrases permitted to contain a project name the journal is otherwise neutral
+# about (the no-vendor-refs gate allows these exact strings). The editor's
+# correspondence address is an accepted, intentional exception.
+allow_vendor_mentions = ["adrelanos@kicksecure.com"]
+
 # Consistent footer navigation, rendered identically on every page (relative
 # hrefs are resolved from each page's depth). No project/family links -- the
 # journal is vendor-neutral and standalone.
