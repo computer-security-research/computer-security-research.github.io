@@ -1,0 +1,6 @@
+# dist-ai website-tests policy selector for this site (consumed from the BUILT _site root).
+# The journal is a vendor-neutral academic venue, NOT part of the project family, so it runs
+# the `journal` consistency policy: the full battery MINUS the family-footer-links assertion,
+# PLUS its own footer-nav-consistency + stricter-CSP checks. journal-maker must copy this file
+# into the built tree (_site/.github/web-tests.yml) so check_site selects the policy.
+policies: [journal]
