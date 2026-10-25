@@ -2,7 +2,7 @@
 
 ## Review process
 
-<!-- TODO(editorial): confirm the review model before launch. Draft below. -->
+**TODO(editorial):** confirm the review model before launch. Draft below.
 Submissions are screened by the editors for scope and rigor and undergo review
 before acceptance. Reviewers assess technical correctness, the soundness of the
 stated threat model, the adequacy of citations, and reproducibility where
@@ -10,7 +10,7 @@ applicable.
 
 ## Editorial board
 
-<!-- TODO(editorial): list the editorial board. Placeholder until confirmed. -->
+**TODO(editorial):** list the editorial board. Placeholder until confirmed.
 The editorial board is being constituted.
 
 ## Publication ethics
