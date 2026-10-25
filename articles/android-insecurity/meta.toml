@@ -41,4 +41,4 @@ subjects = ["cs.CR", "Security and privacy -> Mobile platform security"]
 # Standard scholarly statements (rendered only when present; honest for this work).
 data_availability = "This is an analysis paper. It introduces no new datasets or code; all sources are cited and publicly available at the URLs listed in the references."
 funding = "The author received no specific funding for this work."
-conflicts = "The author declares no competing interests."
+conflicts = "The author leads the Kicksecure and Whonix Linux-based security distributions, whose owner-controlled security model this paper's comparison with stock Android may favor; a less formal version of this argument also appears on the Kicksecure wiki. The author declares no financial competing interests."

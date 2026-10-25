@@ -18,7 +18,14 @@ language = "en"
 # Phrases permitted to contain a project name the journal is otherwise neutral
 # about (the no-vendor-refs gate allows these exact strings). The editor's
 # correspondence address is an accepted, intentional exception.
-allow_vendor_mentions = ["adrelanos@kicksecure.com"]
+# The editor's contact address and the required conflict-of-interest disclosure
+# are accepted, intentional exceptions; the exact phrases are listed so the gate
+# still catches any OTHER (unintended) Kicksecure/Whonix mention.
+allow_vendor_mentions = [
+  "adrelanos@kicksecure.com",
+  "Kicksecure and Whonix",
+  "Kicksecure wiki",
+]
 
 # Consistent footer navigation, rendered identically on every page (relative
 # hrefs are resolved from each page's depth). No project/family links -- the
