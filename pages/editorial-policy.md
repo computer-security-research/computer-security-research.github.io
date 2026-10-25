@@ -61,4 +61,4 @@ technical claim.
 
 Authors retain copyright and grant the journal a license to publish. Articles
 are released under a Creative Commons license; see the
-[License](../license/index.html) page.
+[License](../license/) page.

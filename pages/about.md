@@ -16,12 +16,12 @@ remain asserted.
 
 All articles are published open access under a Creative Commons license and are
 free to read, download, and redistribute with attribution. See the
-[License](../license/index.html) page.
+[License](../license/) page.
 
 ## Editorial policy
 
 Review and publication practices are described on the
-[Editorial Policy](../editorial-policy/index.html) page.
+[Editorial Policy](../editorial-policy/) page.
 
 ## Contact
 
