@@ -15,18 +15,6 @@ license = "CC-BY-4.0"
 license_url = "https://creativecommons.org/licenses/by/4.0/"
 language = "en"
 
-# Phrases permitted to contain a project name the journal is otherwise neutral
-# about (the no-vendor-refs gate allows these exact strings). The editor's
-# correspondence address is an accepted, intentional exception.
-# The editor's contact address and the required conflict-of-interest disclosure
-# are accepted, intentional exceptions; the exact phrases are listed so the gate
-# still catches any OTHER (unintended) Kicksecure/Whonix mention.
-allow_vendor_mentions = [
-  "adrelanos@kicksecure.com",
-  "Kicksecure and Whonix",
-  "Kicksecure wiki",
-]
-
 # Consistent footer navigation, rendered identically on every page (relative
 # hrefs are resolved from each page's depth). No project/family links -- the
 # journal is vendor-neutral and standalone.
@@ -37,3 +25,10 @@ footer_links = [
   { title = "License", href = "license/" },
   { title = "RSS", href = "feed.xml" },
 ]
+
+# Per-page vendor-mention allowlist (page slug -> exact phrases), applied ONLY to
+# that page. The About page's contact address is an accepted exception; article
+# allowances live per-article in each article's meta.toml. A [table] header must
+# be LAST in this file -- TOML scopes any following bare keys into it.
+[page_allow_vendor_mentions]
+about = ["adrelanos@kicksecure.com"]
