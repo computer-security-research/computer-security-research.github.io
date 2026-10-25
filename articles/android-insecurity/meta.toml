@@ -31,3 +31,11 @@ license = "CC-BY-4.0"
 # draft | published | corrected. Draft while DOIs (see paper.md TODO markers) are
 # unresolved; promoting to "published" turns on the no-TODO release-state gate.
 status = "draft"
+
+# ACM CCS / arXiv subject classification.
+subjects = ["cs.CR", "Security and privacy -> Mobile platform security"]
+
+# Standard scholarly statements (rendered only when present; honest for this work).
+data_availability = "This is an analysis paper. It introduces no new datasets or code; all sources are cited and publicly available at the URLs listed in the references."
+funding = "The author received no specific funding for this work."
+conflicts = "The author declares no competing interests."
