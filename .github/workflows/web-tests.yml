@@ -58,7 +58,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
             pandoc texlive-xetex texlive-latex-recommended \
-            texlive-fonts-recommended lmodern poppler-utils qpdf
+            texlive-fonts-recommended lmodern poppler-utils qpdf \
+            python3-pil python3-yaml python3-defusedxml
 
       - name: Build site (full, with PDF)
         run: |
