@@ -1,12 +1,15 @@
 # AI-Assisted.
-# Mandatory mobile-overflow + desktop width-utilization gates for the generated
-# site. Unlike a hand-authored Pages site, the HTML here is BUILT from Markdown by
-# journal-maker, so this lane builds _site first (--skip-pdf: the overflow checks
-# read only HTML) and then runs the guards against it. The checks
-# (check_mobile.py / check_width.py) live in org-ai-assisted/dist-ai; each exits
-# 77 (SKIP) when the browser is absent, so the dist-ai/ci wrappers install
-# Playwright + chromium and turn a 77 into a hard failure -- the browser is the
-# whole point of this lane.
+# Comprehensive website-consistency gate for the generated site. Builds the full
+# _site (PDF included -- check_site resolves the article's PDF links) and runs the
+# dist-ai webcheck lanes that CAN run on a stock GitHub runner:
+#   check_site.py       links + wording + footer + nav + toc + card-layout + csp +
+#                       no-inline-js + duplicate-ids + contrast + undefined-classes + seo
+#   check_svg_safety.py first-party SVG active-content safety
+#   website-mobile      no sideways overflow + WCAG-AA contrast at phone viewports
+#   website-width       desktop width-utilization
+# The heavier lanes (lint / vnu / lighthouse / axe) are Qubes-sandbox-delegated in
+# dist-ai (they need the `sandbox` transport + per-site baselines), so they CANNOT
+# run on a GitHub runner; they run host-driven via `website-tests`. See the csr skill.
 
 name: web-tests
 
@@ -26,11 +29,9 @@ concurrency:
 
 jobs:
   web-tests:
-    # CI runs only where we enabled it; an unset variable skips the job (no red X
-    # for upstream/forks that did not opt in).
     if: vars.CI_ENABLED_ORG_AI_ASSISTED == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Check out content
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -45,7 +46,7 @@ jobs:
           path: journal-maker
           persist-credentials: false
 
-      - name: Check out dist-ai (overflow + width guards)
+      - name: Check out dist-ai (webcheck suite + guards)
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: org-ai-assisted/dist-ai
@@ -55,19 +56,28 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends pandoc
+          sudo apt-get install -y --no-install-recommends \
+            pandoc texlive-xetex texlive-latex-recommended \
+            texlive-fonts-recommended lmodern poppler-utils qpdf \
+            python3-pil python3-yaml python3-defusedxml
 
-      - name: Build site (HTML only)
+      - name: Build site (full, with PDF)
         run: |
           journal-maker/usr/bin/journal-maker build \
             --articles content/articles \
             --journal content/site.toml \
-            --out _site --skip-pdf
+            --out _site
 
-      - name: Mobile-overflow guard (mandatory)
+      - name: Static consistency (check_site)
+        run: ./dist-ai/usr/share/website-tests/check_site.py "${GITHUB_WORKSPACE}/_site"
+
+      - name: SVG active-content safety
+        run: ./dist-ai/usr/share/website-tests/check_svg_safety.py "${GITHUB_WORKSPACE}/_site"
+
+      - name: Mobile-overflow guard
         run: ./dist-ai/ci/website-mobile-check.sh "${GITHUB_WORKSPACE}/_site"
 
-      - name: Width-utilization guard (mandatory)
+      - name: Width-utilization guard
         run: ./dist-ai/ci/website-width-check.sh "${GITHUB_WORKSPACE}/_site"
 
       - name: Emit step summary
