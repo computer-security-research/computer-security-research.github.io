@@ -1,13 +1,9 @@
 # License
 
-Unless an article states otherwise, all content in Computer Security Research is
-licensed under the Creative Commons Attribution 4.0 International License
-(CC BY 4.0).
+Copyright (C) Patrick Schleizer. All rights reserved.
 
-You are free to share and adapt the material for any purpose, including
-commercially, provided you give appropriate credit, link to the license, and
-indicate if changes were made.
+The content on this site is made available for reading and public commentary
+only. No license is granted to copy, redistribute, modify, or reuse the
+material without prior written permission.
 
-Full license text: https://creativecommons.org/licenses/by/4.0/
-
-Authors retain copyright in their work.
+To request permission, contact adrelanos@kicksecure.com.

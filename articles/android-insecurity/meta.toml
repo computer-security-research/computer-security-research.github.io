@@ -9,9 +9,6 @@ authors = [
 
 date = "2026-10-24"
 online_date = "2026-10-24"
-volume = 1
-issue = 1
-firstpage = 1
 language = "en"
 keywords = [
   "Android security",
@@ -26,17 +23,17 @@ keywords = [
 # Filled after Zenodo minting. Empty => citation_doi tag omitted (no placeholder).
 doi = ""
 
-license = "CC-BY-4.0"
+license = "All rights reserved"
 
 # draft | published | corrected. Draft while DOIs (see paper.md TODO markers) are
 # unresolved; promoting to "published" turns on the no-TODO release-state gate.
 status = "draft"
 
-# Stable online-only article identifier (shown + in citations, never changes).
-article_number = "CSR-2026-001"
-
-# ACM CCS / arXiv subject classification.
-subjects = ["cs.CR", "Security and privacy -> Mobile platform security"]
+# Subject classification, two taxonomies kept SEPARATE (not blended under one label):
+#   subjects      -- arXiv primary class
+#   ccs_concepts  -- ACM CCS 2012 concept path(s); "->" is ACM's own ASCII arrow
+subjects = ["Cryptography and Security (cs.CR)"]
+ccs_concepts = ["Security and privacy -> Systems security -> Mobile platform security"]
 
 # Standard scholarly statements (rendered only when present; honest for this work).
 data_availability = "This is an analysis paper. It introduces no new datasets or code; all sources are cited and publicly available at the URLs listed in the references."

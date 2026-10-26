@@ -1,0 +1,80 @@
+name: pages-deploy
+
+# Deploy the journal to GitHub Pages in the computer-security-research org.
+# Gated to that org so the SAME file is harmless in the org-ai-assisted CI
+# mirror (it never runs there). Builds WITHOUT --publish, so the site stays
+# non-indexable (robots Disallow + per-page noindex) until a deliberate
+# go-live. Source stays as Markdown on master; nothing built is committed.
+
+"on":
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    # Owner-gated AND master-only: a manual workflow_dispatch can name any ref,
+    # so without the ref guard a dispatch from a branch could deploy that
+    # branch's content to the live site.
+    if: github.repository_owner == 'computer-security-research' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Check out content
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: content
+          # Deploy uses the github-pages environment token, not this checkout's
+          # credential; leaving it in .git/config would only widen exposure.
+          persist-credentials: false
+
+      - name: Check out journal-maker
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: org-ai-assisted/journal-maker
+          path: journal-maker
+          persist-credentials: false
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            pandoc texlive-xetex texlive-latex-recommended \
+            texlive-fonts-recommended lmodern poppler-utils qpdf
+
+      - name: Tool selftest
+        run: journal-maker/usr/bin/journal-maker selftest
+
+      - name: Build site (non-indexable -- no --publish)
+        run: |
+          journal-maker/usr/bin/journal-maker build \
+            --articles content/articles \
+            --journal content/journal.toml \
+            --out _site
+
+      - name: Scholar / PDF / security check
+        run: journal-maker/usr/bin/journal-maker check _site
+
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
