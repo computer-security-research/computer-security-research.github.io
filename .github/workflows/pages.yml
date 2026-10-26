@@ -22,7 +22,10 @@ concurrency:
 
 jobs:
   build-deploy:
-    if: github.repository_owner == 'computer-security-research'
+    # Owner-gated AND master-only: a manual workflow_dispatch can name any ref,
+    # so without the ref guard a dispatch from a branch could deploy that
+    # branch's content to the live site.
+    if: github.repository_owner == 'computer-security-research' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
@@ -33,12 +36,16 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           path: content
+          # Deploy uses the github-pages environment token, not this checkout's
+          # credential; leaving it in .git/config would only widen exposure.
+          persist-credentials: false
 
       - name: Check out journal-maker
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: org-ai-assisted/journal-maker
           path: journal-maker
+          persist-credentials: false
 
       - name: Install build dependencies
         run: |

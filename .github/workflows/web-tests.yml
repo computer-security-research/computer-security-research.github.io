@@ -1,0 +1,81 @@
+# AI-Assisted.
+# Mandatory mobile-overflow + desktop width-utilization gates for the generated
+# site. Unlike a hand-authored Pages site, the HTML here is BUILT from Markdown by
+# journal-maker, so this lane builds _site first (--skip-pdf: the overflow checks
+# read only HTML) and then runs the guards against it. The checks
+# (check_mobile.py / check_width.py) live in org-ai-assisted/dist-ai; each exits
+# 77 (SKIP) when the browser is absent, so the dist-ai/ci wrappers install
+# Playwright + chromium and turn a 77 into a hard failure -- the browser is the
+# whole point of this lane.
+
+name: web-tests
+
+"on":
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web-tests:
+    # CI runs only where we enabled it; an unset variable skips the job (no red X
+    # for upstream/forks that did not opt in).
+    if: vars.CI_ENABLED_ORG_AI_ASSISTED == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out content
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: content
+          persist-credentials: false
+
+      - name: Check out journal-maker
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: org-ai-assisted/journal-maker
+          path: journal-maker
+          persist-credentials: false
+
+      - name: Check out dist-ai (overflow + width guards)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: org-ai-assisted/dist-ai
+          path: dist-ai
+          persist-credentials: false
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends pandoc
+
+      - name: Build site (HTML only)
+        run: |
+          journal-maker/usr/bin/journal-maker build \
+            --articles content/articles \
+            --journal content/journal.toml \
+            --out _site --skip-pdf
+
+      - name: Mobile-overflow guard (mandatory)
+        run: ./dist-ai/ci/website-mobile-check.sh "${GITHUB_WORKSPACE}/_site"
+
+      - name: Width-utilization guard (mandatory)
+        run: ./dist-ai/ci/website-width-check.sh "${GITHUB_WORKSPACE}/_site"
+
+      - name: Emit step summary
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          ./dist-ai/usr/bin/step-summary-emit \
+            --tool 'web-tests' \
+            --column-header field \
+            --row "outcome=${JOB_STATUS}"
