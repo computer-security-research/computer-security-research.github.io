@@ -1,0 +1,2 @@
+owner-gate-exempt:
+  .github/workflows/pages.yml:build-deploy: "Owner-gated to the computer-security-research org for the Pages deploy; the org-ai-assisted CI var is intentionally not used -- it is absent in the deploy org and would disable the live deploy."

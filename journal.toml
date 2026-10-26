@@ -1,27 +1,20 @@
-# Journal-level configuration. Read by tools/generate.py.
-# ASCII only. Values here become Highwire citation_* journal fields.
+# Site-level configuration. Read by tools/generate.py. ASCII only.
 
 title = "Computer Security Research"
 # Canonical base URL. Org GitHub Pages site serves at the host root.
-# Article/PDF URLs are derived from this and MUST never change once indexed
-# by Google Scholar (Scholar forbids URL changes; 301 only).
+# Page/PDF URLs are derived from this.
 base_url = "https://computer-security-research.github.io"
 publisher = "Computer Security Research"
-# ISSN: leave empty until assigned. Empty => citation_issn tag omitted
-# (a placeholder ISSN is worse than none for Scholar).
-issn = ""
-# Default license applied to articles that do not override it.
-license = "CC-BY-4.0"
-license_url = "https://creativecommons.org/licenses/by/4.0/"
+# Default license applied to pages that do not override it.
+license = "All rights reserved"
+license_url = ""
 language = "en"
 
 # Consistent footer navigation, rendered identically on every page (relative
-# hrefs are resolved from each page's depth). No project/family links -- the
-# journal is vendor-neutral and standalone.
+# hrefs are resolved from each page's depth). Vendor-neutral and standalone.
 footer_links = [
-  { title = "Home", href = "index.html" },
+  { title = "Home", href = "./" },
   { title = "About", href = "about/" },
-  { title = "Editorial Policy", href = "editorial-policy/" },
   { title = "License", href = "license/" },
   { title = "RSS", href = "feed.xml" },
 ]
@@ -32,3 +25,4 @@ footer_links = [
 # be LAST in this file -- TOML scopes any following bare keys into it.
 [page_allow_vendor_mentions]
 about = ["adrelanos@kicksecure.com"]
+license = ["adrelanos@kicksecure.com"]
