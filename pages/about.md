@@ -6,9 +6,7 @@ operating-system and platform security, cryptographic engineering, forensics,
 and the verifiability of devices and software.
 
 These are our own writings, posted infrequently and for public commentary
-only. This is not a journal: there is no review board, no editorial process,
-and no third-party submissions. We post a piece when we have one worth sharing
-and would like comments on it.
+only.
 
 The analysis here aims to be rigorous and vendor-neutral, grounded in the
 published technical literature. Each piece states its threat model and scope
