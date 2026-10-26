@@ -1,15 +1,10 @@
 # AI-Assisted.
-# Comprehensive website-consistency gate for the generated site. Builds the full
-# _site (PDF included -- check_site resolves the article's PDF links) and runs the
-# dist-ai webcheck lanes that CAN run on a stock GitHub runner:
-#   check_site.py       links + wording + footer + nav + toc + card-layout + csp +
-#                       no-inline-js + duplicate-ids + contrast + undefined-classes + seo
-#   check_svg_safety.py first-party SVG active-content safety
-#   website-mobile      no sideways overflow + WCAG-AA contrast at phone viewports
-#   website-width       desktop width-utilization
-# The heavier lanes (lint / vnu / lighthouse / axe) are Qubes-sandbox-delegated in
-# dist-ai (they need the `sandbox` transport + per-site baselines), so they CANNOT
-# run on a GitHub runner; they run host-driven via `website-tests`. See the csr skill.
+# Playwright browser lanes for the generated site, in PARALLEL jobs. Each builds
+# HTML only (--skip-pdf: these lanes need no PDF) so NO texlive is installed --
+# fast and reliable. The browser-free webcheck lanes (check_site + svg) and the
+# full PDF build live in build-and-check.yml (the single texlive job). The heavier
+# lanes (lint/vnu/lighthouse/axe) are Qubes-sandbox-delegated and run host-driven
+# via `website-tests` -- see the csr skill.
 
 name: web-tests
 
@@ -28,64 +23,66 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  web-tests:
+  mobile:
     if: vars.CI_ENABLED_ORG_AI_ASSISTED == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - name: Check out content
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          path: content
-          persist-credentials: false
-
+        with: { path: content, persist-credentials: false }
       - name: Check out journal-maker
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: org-ai-assisted/journal-maker
           path: journal-maker
           persist-credentials: false
-
-      - name: Check out dist-ai (webcheck suite + guards)
+      - name: Check out dist-ai
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: org-ai-assisted/dist-ai
           path: dist-ai
           persist-credentials: false
-
       - name: Install build dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends \
-            pandoc texlive-xetex texlive-latex-recommended \
-            texlive-fonts-recommended lmodern poppler-utils qpdf \
-            python3-pil python3-yaml python3-defusedxml
-
-      - name: Build site (full, with PDF)
+          sudo apt-get install -y --no-install-recommends pandoc
+      - name: Build site (HTML only)
         run: |
           journal-maker/usr/bin/journal-maker build \
-            --articles content/articles \
-            --journal content/site.toml \
-            --out _site
-
-      - name: Static consistency (check_site)
-        run: ./dist-ai/usr/share/website-tests/check_site.py "${GITHUB_WORKSPACE}/_site"
-
-      - name: SVG active-content safety
-        run: ./dist-ai/usr/share/website-tests/check_svg_safety.py "${GITHUB_WORKSPACE}/_site"
-
+            --articles content/articles --journal content/site.toml \
+            --out _site --skip-pdf
       - name: Mobile-overflow guard
         run: ./dist-ai/ci/website-mobile-check.sh "${GITHUB_WORKSPACE}/_site"
 
+  width:
+    if: vars.CI_ENABLED_ORG_AI_ASSISTED == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out content
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { path: content, persist-credentials: false }
+      - name: Check out journal-maker
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: org-ai-assisted/journal-maker
+          path: journal-maker
+          persist-credentials: false
+      - name: Check out dist-ai
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: org-ai-assisted/dist-ai
+          path: dist-ai
+          persist-credentials: false
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends pandoc
+      - name: Build site (HTML only)
+        run: |
+          journal-maker/usr/bin/journal-maker build \
+            --articles content/articles --journal content/site.toml \
+            --out _site --skip-pdf
       - name: Width-utilization guard
         run: ./dist-ai/ci/website-width-check.sh "${GITHUB_WORKSPACE}/_site"
-
-      - name: Emit step summary
-        if: always()
-        env:
-          JOB_STATUS: ${{ job.status }}
-        run: |
-          ./dist-ai/usr/bin/step-summary-emit \
-            --tool 'web-tests' \
-            --column-header field \
-            --row "outcome=${JOB_STATUS}"
