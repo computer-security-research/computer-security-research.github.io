@@ -22,7 +22,10 @@ concurrency:
 
 jobs:
   build-deploy:
-    if: github.repository_owner == 'computer-security-research'
+    # Owner-gated AND master-only: a manual workflow_dispatch can name any ref,
+    # so without the ref guard a dispatch from a branch could deploy that
+    # branch's content to the live site.
+    if: github.repository_owner == 'computer-security-research' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
