@@ -61,7 +61,7 @@ jobs:
         run: |
           journal-maker/usr/bin/journal-maker build \
             --articles content/articles \
-            --journal content/journal.toml \
+            --journal content/site.toml \
             --out _site --skip-pdf
 
       - name: Mobile-overflow guard (mandatory)

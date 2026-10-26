@@ -50,7 +50,7 @@ jobs:
         run: |
           journal-maker/usr/bin/journal-maker build \
             --articles content/articles \
-            --journal content/journal.toml \
+            --journal content/site.toml \
             --out _site
 
       - name: Scholar / PDF / security check
