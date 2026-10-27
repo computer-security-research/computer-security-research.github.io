@@ -208,6 +208,19 @@ with their reason -- never with an approximate quote.
   "This research shows the Android's Linux kernel is vulnerable to system call hooking and
   additional measures should be implemented before handling sensitive data with Android."
 
+## [17] Chen et al. -- malware checks for and thwarts analysis environments
+
+- Paper claim (Sec. 10): measurement studies show modern malware checks for virtualized or
+  instrumented environments and withholds its behavior when it detects them.
+- URL: DSN 2008, doi 10.1109/DSN.2008.4630086; co-author-hosted copy
+  (mdbailey.ece.illinois.edu/publications/dsn08_final.pdf) via Internet Archive snapshot
+  (live origin now 404s, IEEE/Mao-page unreachable; retrieved Oct. 27, 2026)
+- Quote (abstract): "Recently however, new malware instances have emerged with the capability
+  to check and often thwart these defensive activities -- essentially leaving defenders blind
+  to their activities."
+- Quote (results): "more than 40% of the total malware samples reduce their malicious behavior
+  under virtual machines or with a debugger attached"
+
 ## [18] Ruggia et al. -- evasive malware detects analysis environments
 
 - Paper claim (Sec. 10): modern malware checks whether it is under analysis and the evasion
@@ -446,9 +459,6 @@ Archive, publisher abstract records). NEVER approximated.
 - [8] ISO/IEC 27043:2015 -- paywalled ISO standard; no free full text.
 - [11] Hoog, Android Forensics (Syngress, 2011) -- print book; no online full text.
 - [15] Bickford et al., HotMobile 2010 -- ACM paywalled; no open abstract/PDF retrieved.
-- [17] Chen et al., DSN 2008 -- IEEE paywalled; the one public PDF mirror has a broken TLS
-  chain (-k barred by the no-insecure-TLS rule) and the IEEE page gated headless; Semantic
-  Scholar confirms the title but carries no abstract text.
 - [21] Google Play Help -- the cited page is the Play Help hub (a landing page of article
   links), not a single verbatim operative sentence; the account-required / remote-install-to-
   linked-device behavior the paper describes is documented across Play Help, not quotable from
