@@ -143,22 +143,317 @@ with their reason -- never with an approximate quote.
 
 ---
 
-## Remaining references (quote not yet filled -- never approximated)
+## [6] Bootloader unlock -- mandatory factory data reset
 
-Pointers only; the paper's reference list carries the full citation + URL. Fill on request.
+- Paper claim (Sec. 3, 13): unlocking the bootloader triggers a mandatory wipe of user data.
+- URL: https://source.android.com/docs/core/architecture/bootloader/locking_unlocking (retrieved Oct. 27, 2026)
+- Quote: "After the user acknowledges the warning, the device should perform a factory data
+  reset to prevent unauthorized data access." (page body loads via JS; retrieved with a
+  headless chromium render, not raw fetch)
 
-- Devsite body is JS-gated (prose not cleanly extractable by raw fetch this pass):
-  [6] bootloader locking/unlocking (mandatory user-data wipe on unlock),
-  [27] SafetyNet deprecation timeline, [53] boot flow.
-- Open-access PDFs/pages (fetchable; quote pending): [10] NIST SP 800-101r1, [12] Amnesty
-  Pegasus report, [13] MVT docs, [16] Brodbeck thesis, [19] Garfinkel anti-forensics,
-  [22] Leith, [31] AttestLens, [32] SoK hardening, [44] MITRE ATT&CK, [45] Lookout Pegasus,
-  [46] Citizen Lab, [47] Thompson, [48] Garfinkel/Rosenblum VMI, [49] Talos Rombertik,
-  [60] rooting arms race.
-- Google/vendor/legal pages (quote pending): [21] Google Play Help, [23] Device
-  Configuration Service, [24] sepolicy gmscore_app.te, [33] PrivSec.dev, [35] JTAG patent,
-  [54] bootloader-unlock-wall-of-shame, [55] FTC Magnuson-Moss, [56] EU Directive 2019/771,
-  [57] Samsung Knox, [58] Sony unlock, [59] Qualcomm secure boot.
-- Print / paywalled -- no online exact text (claim rests on the citation): [7] Rowlingson,
-  [8] ISO/IEC 27043, [11] Hoog (book), [14] JoKER, [15] Bickford, [17] Chen, [18] Ruggia,
-  [36] Sguigna, [37] Breeuwsma, [51] fileless-malware survey, [52] Yang.
+## [7] Forensic readiness -- an institutional posture, distinct from owner-inspectability
+
+- Paper claim (Sec. 3): forensic readiness is an organization's advance preparation for
+  investigators, not a property a device affords its owner.
+- URL: https://www.utica.edu/academic/institutes/ecii/publications/articles/A0B13342-B4E0-1F6A-156F501C49CF5F51.pdf
+  (freely hosted copy of Int. J. Digital Evidence vol. 2 no. 3, 2004; retrieved Oct. 27, 2026)
+- Quote: "Forensic readiness is defined as the ability of an organisation to maximise its
+  potential to use digital evidence whilst minimising the costs of an investigation."
+
+## [10] NIST SP 800-101r1 -- sound acquisition preserves source integrity
+
+- Paper claim (Sec. 10): official guidance on sound acquisition and evidence preservation; a
+  suspect device should not be relied on to examine itself.
+- URL: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-101r1.pdf
+  (doi: 10.6028/NIST.SP.800-101r1; retrieved Oct. 27, 2026)
+- Quote: "its ability to maintain the integrity of the original data source being acquired
+  and also that of the extracted data. The former is done by blocking or otherwise
+  eliminating write requests to the device containing the data."
+
+## [12] Amnesty International -- fewer forensic traces on Android than iOS
+
+- Paper claim (Sec. 10): significantly more forensic traces are accessible on iOS than stock
+  Android, so the methodology focused on iOS; most confirmed Pegasus infections were iPhones.
+- URL: https://www.amnesty.org/en/latest/research/2021/07/forensic-methodology-report-how-to-catch-nso-groups-pegasus/ (retrieved Oct. 27, 2026)
+- Quote: "In Amnesty International's experience there are significantly more forensic traces
+  accessible to investigators on Apple iOS devices than on stock Android devices, therefore
+  our methodology is focused on the former. As a result, most recent cases of confirmed
+  Pegasus infections have involved iPhones."
+
+## [13] MVT -- limited Android diagnostic information
+
+- Paper claim (Sec. 10): Android stores little diagnostic information useful for triaging
+  compromises and the toolkit's Android capabilities are correspondingly limited.
+- URL: https://docs.mvt.re/en/latest/android/methodology/ (retrieved Oct. 27, 2026)
+- Quote: "The limited diagnostic information available makes it difficult to triage potential
+  compromises" / "capabilities are limited as well. However, not all is lost."
+
+## [14] JoKER -- an in-device detector can itself be subverted
+
+- Paper claim (Sec. 9, 13): trustworthy rootkit detection needs a vantage point outside the
+  running OS, because an in-device detector can be compromised.
+- URL: doi 10.1109/Trustcom.2015.358 (IEEE; abstract record retrieved Oct. 27, 2026)
+- Quote (abstract): "any detection mechanism run on the same physical device as the monitored
+  OS can be compromised via application, kernel or boot-loader vulnerabilities.
+  Consequentially, trusted detection of kernel rootkits in mobile devices is a challenging
+  task in practice."
+
+## [16] Brodbeck thesis -- OS-level Android rootkits demonstrated
+
+- Paper claim (Sec. 9): rootkits running at the OS level of mobile devices have been
+  demonstrated despite integrated MAC.
+- URL: https://scholar.afit.edu/etd/1083 (retrieved Oct. 27, 2026)
+- Quote (abstract): "This research developed kernel level rootkits for Android mobile devices
+  designed to avoid traditional detection methods. The rootkits use system call hooking..." /
+  "This research shows the Android's Linux kernel is vulnerable to system call hooking and
+  additional measures should be implemented before handling sensitive data with Android."
+
+## [18] Ruggia et al. -- evasive malware detects analysis environments
+
+- Paper claim (Sec. 10): modern malware checks whether it is under analysis and the evasion
+  techniques have grown sophisticated.
+- URL: doi 10.1145/3634737.3637658 (ACM ASIA CCS 2024; abstract record retrieved Oct. 27, 2026)
+- Quote (abstract): "attackers pay special attention to flying under the radar of analysis
+  tools, and the techniques to understand whether their app is under analysis have become
+  more and more sophisticated."
+
+## [19] Garfinkel -- anti-forensics taxonomy (wiping, chaff, planting)
+
+- Paper claim (Sec. 10, 13): the anti-forensics literature names artifact wiping, trail
+  obfuscation, and self-removal.
+- URL: https://simson.net/clips/academic/2007.ICIW.AntiForensics.pdf (retrieved Oct. 27, 2026)
+- Quote: "Anti-Forensics (AF) tools and techniques frustrate CFTs by erasing or altering
+  information; creating \"chaff\" that wastes time and hides information; implicating innocent
+  parties by planting fake evidence; exploiting implementation bugs in known tools..."
+
+## [22] Leith -- persistent hardware identifiers shared with Google/Apple
+
+- Paper claim (Sec. 6): Google Play services transmits persistent hardware identifiers (IMEI,
+  serial, etc.) associated with the signed-in account.
+- URL: https://www.scss.tcd.ie/Doug.Leith/pubs/apple_google2.pdf (retrieved Oct. 27, 2026)
+- Quote: "The phone IMEI, hardware serial number, SIM serial number and IMSI, handset phone
+  number etc are shared with Apple and Google."
+
+## [23] Device Configuration Service -- device sends data to Google
+
+- Paper claim (Sec. 6): Google documents persistent-identifier check-ins associated with the
+  account and used for update eligibility.
+- URL: https://support.google.com/android/answer/9021432 (retrieved Oct. 27, 2026)
+- Quote: "Device Configuration Service periodically sends data from Android devices to
+  Google."
+
+## [24] sepolicy gmscore_app.te -- GMS core granted update-path access
+
+- Paper claim (Sec. 6): the AOSP security policy grants Google Play services access to the
+  system-update service and the A/B update engine.
+- URL: https://android.googlesource.com/platform/system/sepolicy/+/refs/heads/main/private/gmscore_app.te (retrieved Oct. 27, 2026)
+- Quote: "# Allow GMS core to communicate with update_engine for A/B update." /
+  "allow gmscore_app update_engine_service:service_manager find;" /
+  "allow gmscore_app system_update_service:service_manager find;"
+
+## [27] SafetyNet Attestation -- deprecated 2022, turned down January 2025
+
+- Paper claim (Sec. 8): Google deprecated SafetyNet in 2022 and withdrew it in January 2025,
+  replaced by Play Integrity.
+- URL: https://developer.android.com/privacy-and-security/safetynet/deprecation-timeline
+  (the deprecation-timeline page linked from the cited attestation page; JS-rendered,
+  retrieved via headless chromium Oct. 27, 2026)
+- Quote: "deprecated in 2022 and fully turned down in January 2025. Developers should migrate
+  to the Play Integrity API that consolidates multiple integrity offerings (including the
+  SafetyNet Attestation integrity verdict)..."
+
+## [31] AttestLens -- ~90% of apps reference neither attestation framework
+
+- Paper claim (Sec. 8): most apps contain no reference to Play Integrity or SafetyNet; a floor
+  on lock-out, not a measure of it.
+- URL: https://vsgc.odu.edu/wp-content/uploads/2026/04/MacDonald_Collin_Paper.pdf (retrieved Oct. 27, 2026)
+- Quote: "roughly 90% of apps in every category reference neither framework, and adoption
+  remains particularly low in security-sensitive areas such as banking, cryptocurrency, and
+  gaming."
+
+## [32] SoK hardening -- developers add self-protection / jailbreak detection
+
+- Paper claim (Sec. 8): a measurement of mobile hardening techniques; the specific per-check
+  percentages the paper cites are from this study's results.
+- URL: doi 10.1109/EuroSP63326.2025.00050 (IEEE EuroS&P 2025; abstract record retrieved Oct. 27, 2026)
+- Quote (abstract): "the Mobile Application Security Verification Standard (MASVS) recommends
+  app developers to implement hardening techniques for self-protection -- to prevent tampering
+  and leakage, detect jailbreaks, etc." (NOTE: the 3%/94%/99% figures in the paper are from the
+  study's results tables in the paywalled full text, not this abstract)
+
+## [33] PrivSec.dev -- crowd-sourced banking-app compatibility list
+
+- Paper claim (Sec. 8): crowd-sourced lists catalog banking/payment apps that refuse to run on
+  owner-controlled OSes.
+- URL: https://privsec.dev/posts/android/banking-applications-compatibility-with-grapheneos/ (retrieved Oct. 27, 2026)
+- Quote: "Maintained Compatibility List for International Banking Apps This list includes
+  banking apps that have been tested, submitted, reviewed, and verified as compatible." /
+  "the crowd-sourced dataset"
+
+## [35] Secure-JTAG patent -- debug access gated behind authentication
+
+- Paper claim (Sec. 9): manufacturers may lock or disable JTAG on production hardware.
+- URL: https://patents.google.com/patent/US9633185B2/en (retrieved Oct. 27, 2026)
+- Quote: "A method of debugging a device which includes a plurality of processors is provided.
+  The method includes verifying a request to initiate authentication that is provided to the
+  device to a user; performing a challenge-response authentication operation between the user
+  and the device in response to the request to initiate authentication being a request from a
+  non-malicious user."
+
+## [44] MITRE ATT&CK -- Sandbox Evasion (T1497) and Indicator Removal (T1070)
+
+- Paper claim (Sec. 13): the matching evasion/anti-forensic capabilities (checking for
+  analysis environments; removing indicators) are catalogued.
+- URL: https://attack.mitre.org/techniques/T1497/ , https://attack.mitre.org/techniques/T1070/ (retrieved Oct. 27, 2026)
+- Quote (T1497): "Adversaries may employ various means to detect and avoid virtualization and
+  analysis environments. This may include changing behaviors based on the results of checks
+  for the presence of artifacts indicative of a virtual machine environment..."
+- Quote (T1070): "Adversaries may selectively delete or modify artifacts generated to reduce
+  indications of their presence and blend in with legitimate activity."
+
+## [45] Lookout -- Pegasus for Android self-removal
+
+- Paper claim (Sec. 13): Pegasus for Android shipped suicide functionality to remove itself.
+- URL: https://info.lookout.com/rs/051-ESQ-475/images/lookout-pegasus-android-technical-analysis.pdf (retrieved Oct. 27, 2026)
+- Quote: "As seen in the iOS version of Pegasus, the Android counterpart also includes suicide
+  functionality to remove itself under a variety of different circumstances."
+
+## [46] Citizen Lab -- iOS Pegasus self-destructs to avoid exposure
+
+- Paper claim (Sec. 13): the iOS variant self-destructs when exposure is likely.
+- URL: https://citizenlab.ca/2016/08/million-dollar-dissident-iphone-zero-day-nso-group-uae/ (retrieved Oct. 27, 2026)
+- Quote: "activated automatically \"in cases where a great probability of exposing the agent
+  exists.\" However, the documentation claims that sometimes Pegasus removal can result in an
+  infected device rebooting immediately after removal."
+
+## [47] Thompson -- a system cannot be trusted to report on itself
+
+- Paper claim (Sec. 13): the long-established principle that a system cannot be trusted to
+  report truthfully on its own state.
+- URL: Thompson, "Reflections on Trusting Trust," CACM 27(8), 1984, doi 10.1145/358198.358210
+  (openly hosted copy at https://www.cs.cmu.edu/~rdriley/487/papers/Thompson_1984_ReflectionsonTrustingTrust.pdf ; retrieved Oct. 27, 2026)
+- Quote: "You can't trust code that you did not totally create yourself. (Especially code from
+  companies that employ people like me.) No amount of source-level verification or scrutiny
+  will protect you from using untrusted code."
+
+## [48] Garfinkel & Rosenblum VMI -- isolate the monitor, retain visibility
+
+- Paper claim (Sec. 13): subversion-resistant detection must observe the system from outside
+  the running OS.
+- URL: NDSS 2003; Stanford PDF (suif.stanford.edu/papers/vmi-ndss03.pdf) via Internet Archive
+  snapshot (origin unreachable this pass; retrieved Oct. 27, 2026)
+- Quote: "Using this approach allows us to isolate the IDS from the monitored host but still
+  retain excellent visibility into the host's state."
+
+## [49] Talos -- Rombertik destroys the host on detecting analysis
+
+- Paper claim (Sec. 13): the nearest realized detect-then-destroy case wrecks the host rather
+  than quietly erasing the implant.
+- URL: https://blogs.cisco.com/security/talos/rombertik (retrieved Oct. 27, 2026)
+- Quote: "If the sample detected it was being analyzed or debugged it would ultimately destroy
+  the master boot record (MBR)."
+
+## [51] Fileless-malware survey -- no on-disk artifact
+
+- Paper claim (Sec. 10): non-persistent, memory-resident malware leaves no durable artifact
+  and evades signature-based detection.
+- URL: https://cybersecurity.springeropen.com/articles/10.1186/s42400-019-0043-x (CC-BY;
+  JS/cookie-walled, retrieved via headless chromium render Oct. 27, 2026)
+- Quote: "Fileless malware does not use traditional executables to carry-out its activities.
+  So, it does not use the file system, thereby evading signature-based detection system."
+
+## [53] Verified Boot flow -- UNLOCKED devices show a warning screen
+
+- Paper claim (Sec. 13): unlocking is gated behind an explicit warning (and wipe).
+- URL: https://source.android.com/docs/security/features/verifiedboot/boot-flow (retrieved Oct. 27, 2026)
+- Quote: "YELLOW: Warning screen for LOCKED devices with custom root of trust set / ORANGE:
+  Warning screen for UNLOCKED devices / RED (eio): Warning screen for dm-verity corruption /
+  RED (no os found): No valid OS found"
+
+## [54] Wall of Shame -- crowd-sourced list of non-unlockable devices
+
+- Paper claim (Sec. 13): a large class of carrier/vendor-locked devices cannot be unlocked by
+  their owners.
+- URL: https://github.com/zenfyrdev/bootloader-unlock-wall-of-shame (README, retrieved Oct. 27, 2026)
+- Quote: "Bootloader Unlock: Wall of Shame" (banner title) -- a crowd-sourced tracker of
+  vendors/devices that restrict bootloader unlocking; licensed CC BY-NC-SA. (README tagline
+  carries a non-ASCII emoji, omitted here.)
+
+## [55] Magnuson-Moss Warranty Act -- anti-tying (no brand-conditioned warranty)
+
+- Paper claim (Sec. 13): U.S. consumer-protection law limits blanket warranty voiding.
+- URL: 15 U.S.C. 2302(c), via Cornell LII https://www.law.cornell.edu/uscode/text/15/2302
+  (the FTC page in the citation was not machine-fetchable this pass; LII carries the
+  statutory text; retrieved Oct. 27, 2026)
+- Quote: "any article or service (other than article or service provided without charge under
+  the terms of the warranty) which is identified by brand, trade, or corporate name" (contiguous
+  span of the 2302(c) anti-tying prohibition; the LII page interleaves defined-term links)
+
+## [56] EU Directive 2019/771 -- seller liability for lack of conformity
+
+- Paper claim (Sec. 13): EU consumer law limits blanket voiding and ties refusal to a defect
+  causally linked to the modification.
+- URL: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32019L0771 (Art. 10(1);
+  JS-rendered, retrieved via headless chromium Oct. 27, 2026)
+- Quote: "The seller shall be liable to the consumer for any lack of conformity which exists
+  at the time when the goods were delivered and which becomes apparent within two years..."
+  (NOTE: the "causal link to the modification" is the paper's synthesis of the conformity-
+  liability framework, not a single verbatim clause)
+
+## [57] Samsung Knox -- one-time e-fuse (Warranty Bit) is irreversible
+
+- Paper claim (Sec. 13): unlocking permanently trips a one-time-programmable e-fuse disabling
+  hardware-backed attestation, not resettable.
+- URL: https://docs.samsungknox.com/admin/fundamentals/whitepaper/samsung-knox-mobile-security/system-security/hw-backed-security/ (retrieved Oct. 27, 2026)
+- Quote: "This record is stored in a one-time hardware e-fuse, permanently marking the device
+  as having a non approved configuration, regardless of any future actions."
+
+## [58] Sony -- unlocking removes DRM security keys
+
+- Paper claim (Sec. 13): unlocking irrevocably erases device-unique keys that relocking does
+  not restore.
+- URL: https://developer.sony.com/open-source/aosp-on-xperia-open-devices/get-started/unlock-bootloader (retrieved Oct. 27, 2026)
+- Quote: "content on your device may also be inaccessible due to the removal of DRM security
+  keys. ... the removal of DRM security keys may affect advanced camera functionality."
+  (NOTE: the "relocking does not restore" characterization is the paper's; this page documents
+  that unlocking removes the DRM security keys)
+
+## [59] Qualcomm -- secure boot enabled by blowing a one-time eFuse
+
+- Paper claim (Sec. 13): one-time-programmable eFuse hardware is the standard SoC primitive for
+  secure-boot enablement and anti-rollback, a one-way operation.
+- URL: https://dragonwingdocs.qualcomm.com/System/Security/enable-secure-boot (retrieved Oct. 27, 2026)
+- Quote: "secure boot is guaranteed only after blowing a QFPROM, which is an eFuse. The eFuse
+  configuration required to enable platform secure boot includes: Enabling image
+  authentication and anti-rollback protection. Disabling debug and JTAG access."
+
+## [60] Rooting arms race -- evasion vs. detection
+
+- Paper claim (Sec. 13): cloaking tools pass integrity checks only by impersonating a
+  still-vulnerable stock device, in a losing arms race against detection.
+- URL: doi 10.1155/2017/4121765 (Security and Communication Networks, CC-BY; open-access PDF
+  via Internet Archive, Hindawi/Wiley origin Cloudflare-walled this pass; retrieved Oct. 27, 2026)
+- Quote: "We present an arms race between rooting detection and rooting evasion." / "We then
+  analyze the evasion loopholes and in turn enhance our rooting detection tool."
+
+---
+
+## Remaining references (no online exact text; claim rests on the citation)
+
+Good-faith retrieval exhausted (curl, WebFetch probe, headless chromium render, Internet
+Archive, publisher abstract records). NEVER approximated.
+
+- [8] ISO/IEC 27043:2015 -- paywalled ISO standard; no free full text.
+- [11] Hoog, Android Forensics (Syngress, 2011) -- print book; no online full text.
+- [15] Bickford et al., HotMobile 2010 -- ACM paywalled; no open abstract/PDF retrieved.
+- [17] Chen et al., DSN 2008 -- IEEE paywalled; the one public PDF mirror has a broken TLS
+  chain (-k barred by the no-insecure-TLS rule) and the IEEE page gated headless; Semantic
+  Scholar confirms the title but carries no abstract text.
+- [21] Google Play Help -- the cited page is the Play Help hub (a landing page of article
+  links), not a single verbatim operative sentence; the account-required / remote-install-to-
+  linked-device behavior the paper describes is documented across Play Help, not quotable from
+  one page.
+- [36] Sguigna, AUTOTESTCON 2019 -- IEEE paywalled; ISBN only, no DOI/open abstract (the
+  JTAG-lock claim is independently backed by [35]).
+- [37] Breeuwsma, Digital Investigation 2006 -- Elsevier paywalled; no open abstract.
+- [52] Yang et al., Digital Investigation 2017 -- Elsevier paywalled; no open abstract.
