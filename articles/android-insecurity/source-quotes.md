@@ -463,10 +463,11 @@ with their reason -- never with an approximate quote.
   low-level elements, such as bootloaders, virtual-machine hypervisors, computer BIOS, and
   recently even the hardware itself."
 
-## [@kaspersky-equation] Equation nls_933w -- firmware reflash, write-only interface
+## [@kaspersky-equation] Equation nls_933w -- firmware reflash, no standard read-back API
 
-- Paper claim (Sec. 13): in-the-wild firmware implants reprogram drive firmware and persist;
-  the firmware interface is write-only, so the implant cannot be read back from the host.
+- Paper claim (Sec. 13): in-the-wild drive-firmware implants reprogram firmware and persist
+  across an OS reinstall; there is no standard host API to read the firmware back (vendor
+  diagnostic/debug interfaces can, as [[zaddach-hdd-backdoor]] showed via a serial interface).
 - URL: https://securelist.com/equation-the-death-star-of-malware-galaxy/68750/ (retrieved Oct. 29, 2026)
 - Quote (article body): "It allows them to reprogram the hard drive firmware"
 - Quote (Kaspersky analyst Costin Raiu, in the article's comment thread): "there's a
@@ -474,8 +475,9 @@ with their reason -- never with an approximate quote.
 
 ## [@eset-lojax] LoJax -- first in-the-wild UEFI rootkit, survives reinstall and disk swap
 
-- Paper claim (Sec. 13): a firmware implant found in the wild persists across a full OS
-  reinstall and even storage replacement, and removal (reflashing) is beyond a typical owner.
+- Paper claim (Sec. 13): a UEFI implant in the motherboard's SPI flash persists across a full
+  OS reinstall and even a storage replacement (it does not reside on the storage), and removal
+  (reflashing) is beyond a typical owner.
 - URL: https://www.welivesecurity.com/2018/09/27/lojax-first-uefi-rootkit-found-wild-courtesy-sednit-group/ (retrieved Oct. 29, 2026)
 - Quote: "This persistence method is particularly invasive as it will not only survive an OS
   reinstall, but also a hard disk replacement." / (on reflashing the firmware to remove it) "It
