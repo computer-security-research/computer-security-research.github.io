@@ -13,7 +13,7 @@ with their reason -- never with an approximate quote.
 
 ---
 
-## [1] SELinux -- MAC binds even root
+## [@aosp-selinux] SELinux -- MAC binds even root
 
 - Paper claim (Sec. 3): SELinux confines even uid-0 processes to permitted domains.
 - URL: https://source.android.com/docs/security/features/selinux (retrieved Oct. 26, 2026)
@@ -21,7 +21,7 @@ with their reason -- never with an approximate quote.
   control (MAC) over all processes, even processes running with root/superuser privileges
   (Linux capabilities)."
 
-## [2] Kernel lockdown -- withdraws root-accessible interfaces
+## [@kernel-lockdown] Kernel lockdown -- withdraws root-accessible interfaces
 
 - Paper claim (Sec. 3): lockdown withdraws otherwise root-accessible interfaces used to
   modify the running kernel.
@@ -30,7 +30,7 @@ with their reason -- never with an approximate quote.
   access to a running kernel image, attempting to protect against unauthorized modification
   of the kernel image..."
 
-## [3] Module-signature enforcement -- no unsigned module load
+## [@kernel-module-signing] Module-signature enforcement -- no unsigned module load
 
 - Paper claim (Sec. 3): enforcement can require a valid signature on loaded code, so root
   cannot insert an arbitrary module.
@@ -38,7 +38,7 @@ with their reason -- never with an approximate quote.
 - Quote: "This allows increased kernel security by disallowing the loading of unsigned
   modules or modules signed with an invalid key."
 
-## [4] kernel.modules_disabled -- one-way, even root cannot reverse
+## [@kernel-modules-disabled] kernel.modules_disabled -- one-way, even root cannot reverse
 
 - Paper claim (Sec. 3): once set, blocks all further module loading in a one-way fashion.
 - URL: https://docs.kernel.org/admin-guide/sysctl/kernel.html (retrieved Oct. 26, 2026)
@@ -46,7 +46,7 @@ with their reason -- never with an approximate quote.
   modular kernel. This toggle defaults to off (0), but can be set true (1). Once true,
   modules can be neither loaded nor unloaded, and the toggle cannot be set back to false."
 
-## [5] Verified Boot -- hardware root of trust, refuse unsigned
+## [@aosp-verified-boot] Verified Boot -- hardware root of trust, refuse unsigned
 
 - Paper claim (Sec. 3): AVB anchors the boot chain to a hardware root of trust.
 - URL: https://source.android.com/docs/security/features/verifiedboot (retrieved Oct. 26, 2026)
@@ -55,7 +55,7 @@ with their reason -- never with an approximate quote.
   chain of trust, starting from a hardware-protected root of trust to the bootloader, to the
   boot partition and other verified partitions..."
 
-## [20] Play Integrity -- verdict tiers are hardware-backed
+## [@play-integrity-improvements] Play Integrity -- verdict tiers are hardware-backed
 
 - Paper claim (Sec. 8): verdicts are tiered (basic / device-integrity / stronger
   hardware-backed), tied to a certified configuration.
@@ -64,7 +64,7 @@ with their reason -- never with an approximate quote.
   signals on some devices and will now integrate them more deeply on all devices running
   Android 13 or later."
 
-## [25] Auto Backup -- covers only apps that permit it
+## [@aosp-auto-backup] Auto Backup -- covers only apps that permit it
 
 - Paper claim (Sec. 7): backup is enabled via the manifest; apps that disable it are omitted.
 - URL: https://developer.android.com/identity/data/autobackup (retrieved Oct. 26, 2026)
@@ -72,7 +72,7 @@ with their reason -- never with an approximate quote.
   and run on Android 6.0 (API level 23) or higher." / "Your app can customize the backup
   process or opt out by disabling backups."
 
-## [26] File-based encryption -- mandatory since Android 10, available since Android 7
+## [@aosp-file-based-encryption] File-based encryption -- mandatory since Android 10, available since Android 7
 
 - Paper claim (Sec. 7, 11): FBE mandatory on devices launched with Android 10+, available
   since Android 7.
@@ -80,7 +80,7 @@ with their reason -- never with an approximate quote.
 - Quote: "Android 7.0 and higher supports file-based encryption (FBE)." / "All devices
   launching with Android 10 and higher are required to use file-based encryption."
 
-## [28] Play Integrity overview -- separate app- and account-integrity fields
+## [@play-integrity-overview] Play Integrity overview -- separate app- and account-integrity fields
 
 - Paper claim (Sec. 8): the API additionally returns app-integrity and account-integrity
   fields, not reproduced in the paper's device-state table.
@@ -88,21 +88,21 @@ with their reason -- never with an approximate quote.
 - Quote: "App integrity: Check that appRecognitionVerdict is PLAY_RECOGNIZED," / "Account
   details: Check that appLicensingVerdict is LICENSED,"
 
-## [29] Key attestation -- hardware-backed key storage
+## [@aosp-key-id-attestation] Key attestation -- hardware-backed key storage
 
 - Paper claim (Sec. 8): attestation is backed by hardware-backed key storage.
 - URL: https://source.android.com/docs/security/features/keystore/attestation (retrieved Oct. 26, 2026)
 - Quote: "When hardware-backed key storage is available and used, key material is more secure
   against extraction from the device..."
 
-## [30] OWASP MASTG -- device-integrity verdict verifies the environment
+## [@owasp-mastg-play-integrity] OWASP MASTG -- device-integrity verdict verifies the environment
 
 - Paper claim (Sec. 8, 12): apps gate on the hardware-backed device-integrity verdict.
 - URL: https://mas.owasp.org/MASTG/knowledge/android/MASVS-RESILIENCE/MASTG-KNOW-0035/ (retrieved Oct. 26, 2026)
 - Quote: "Device Integrity: This section presents information that verifies the authenticity
   of the Android environment in which the app is running."
 
-## [34] GrapheneOS -- apps ban it; strong tier == hardware key attestation; no spoofing
+## [@grapheneos-attestation-compat] GrapheneOS -- apps ban it; strong tier == hardware key attestation; no spoofing
 
 - Paper claim (Sec. 8, 12): owner-controlled configs fail device/strong verdicts; a catalog
   of apps refuse to run; projects will not spoof attestation.
@@ -111,7 +111,7 @@ with their reason -- never with an approximate quote.
   attestation API, but apps using it directly can support aftermarket operating systems..."
   / "This is a list of the apps banning GrapheneOS with the Play Integrity API..."
 
-## [42] Full-disk encryption -- master key bound to hardware
+## [@aosp-full-disk-encryption] Full-disk encryption -- master key bound to hardware
 
 - Paper claim (Sec. 11): the FDE master key is bound to hardware (TEE), not a copyable file.
 - URL: https://source.android.com/security/encryption/full-disk (retrieved Oct. 26, 2026)
@@ -119,7 +119,7 @@ with their reason -- never with an approximate quote.
   Environment's (TEE) signing capability (such as in a TrustZone)." / "The master key is
   encrypted with 128-bit AES via calls to the OpenSSL library."
 
-## [43] GrapheneOS Auditor -- hardware-backed remote attestation from a second device
+## [@grapheneos-auditor] GrapheneOS Auditor -- hardware-backed remote attestation from a second device
 
 - Paper claim (Sec. 12): GrapheneOS provides hardware-backed remote attestation an owner can
   verify from a second device.
@@ -131,7 +131,7 @@ with their reason -- never with an approximate quote.
   and use it to verify other devices. However, only devices launched with Android 8.0 or
   later have the necessary hardware support for being verified."
 
-## [50] Loadable kernel modules -- GKI module signing not supported; dm-verity instead
+## [@aosp-loadable-kernel-modules] Loadable kernel modules -- GKI module signing not supported; dm-verity instead
 
 - Paper claim (Sec. 3): module signing is not supported for GKI vendor modules; authenticity
   rests on dm-verity over the read-only partitions.
@@ -143,7 +143,7 @@ with their reason -- never with an approximate quote.
 
 ---
 
-## [6] Bootloader unlock -- mandatory factory data reset
+## [@aosp-bootloader-locking] Bootloader unlock -- mandatory factory data reset
 
 - Paper claim (Sec. 3, 13): unlocking the bootloader triggers a mandatory wipe of user data.
 - URL: https://source.android.com/docs/core/architecture/bootloader/locking_unlocking (retrieved Oct. 27, 2026)
@@ -151,7 +151,7 @@ with their reason -- never with an approximate quote.
   reset to prevent unauthorized data access." (page body loads via JS; retrieved with a
   headless chromium render, not raw fetch)
 
-## [7] Forensic readiness -- an institutional posture, distinct from owner-inspectability
+## [@rowlingson-forensic-readiness] Forensic readiness -- an institutional posture, distinct from owner-inspectability
 
 - Paper claim (Sec. 3): forensic readiness is an organization's advance preparation for
   investigators, not a property a device affords its owner.
@@ -160,7 +160,7 @@ with their reason -- never with an approximate quote.
 - Quote: "Forensic readiness is defined as the ability of an organisation to maximise its
   potential to use digital evidence whilst minimising the costs of an investigation."
 
-## [10] NIST SP 800-101r1 -- sound acquisition preserves source integrity
+## [@nist-sp800-101r1] NIST SP 800-101r1 -- sound acquisition preserves source integrity
 
 - Paper claim (Sec. 10): official guidance on sound acquisition and evidence preservation; a
   suspect device should not be relied on to examine itself.
@@ -170,7 +170,7 @@ with their reason -- never with an approximate quote.
   and also that of the extracted data. The former is done by blocking or otherwise
   eliminating write requests to the device containing the data."
 
-## [12] Amnesty International -- fewer forensic traces on Android than iOS
+## [@amnesty-pegasus-methodology] Amnesty International -- fewer forensic traces on Android than iOS
 
 - Paper claim (Sec. 10): significantly more forensic traces are accessible on iOS than stock
   Android, so the methodology focused on iOS; most confirmed Pegasus infections were iPhones.
@@ -180,7 +180,7 @@ with their reason -- never with an approximate quote.
   our methodology is focused on the former. As a result, most recent cases of confirmed
   Pegasus infections have involved iPhones."
 
-## [13] MVT -- limited Android diagnostic information
+## [@mvt-android-methodology] MVT -- limited Android diagnostic information
 
 - Paper claim (Sec. 10): Android stores little diagnostic information useful for triaging
   compromises and the toolkit's Android capabilities are correspondingly limited.
@@ -188,7 +188,7 @@ with their reason -- never with an approximate quote.
 - Quote: "The limited diagnostic information available makes it difficult to triage potential
   compromises" / "capabilities are limited as well. However, not all is lost."
 
-## [14] JoKER -- an in-device detector can itself be subverted
+## [@guri-joker-jtag] JoKER -- an in-device detector can itself be subverted
 
 - Paper claim (Sec. 9, 13): trustworthy rootkit detection needs a vantage point outside the
   running OS, because an in-device detector can be compromised.
@@ -198,7 +198,7 @@ with their reason -- never with an approximate quote.
   Consequentially, trusted detection of kernel rootkits in mobile devices is a challenging
   task in practice."
 
-## [16] Brodbeck thesis -- OS-level Android rootkits demonstrated
+## [@brodbeck-covert-rootkit-detection] Brodbeck thesis -- OS-level Android rootkits demonstrated
 
 - Paper claim (Sec. 9): rootkits running at the OS level of mobile devices have been
   demonstrated despite integrated MAC.
@@ -208,7 +208,7 @@ with their reason -- never with an approximate quote.
   "This research shows the Android's Linux kernel is vulnerable to system call hooking and
   additional measures should be implemented before handling sensitive data with Android."
 
-## [17] Chen et al. -- malware checks for and thwarts analysis environments
+## [@chen-anti-virtualization] Chen et al. -- malware checks for and thwarts analysis environments
 
 - Paper claim (Sec. 10): measurement studies show modern malware checks for virtualized or
   instrumented environments and withholds its behavior when it detects them.
@@ -221,7 +221,7 @@ with their reason -- never with an approximate quote.
 - Quote (results): "more than 40% of the total malware samples reduce their malicious behavior
   under virtual machines or with a debugger attached"
 
-## [18] Ruggia et al. -- evasive malware detects analysis environments
+## [@ruggia-evasive-malware] Ruggia et al. -- evasive malware detects analysis environments
 
 - Paper claim (Sec. 10): modern malware checks whether it is under analysis and the evasion
   techniques have grown sophisticated.
@@ -230,7 +230,7 @@ with their reason -- never with an approximate quote.
   tools, and the techniques to understand whether their app is under analysis have become
   more and more sophisticated."
 
-## [19] Garfinkel -- anti-forensics taxonomy (wiping, chaff, planting)
+## [@garfinkel-anti-forensics] Garfinkel -- anti-forensics taxonomy (wiping, chaff, planting)
 
 - Paper claim (Sec. 10, 13): the anti-forensics literature names artifact wiping, trail
   obfuscation, and self-removal.
@@ -239,7 +239,7 @@ with their reason -- never with an approximate quote.
   information; creating \"chaff\" that wastes time and hides information; implicating innocent
   parties by planting fake evidence; exploiting implementation bugs in known tools..."
 
-## [22] Leith -- persistent hardware identifiers shared with Google/Apple
+## [@leith-handset-privacy] Leith -- persistent hardware identifiers shared with Google/Apple
 
 - Paper claim (Sec. 6): Google Play services transmits persistent hardware identifiers (IMEI,
   serial, etc.) associated with the signed-in account.
@@ -247,7 +247,7 @@ with their reason -- never with an approximate quote.
 - Quote: "The phone IMEI, hardware serial number, SIM serial number and IMSI, handset phone
   number etc are shared with Apple and Google."
 
-## [23] Device Configuration Service -- device sends data to Google
+## [@google-device-config-service] Device Configuration Service -- device sends data to Google
 
 - Paper claim (Sec. 6): Google documents persistent-identifier check-ins associated with the
   account and used for update eligibility.
@@ -255,7 +255,7 @@ with their reason -- never with an approximate quote.
 - Quote: "Device Configuration Service periodically sends data from Android devices to
   Google."
 
-## [24] sepolicy gmscore_app.te -- GMS core granted update-path access
+## [@aosp-sepolicy-gmscore] sepolicy gmscore_app.te -- GMS core granted update-path access
 
 - Paper claim (Sec. 6): the AOSP security policy grants Google Play services access to the
   system-update service and the A/B update engine.
@@ -264,7 +264,7 @@ with their reason -- never with an approximate quote.
   "allow gmscore_app update_engine_service:service_manager find;" /
   "allow gmscore_app system_update_service:service_manager find;"
 
-## [27] SafetyNet Attestation -- deprecated 2022, turned down January 2025
+## [@safetynet-attestation-deprecation] SafetyNet Attestation -- deprecated 2022, turned down January 2025
 
 - Paper claim (Sec. 8): Google deprecated SafetyNet in 2022 and withdrew it in January 2025,
   replaced by Play Integrity.
@@ -275,7 +275,7 @@ with their reason -- never with an approximate quote.
   to the Play Integrity API that consolidates multiple integrity offerings (including the
   SafetyNet Attestation integrity verdict)..."
 
-## [31] AttestLens -- ~90% of apps reference neither attestation framework
+## [@macdonald-attestlens] AttestLens -- ~90% of apps reference neither attestation framework
 
 - Paper claim (Sec. 8): most apps contain no reference to Play Integrity or SafetyNet; a floor
   on lock-out, not a measure of it.
@@ -284,7 +284,7 @@ with their reason -- never with an approximate quote.
   remains particularly low in security-sensitive areas such as banking, cryptocurrency, and
   gaming."
 
-## [32] SoK hardening -- developers add self-protection / jailbreak detection
+## [@steinboeck-sok-hardening] SoK hardening -- developers add self-protection / jailbreak detection
 
 - Paper claim (Sec. 8): a measurement of mobile hardening techniques; the specific per-check
   percentages the paper cites are from this study's results.
@@ -294,7 +294,7 @@ with their reason -- never with an approximate quote.
   and leakage, detect jailbreaks, etc." (NOTE: the 3%/94%/99% figures in the paper are from the
   study's results tables in the paywalled full text, not this abstract)
 
-## [33] PrivSec.dev -- crowd-sourced banking-app compatibility list
+## [@privsecdev-banking-grapheneos] PrivSec.dev -- crowd-sourced banking-app compatibility list
 
 - Paper claim (Sec. 8): crowd-sourced lists catalog banking/payment apps that refuse to run on
   owner-controlled OSes.
@@ -303,7 +303,7 @@ with their reason -- never with an approximate quote.
   banking apps that have been tested, submitted, reviewed, and verified as compatible." /
   "the crowd-sourced dataset"
 
-## [35] Secure-JTAG patent -- debug access gated behind authentication
+## [@patent-secure-jtag] Secure-JTAG patent -- debug access gated behind authentication
 
 - Paper claim (Sec. 9): manufacturers may lock or disable JTAG on production hardware.
 - URL: https://patents.google.com/patent/US9633185B2/en (retrieved Oct. 27, 2026)
@@ -313,7 +313,7 @@ with their reason -- never with an approximate quote.
   and the device in response to the request to initiate authentication being a request from a
   non-malicious user."
 
-## [44] MITRE ATT&CK -- Sandbox Evasion (T1497) and Indicator Removal (T1070)
+## [@mitre-attack-evasion] MITRE ATT&CK -- Sandbox Evasion (T1497) and Indicator Removal (T1070)
 
 - Paper claim (Sec. 13): the matching evasion/anti-forensic capabilities (checking for
   analysis environments; removing indicators) are catalogued.
@@ -324,14 +324,14 @@ with their reason -- never with an approximate quote.
 - Quote (T1070): "Adversaries may selectively delete or modify artifacts generated to reduce
   indications of their presence and blend in with legitimate activity."
 
-## [45] Lookout -- Pegasus for Android self-removal
+## [@lookout-chrysaor] Lookout -- Pegasus for Android self-removal
 
 - Paper claim (Sec. 13): Pegasus for Android shipped suicide functionality to remove itself.
 - URL: https://info.lookout.com/rs/051-ESQ-475/images/lookout-pegasus-android-technical-analysis.pdf (retrieved Oct. 27, 2026)
 - Quote: "As seen in the iOS version of Pegasus, the Android counterpart also includes suicide
   functionality to remove itself under a variety of different circumstances."
 
-## [46] Citizen Lab -- iOS Pegasus self-destructs to avoid exposure
+## [@marczak-million-dollar-dissident] Citizen Lab -- iOS Pegasus self-destructs to avoid exposure
 
 - Paper claim (Sec. 13): the iOS variant self-destructs when exposure is likely.
 - URL: https://citizenlab.ca/2016/08/million-dollar-dissident-iphone-zero-day-nso-group-uae/ (retrieved Oct. 27, 2026)
@@ -339,7 +339,7 @@ with their reason -- never with an approximate quote.
   exists.\" However, the documentation claims that sometimes Pegasus removal can result in an
   infected device rebooting immediately after removal."
 
-## [47] Thompson -- a system cannot be trusted to report on itself
+## [@thompson-trusting-trust] Thompson -- a system cannot be trusted to report on itself
 
 - Paper claim (Sec. 13): the long-established principle that a system cannot be trusted to
   report truthfully on its own state.
@@ -349,7 +349,7 @@ with their reason -- never with an approximate quote.
   companies that employ people like me.) No amount of source-level verification or scrutiny
   will protect you from using untrusted code."
 
-## [48] Garfinkel & Rosenblum VMI -- isolate the monitor, retain visibility
+## [@garfinkel-vmi] Garfinkel & Rosenblum VMI -- isolate the monitor, retain visibility
 
 - Paper claim (Sec. 13): subversion-resistant detection must observe the system from outside
   the running OS.
@@ -358,7 +358,7 @@ with their reason -- never with an approximate quote.
 - Quote: "Using this approach allows us to isolate the IDS from the monitored host but still
   retain excellent visibility into the host's state."
 
-## [49] Talos -- Rombertik destroys the host on detecting analysis
+## [@talos-rombertik] Talos -- Rombertik destroys the host on detecting analysis
 
 - Paper claim (Sec. 13): the nearest realized detect-then-destroy case wrecks the host rather
   than quietly erasing the implant.
@@ -366,7 +366,7 @@ with their reason -- never with an approximate quote.
 - Quote: "If the sample detected it was being analyzed or debugged it would ultimately destroy
   the master boot record (MBR)."
 
-## [51] Fileless-malware survey -- no on-disk artifact
+## [@sudhakar-fileless-malware] Fileless-malware survey -- no on-disk artifact
 
 - Paper claim (Sec. 10): non-persistent, memory-resident malware leaves no durable artifact
   and evades signature-based detection.
@@ -375,7 +375,7 @@ with their reason -- never with an approximate quote.
 - Quote: "Fileless malware does not use traditional executables to carry-out its activities.
   So, it does not use the file system, thereby evading signature-based detection system."
 
-## [53] Verified Boot flow -- UNLOCKED devices show a warning screen
+## [@aosp-boot-flow] Verified Boot flow -- UNLOCKED devices show a warning screen
 
 - Paper claim (Sec. 13): unlocking is gated behind an explicit warning (and wipe).
 - URL: https://source.android.com/docs/security/features/verifiedboot/boot-flow (retrieved Oct. 27, 2026)
@@ -383,7 +383,7 @@ with their reason -- never with an approximate quote.
   Warning screen for UNLOCKED devices / RED (eio): Warning screen for dm-verity corruption /
   RED (no os found): No valid OS found"
 
-## [54] Wall of Shame -- crowd-sourced list of non-unlockable devices
+## [@bootloader-wall-of-shame] Wall of Shame -- crowd-sourced list of non-unlockable devices
 
 - Paper claim (Sec. 13): a large class of carrier/vendor-locked devices cannot be unlocked by
   their owners.
@@ -392,7 +392,7 @@ with their reason -- never with an approximate quote.
   vendors/devices that restrict bootloader unlocking; licensed CC BY-NC-SA. (README tagline
   carries a non-ASCII emoji, omitted here.)
 
-## [55] Magnuson-Moss Warranty Act -- anti-tying (no brand-conditioned warranty)
+## [@magnuson-moss-act] Magnuson-Moss Warranty Act -- anti-tying (no brand-conditioned warranty)
 
 - Paper claim (Sec. 13): U.S. consumer-protection law limits blanket warranty voiding.
 - URL: 15 U.S.C. 2302(c), via Cornell LII https://www.law.cornell.edu/uscode/text/15/2302
@@ -402,7 +402,7 @@ with their reason -- never with an approximate quote.
   the terms of the warranty) which is identified by brand, trade, or corporate name" (contiguous
   span of the 2302(c) anti-tying prohibition; the LII page interleaves defined-term links)
 
-## [56] EU Directive 2019/771 -- seller liability for lack of conformity
+## [@eu-directive-2019-771] EU Directive 2019/771 -- seller liability for lack of conformity
 
 - Paper claim (Sec. 13): EU consumer law limits blanket voiding and ties refusal to a defect
   causally linked to the modification.
@@ -413,7 +413,7 @@ with their reason -- never with an approximate quote.
   (NOTE: the "causal link to the modification" is the paper's synthesis of the conformity-
   liability framework, not a single verbatim clause)
 
-## [57] Samsung Knox -- one-time e-fuse (Warranty Bit) is irreversible
+## [@samsung-knox-hw-security] Samsung Knox -- one-time e-fuse (Warranty Bit) is irreversible
 
 - Paper claim (Sec. 13): unlocking permanently trips a one-time-programmable e-fuse disabling
   hardware-backed attestation, not resettable.
@@ -421,7 +421,7 @@ with their reason -- never with an approximate quote.
 - Quote: "This record is stored in a one-time hardware e-fuse, permanently marking the device
   as having a non approved configuration, regardless of any future actions."
 
-## [58] Sony -- unlocking removes DRM security keys
+## [@sony-unlock-bootloader] Sony -- unlocking removes DRM security keys
 
 - Paper claim (Sec. 13): unlocking irrevocably erases device-unique keys that relocking does
   not restore.
@@ -431,7 +431,7 @@ with their reason -- never with an approximate quote.
   (NOTE: the "relocking does not restore" characterization is the paper's; this page documents
   that unlocking removes the DRM security keys)
 
-## [59] Qualcomm -- secure boot enabled by blowing a one-time eFuse
+## [@qualcomm-secure-boot] Qualcomm -- secure boot enabled by blowing a one-time eFuse
 
 - Paper claim (Sec. 13): one-time-programmable eFuse hardware is the standard SoC primitive for
   secure-boot enablement and anti-rollback, a one-way operation.
@@ -440,7 +440,7 @@ with their reason -- never with an approximate quote.
   configuration required to enable platform secure boot includes: Enabling image
   authentication and anti-rollback protection. Disabling debug and JTAG access."
 
-## [60] Rooting arms race -- evasion vs. detection
+## [@nguyen-vu-android-rooting] Rooting arms race -- evasion vs. detection
 
 - Paper claim (Sec. 13): cloaking tools pass integrity checks only by impersonating a
   still-vulnerable stock device, in a losing arms race against detection.
@@ -456,14 +456,14 @@ with their reason -- never with an approximate quote.
 Good-faith retrieval exhausted (curl, WebFetch probe, headless chromium render, Internet
 Archive, publisher abstract records). NEVER approximated.
 
-- [8] ISO/IEC 27043:2015 -- paywalled ISO standard; no free full text.
-- [11] Hoog, Android Forensics (Syngress, 2011) -- print book; no online full text.
-- [15] Bickford et al., HotMobile 2010 -- ACM paywalled; no open abstract/PDF retrieved.
-- [21] Google Play Help -- the cited page is the Play Help hub (a landing page of article
+- [@iso-27043] ISO/IEC 27043:2015 -- paywalled ISO standard; no free full text.
+- [@hoog-android-forensics] Hoog, Android Forensics (Syngress, 2011) -- print book; no online full text.
+- [@bickford-rootkits-smartphones] Bickford et al., HotMobile 2010 -- ACM paywalled; no open abstract/PDF retrieved.
+- [@google-play-help] Google Play Help -- the cited page is the Play Help hub (a landing page of article
   links), not a single verbatim operative sentence; the account-required / remote-install-to-
   linked-device behavior the paper describes is documented across Play Help, not quotable from
   one page.
-- [36] Sguigna, AUTOTESTCON 2019 -- IEEE paywalled; ISBN only, no DOI/open abstract (the
-  JTAG-lock claim is independently backed by [35]).
-- [37] Breeuwsma, Digital Investigation 2006 -- Elsevier paywalled; no open abstract.
-- [52] Yang et al., Digital Investigation 2017 -- Elsevier paywalled; no open abstract.
+- [@sguigna-jtag-attack-surface] Sguigna, AUTOTESTCON 2019 -- IEEE paywalled; ISBN only, no DOI/open abstract (the
+  JTAG-lock claim is independently backed by [@patent-secure-jtag]).
+- [@breeuwsma-jtag-imaging] Breeuwsma, Digital Investigation 2006 -- Elsevier paywalled; no open abstract.
+- [@yang-live-memory-acquisition] Yang et al., Digital Investigation 2017 -- Elsevier paywalled; no open abstract.
