@@ -449,6 +449,38 @@ with their reason -- never with an approximate quote.
 - Quote: "We present an arms race between rooting detection and rooting evasion." / "We then
   analyze the evasion loopholes and in turn enhance our rooting detection tool."
 
+## [@zaddach-hdd-backdoor] Stealth hard-drive firmware backdoor -- below the OS, root-installable
+
+- Paper claim (Secs. 12, 13): a drive's controller firmware can be compromised with only
+  public information and reverse engineering, installed by ordinary malware after OS
+  compromise, backdooring data as it is written; persistent implants have migrated to
+  low-level firmware beneath the OS.
+- URL: doi 10.1145/2523649.2523661 (ACSAC 2013, pp. 279-288; open PDF s3.eurecom.fr, retrieved Oct. 29, 2026)
+- Quote: "we show that it is possible to compromise the firmware of a commercial off-the-shelf
+  hard drive, by resorting only to public information and reverse engineering." / "a firmware
+  backdoor can be installed by, e.g., traditional malware after the operating system has been
+  compromised." / "the target of the infection has shifted from software components towards more
+  low-level elements, such as bootloaders, virtual-machine hypervisors, computer BIOS, and
+  recently even the hardware itself."
+
+## [@kaspersky-equation] Equation nls_933w -- firmware reflash, write-only interface
+
+- Paper claim (Sec. 13): in-the-wild firmware implants reprogram drive firmware and persist;
+  the firmware interface is write-only, so the implant cannot be read back from the host.
+- URL: https://securelist.com/equation-the-death-star-of-malware-galaxy/68750/ (retrieved Oct. 29, 2026)
+- Quote (article body): "It allows them to reprogram the hard drive firmware"
+- Quote (Kaspersky analyst Costin Raiu, in the article's comment thread): "there's a
+  standardized API to write the firmware but no API to read it."
+
+## [@eset-lojax] LoJax -- first in-the-wild UEFI rootkit, survives reinstall and disk swap
+
+- Paper claim (Sec. 13): a firmware implant found in the wild persists across a full OS
+  reinstall and even storage replacement, and removal (reflashing) is beyond a typical owner.
+- URL: https://www.welivesecurity.com/2018/09/27/lojax-first-uefi-rootkit-found-wild-courtesy-sednit-group/ (retrieved Oct. 29, 2026)
+- Quote: "This persistence method is particularly invasive as it will not only survive an OS
+  reinstall, but also a hard disk replacement." / (on reflashing the firmware to remove it) "It
+  is definitely not a procedure that most computer owners are familiar with."
+
 ---
 
 ## Remaining references (no online exact text; claim rests on the citation)
@@ -467,3 +499,7 @@ Archive, publisher abstract records). NEVER approximated.
   JTAG-lock claim is independently backed by [@patent-secure-jtag]).
 - [@breeuwsma-jtag-imaging] Breeuwsma, Digital Investigation 2006 -- Elsevier paywalled; no open abstract.
 - [@yang-live-memory-acquisition] Yang et al., Digital Investigation 2017 -- Elsevier paywalled; no open abstract.
+- [@weinmann-baseband] Weinmann, WOOT 2012 -- USENIX abstract page returns HTTP 403 to automated
+  fetch, researchr.org mirror unreachable, and web.archive.org is blocked for this client this
+  pass; abstract not retrieved verbatim. Claim (Sec. 12: baseband stacks carry remotely
+  exploitable memory corruptions) rests on the citation (WOOT 2012 best-paper award).
