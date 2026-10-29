@@ -52,7 +52,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
             pandoc texlive-latex-recommended texlive-fonts-recommended lmodern \
-            poppler-utils qpdf librsvg2-bin python3-pil python3-yaml python3-defusedxml
+            poppler-utils qpdf librsvg2-bin citation-style-language-styles \
+            python3-pil python3-yaml python3-defusedxml
 
       - name: Tool selftest
         run: journal-maker/usr/bin/journal-maker selftest
