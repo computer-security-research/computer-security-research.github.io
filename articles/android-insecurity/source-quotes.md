@@ -512,6 +512,28 @@ with their reason -- never with an approximate quote.
   Management Engine (Intel-ME) and AMD-SP, respectively. Due to the integration of these
   coprocessors into the main die, they do not require external buses to communicate with the CPU."
 
+## [@rfc9334-rats] RATS architecture -- Attester proves, Relying Party depends (direction of trust)
+
+- Paper claim (Sec. 8): remote attestation is a relying-party protocol; the device is the Attester
+  that must produce evidence, a Verifier appraises it, and the Relying Party (app, service, or
+  platform) is the party that depends on the result, so the guarantee runs to the relying party,
+  not the owner.
+- URL: https://www.rfc-editor.org/rfc/rfc9334.html (IETF RFC 9334, Informational, Jan. 2023, Sec. 4.1 Roles; retrieved Oct. 30, 2026)
+- Quote (Attester): "A role performed by an entity (typically a device) whose Evidence must be
+  appraised in order to infer the extent to which the Attester is considered trustworthy, such as
+  when deciding whether it is authorized to perform some operation."
+- Quote (Relying Party): "A role performed by an entity that depends on the validity of information
+  about an Attester, for purposes of reliably applying application-specific actions."
+
+## [@doctorow-general-computation] War on general-purpose computing -- owner control is the stake
+
+- Paper claim (Sec. 8): the attestation-driven loss of owner control -- software running on the
+  owner's device beyond the owner's inspection -- is the phenomenon named the coming war on
+  general-purpose computing.
+- URL: https://en.wikisource.org/wiki/The_Coming_War_on_General_Computation (28C3, Berlin, Dec. 26, 2011, transcript; retrieved Oct. 30, 2026)
+- Quote: "Freedom in the future will require us to have the capacity to monitor our devices and set
+  meaningful policy on them."
+
 ---
 
 ## Remaining references (no online exact text; claim rests on the citation)
@@ -534,3 +556,7 @@ Archive, publisher abstract records). NEVER approximated.
   fetch, researchr.org mirror unreachable, and web.archive.org is blocked for this client this
   pass; abstract not retrieved verbatim. Claim (Sec. 12: baseband stacks carry remotely
   exploitable memory corruptions) rests on the citation (WOOT 2012 best-paper award).
+- [@coker-remote-attestation] Coker et al., Int. J. Inf. Secur. 2011 -- Springer paywalled; DOI
+  10.1007/s10207-011-0124-7 resolves and the dblp record confirms the citation, but full text was
+  not retrieved verbatim. Claim (Sec. 8: remote attestation is the appraisal of a target by
+  supplying evidence to an appraiser over a network) rests on the abstract and the citation.
