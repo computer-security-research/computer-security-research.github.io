@@ -483,6 +483,35 @@ with their reason -- never with an approximate quote.
   reinstall, but also a hard disk replacement." / (on reflashing the firmware to remove it) "It
   is definitely not a procedure that most computer owners are familiar with."
 
+## [@ermolov-intel-me] Intel ME -- always-on co-processor with privileged platform access, owner cannot inspect
+
+- Paper claim (Sec. 13, Table 4): the Intel Management Engine is an always-on co-processor
+  running Intel-signed firmware with highly privileged platform access that the machine's owner
+  cannot inspect or control.
+- URL: https://www.blackhat.com/docs/eu-17/materials/eu-17-Goryachy-How-To-Hack-A-Turned-Off-Computer-Or-Running-Unsigned-Code-In-Intel-Management-Engine-wp.pdf (Black Hat Europe 2017 whitepaper, retrieved Oct. 30, 2026)
+- Quote (Sec. 1): "Intel Management Engine (Intel ME) is a proprietary technology that consists of
+  a microcontroller integrated into the Platform Controller Hub (PCH) chip ... Therefore, Intel ME
+  has access to almost all data on the computer."
+- Quote (Sec. 1.1): "ME also has virtually unlimited access to data processed on the computer. ME
+  can intercept and modify network packets as well as images on graphics cards; it has full access
+  to USB devices."
+- Quote (Sec. 2): "Virtually all data used by ME is either explicitly or implicitly signed by Intel."
+
+## [@jacob-faultpm] AMD-SP/PSP -- dedicated security co-processor, root of trust, boots before the x86 cores
+
+- Paper claim (Sec. 13, Table 4): the AMD Secure Processor (formerly PSP) is a dedicated
+  co-processor integrated into the SoC that acts as the root of trust, boots before the main
+  cores, and runs vendor firmware; the same integrated-co-processor characterization also covers
+  the Intel ME.
+- URL: arXiv:2304.14717 ; doi 10.1109/EuroSP57164.2023.00069 (IEEE EuroS&P 2023, pp. 1128-1142, retrieved Oct. 30, 2026)
+- Quote (Sec. 2.4): "The AMD Secure Processor (AMD-SP) is a dedicated security co-processor part of
+  all recent AMD Systems-on-a-chip (SoCs) ... the AMD-SP (formerly known as Platform Security
+  Processor (PSP)) has acted as the Root of Trust (RoT) of the SoC."
+- Quote (Sec. 2.4.1): "The AMD-SP boots before the main X86 cores of the AMD SoC."
+- Quote (Sec. 2.1.2): "Intel and AMD provide fTPMs with their Desktop CPUs, running on the Intel
+  Management Engine (Intel-ME) and AMD-SP, respectively. Due to the integration of these
+  coprocessors into the main die, they do not require external buses to communicate with the CPU."
+
 ---
 
 ## Remaining references (no online exact text; claim rests on the citation)
