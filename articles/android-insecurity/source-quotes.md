@@ -534,6 +534,25 @@ with their reason -- never with an approximate quote.
 - Quote: "Freedom in the future will require us to have the capacity to monitor our devices and set
   meaningful policy on them."
 
+## [@play-integrity-verdicts] Play Integrity device verdict -- locked bootloader + certified image, not malware-freeness
+
+- Paper claim (Sec. 8): the device-integrity verdict attests boot and configuration state (a
+  locked bootloader and a vendor-certified OS image), not runtime malware-freeness, so a stock,
+  certified, locked device can still be compromised and pass.
+- URL: https://developer.android.com/google/play/integrity/verdicts (retrieved Oct. 30, 2026)
+- Quote (MEETS_DEVICE_INTEGRITY): "The app is running on a genuine and certified Android device. On
+  Android 13 and higher, there is hardware-backed proof that the device bootloader is locked and
+  the loaded Android OS is a certified device manufacturer image."
+
+## [@play-protect-certification] Play Protect certification -- user-facing status, separate from malware protection
+
+- Paper claim (Sec. 8): Android surfaces a Play Protect certification status to the owner in the
+  Play Store, but it reports compatibility and vendor-approval and is explicitly separate from
+  malware protection.
+- URL: https://support.google.com/googleplay/answer/7165974 (retrieved Oct. 30, 2026)
+- Quote: "Device certification is separate to Google Play Protect, which protects devices from
+  harmful apps." / certified devices "Have passed Android compatibility testing."
+
 ---
 
 ## Remaining references (no online exact text; claim rests on the citation)
