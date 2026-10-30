@@ -599,6 +599,37 @@ with their reason -- never with an approximate quote.
   hardware-protected key material" / "our specific attacks only apply to the ~100 million devices
   made by Samsung."
 
+## [@ncc-mediatek-bootrom] MediaTek BootROM glitch -- unpatchable mask ROM, secure-boot bypass
+
+- Paper claim (Sec. 12): the boot ROM is the immutable hardware root of trust; a flaw in it is
+  unpatchable, and voltage glitching can bypass secure-boot signature verification (physical access).
+- URL: https://www.nccgroup.com/research/there-s-a-hole-in-your-soc-glitching-the-mediatek-bootrom/ (NCC Group, 2020; retrieved Oct. 30, 2026)
+- Quote: "The BootROM is the immutable first stage in the boot process, and serves as the hardware
+  root of trust for the SoC." / "allowing an adversary to bypass signature verification of the
+  preloader." / "Because this vulnerability manifests in the mask ROM, the issue is unable to be
+  patched for all in-field affected products." / "Voltage glitching attacks require physical
+  access to the target device"
+
+## [@checkm8-vu] checkm8 -- unpatchable Boot ROM (SecureROM) exploit, physical, non-persistent
+
+- Paper claim (Sec. 12): boot-ROM flaws are permanent and unpatchable (read-only mask) and not
+  specific to one vendor; the exploit needs physical access and is non-persistent.
+- URL: https://kb.cert.org/vuls/id/941987/ (CERT/CC VU#941987; CVE-2019-8900; retrieved Oct. 30, 2026)
+- Quote: "vulnerable to arbitrary code execution at the Boot ROM level (called \"SecureROM\" by
+  Apple)" / "Because SecureROM is read-only, it cannot be patched with a firmware update." /
+  "requires physical access to the device" / "The exploit is not persistent; rebooting the device
+  overrides any changes"
+
+## [@ioactive-antifuse] Antifuse key extraction -- fused root keys readable by invasive FIB
+
+- Paper claim (Sec. 12): hardware-fused/OTP root keys can be read out by an invasive silicon
+  attack, so "fused keys are unreadable" is an assumption, not an absolute (invasive, destructive,
+  lab-grade).
+- URL: https://arxiv.org/abs/2501.13276 (IOActive; USENIX WOOT 2025; retrieved Oct. 30, 2026)
+- Quote: extraction "by a semiconductor failure analysis technique known as passive voltage
+  contrast (PVC) using a focused ion beam" / "show how it can be used to extract significant
+  quantities of sensitive data, such as keys for firmware encryption"
+
 ---
 
 ## Remaining references (no online exact text; claim rests on the citation)
