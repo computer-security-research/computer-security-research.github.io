@@ -30,7 +30,7 @@ These mechanisms are effective at their stated purpose: constraining what softwa
 
 ## 3. Threat Model and Scope
 
-This paper defines security from the perspective of the end user and device owner: the ability to control, inspect, and independently verify the device. Under this definition a device is more secure when its owner can establish, from a trusted vantage point, what software is installed, what it is doing, and whether it has been tampered with, and can produce evidence of that state that a skeptical third party could check.
+This paper defines security from the perspective of the end user and device owner: the ability to control, inspect, and independently verify the device. Under this definition a device is more secure when its owner can establish, from a trusted vantage point, whether it is running only the software they intend and what that software is doing -- free of malware or backdoors, whether planted by an outside attacker or by the platform itself -- and can produce evidence of that state that a skeptical third party could check.
 
 Three practical capabilities are treated as the goals of interest: inspecting the device deeply for malware and backdoors; proving the result to a skeptical third party; and creating complete device backups suitable for independent verification.
 
