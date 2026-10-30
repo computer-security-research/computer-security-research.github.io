@@ -291,7 +291,7 @@ with their reason -- never with an approximate quote.
 - URL: doi 10.1109/EuroSP63326.2025.00050 (IEEE EuroS&P 2025; abstract record retrieved Oct. 27, 2026)
 - Quote (abstract): "the Mobile Application Security Verification Standard (MASVS) recommends
   app developers to implement hardening techniques for self-protection -- to prevent tampering
-  and leakage, detect jailbreaks, etc." (NOTE: the 3%/94%/99% figures in the paper are from the
+  and leakage, detect jailbreaks, etc." (NOTE: the 92.3%/94%/99% figures in the paper are from the
   study's results tables in the paywalled full text, not this abstract)
 
 ## [@privsecdev-banking-grapheneos] PrivSec.dev -- crowd-sourced banking-app compatibility list
@@ -465,10 +465,17 @@ with their reason -- never with an approximate quote.
 
 ## [@kaspersky-equation] Equation nls_933w -- in-the-wild drive-firmware reprogramming
 
-- Paper claim (Sec. 13): in-the-wild drive-firmware implants reprogram the drive's firmware and
-  persist across a full operating-system reinstall.
+- Paper claim (Sec. 13): in-the-wild drive-firmware implants (the Equation group) reprogram the
+  drive's firmware.
 - URL: https://securelist.com/equation-the-death-star-of-malware-galaxy/68750/ (retrieved Oct. 29, 2026)
 - Quote (article body): "It allows them to reprogram the hard drive firmware"
+
+## [@kaspersky-equation-qa] Equation Q and A -- firmware implant survives formatting and OS reinstall
+
+- Paper claim (Sec. 13): the drive-firmware implant persists across disk formatting and a full
+  operating-system reinstall.
+- URL: https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/08064459/Equation_group_questions_and_answers.pdf (Kaspersky, "Equation Group: Questions and Answers", v1.5, Feb. 2015; retrieved Oct. 30, 2026)
+- Quote: "Extreme persistence that survives disk formatting and OS reinstall."
 
 ## [@eset-lojax] LoJax -- first in-the-wild UEFI rootkit, survives reinstall and disk swap
 
@@ -478,11 +485,11 @@ with their reason -- never with an approximate quote.
 - Quote: "This persistence method is particularly invasive as it will not only survive an OS
   reinstall, but also a hard disk replacement."
 
-## [@ermolov-intel-me] Intel ME -- always-on co-processor with privileged platform access, owner cannot inspect
+## [@ermolov-intel-me] Intel ME -- chipset co-processor with privileged platform access, owner cannot inspect
 
-- Paper claim (Sec. 13, Table 4): the Intel Management Engine is an always-on co-processor
-  running Intel-signed firmware with highly privileged platform access that the machine's owner
-  cannot inspect or control.
+- Paper claim (Sec. 13, Table 4): the Intel Management Engine is a co-processor embedded in the
+  chipset, running Intel-signed firmware with privileged access to platform data, that the owner
+  cannot inspect.
 - URL: https://www.blackhat.com/docs/eu-17/materials/eu-17-Goryachy-How-To-Hack-A-Turned-Off-Computer-Or-Running-Unsigned-Code-In-Intel-Management-Engine-wp.pdf (Black Hat Europe 2017 whitepaper, retrieved Oct. 30, 2026)
 - Quote (Sec. 1): "Intel Management Engine (Intel ME) is a proprietary technology that consists of
   a microcontroller integrated into the Platform Controller Hub (PCH) chip ... Therefore, Intel ME
@@ -494,10 +501,9 @@ with their reason -- never with an approximate quote.
 
 ## [@jacob-faultpm] AMD-SP/PSP -- dedicated security co-processor, root of trust, boots before the x86 cores
 
-- Paper claim (Sec. 13, Table 4): the AMD Secure Processor (formerly PSP) is a dedicated
-  co-processor integrated into the SoC that acts as the root of trust, boots before the main
-  cores, and runs vendor firmware; the same integrated-co-processor characterization also covers
-  the Intel ME.
+- Paper claim (Sec. 13, Table 4): the AMD Secure Processor (formerly PSP) is a dedicated security
+  co-processor integrated into the SoC that acts as the root of trust and boots before the main
+  cores, running vendor firmware the owner cannot inspect.
 - URL: arXiv:2304.14717 ; doi 10.1109/EuroSP57164.2023.00069 (IEEE EuroS&P 2023, pp. 1128-1142, retrieved Oct. 30, 2026)
 - Quote (Sec. 2.4): "The AMD Secure Processor (AMD-SP) is a dedicated security co-processor part of
   all recent AMD Systems-on-a-chip (SoCs) ... the AMD-SP (formerly known as Platform Security
@@ -518,16 +524,15 @@ with their reason -- never with an approximate quote.
   appraised in order to infer the extent to which the Attester is considered trustworthy, such as
   when deciding whether it is authorized to perform some operation."
 - Quote (Relying Party): "A role performed by an entity that depends on the validity of information
-  about an Attester, for purposes of reliably applying application-specific actions."
+  about an Attester for purposes of reliably applying application-specific actions."
 
 ## [@doctorow-general-computation] War on general-purpose computing -- owner control is the stake
 
 - Paper claim (Sec. 8): the attestation-driven loss of owner control -- software running on the
-  owner's device beyond the owner's inspection -- is the phenomenon named the coming war on
-  general-purpose computing.
-- URL: https://en.wikisource.org/wiki/The_Coming_War_on_General_Computation (28C3, Berlin, Dec. 26, 2011, transcript; retrieved Oct. 30, 2026)
-- Quote: "Freedom in the future will require us to have the capacity to monitor our devices and set
-  meaningful policy on them."
+  owner's device beyond the owner's inspection -- is the phenomenon Doctorow named the coming war
+  on general-purpose computing.
+- URL: https://boingboing.net/2012/01/10/lockdown.html (Boing Boing, Jan. 10, 2012; retrieved via Internet Archive snapshot Oct. 30, 2026, the live page Cloudflare-gated)
+- Quote (title): "Lockdown: The coming war on general-purpose computing"
 
 ## [@play-integrity-verdicts] Play Integrity device verdict -- locked bootloader + certified image, not malware-freeness
 
@@ -547,6 +552,14 @@ with their reason -- never with an approximate quote.
 - URL: https://support.google.com/googleplay/answer/7165974 (retrieved Oct. 30, 2026)
 - Quote: "Device certification is separate to Google Play Protect, which protects devices from
   harmful apps." / certified devices "Have passed Android compatibility testing."
+
+## [@coker-remote-attestation] Principles of remote attestation -- the general definition
+
+- Paper claim (Sec. 8): remote attestation is in general the activity of making a claim about a
+  target's properties by supplying evidence to an appraiser over a network.
+- URL: https://link.springer.com/article/10.1007/s10207-011-0124-7 (Int. J. Inf. Secur. 2011; abstract; retrieved Oct. 30, 2026)
+- Quote (abstract): "Remote attestation is the activity of making a claim about properties of a
+  target by supplying evidence to an appraiser over a network."
 
 ---
 
@@ -570,7 +583,3 @@ Archive, publisher abstract records). NEVER approximated.
   fetch, researchr.org mirror unreachable, and web.archive.org is blocked for this client this
   pass; abstract not retrieved verbatim. Claim (Sec. 12: baseband stacks carry remotely
   exploitable memory corruptions) rests on the citation (WOOT 2012 best-paper award).
-- [@coker-remote-attestation] Coker et al., Int. J. Inf. Secur. 2011 -- Springer paywalled; DOI
-  10.1007/s10207-011-0124-7 resolves and the dblp record confirms the citation, but full text was
-  not retrieved verbatim. Claim (Sec. 8: remote attestation is the appraisal of a target by
-  supplying evidence to an appraiser over a network) rests on the abstract and the citation.
