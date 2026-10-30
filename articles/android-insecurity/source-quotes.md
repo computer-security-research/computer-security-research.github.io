@@ -630,6 +630,27 @@ with their reason -- never with an approximate quote.
   contrast (PVC) using a focused ion beam" / "show how it can be used to extract significant
   quantities of sensitive data, such as keys for firmware encryption"
 
+## [@opentitan-rom-patch] OpenTitan -- vendor-signed ROM-patch path (boot ROM not always immutable)
+
+- Paper claim (Sec. 12): some SoCs expose a vendor-signed, fuse-gated ROM-patch path, so boot-ROM
+  immutability is a vendor design choice, not a constant; the patch mechanism is vendor-controlled,
+  never owner-controlled.
+- URL: https://opentitan.org/book/hw/top_earlgrey/ip_autogen/rv_core_ibex/doc/boot-rom-patching.html (retrieved Oct. 30, 2026)
+- Quote: "A separate OTP patch partition is defined within the OTP controller map." / "Patch stored
+  in each region is fully signed with an appropriate cryptographic signature algorithm - RSA3072 or
+  ECC384." / "The replacement is performed by re-routing instruction fetches to fetch from
+  alternative addresses."
+
+## [@aosp-device-state] AOSP Device state -- user-settable root of trust (avb_custom_key), Pixel
+
+- Paper claim (Sec. 12): on supported devices (Pixel) the owner can enroll a custom AVB signing
+  key and re-lock to it; the custom root of trust is owner-set, physically confirmed, and held in
+  tamper-evident storage.
+- URL: https://source.android.com/docs/security/features/verifiedboot/device-state (retrieved Oct. 30, 2026)
+- Quote: "Devices can optionally allow the user to configure the root of trust (for example, a
+  public key)." / "The user-settable root of trust can only be set by the end user." / "The Google
+  Pixel 2 devices use this approach and the virtual partition is called avb_custom_key."
+
 ---
 
 ## Remaining references (no online exact text; claim rests on the citation)
