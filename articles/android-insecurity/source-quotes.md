@@ -561,6 +561,44 @@ with their reason -- never with an approximate quote.
 - Quote (abstract): "Remote attestation is the activity of making a claim about properties of a
   target by supplying evidence to an appraiser over a network."
 
+## [@google-triada] Triada -- malware built into OEM system images at manufacture
+
+- Paper claim (Sec. 8): pre-installed vendor code baked into the certified image is attested as
+  approved regardless of behavior; Triada was built into manufacturers' system images during
+  production.
+- URL: https://security.googleblog.com/2019/06/pha-family-highlights-triada.html (Google Online Security Blog, 2019; retrieved Oct. 30, 2026)
+- Quote: "Triada infects device system images through a third-party during the production
+  process." / "Triada was inconspicuously included in the system image as third-party code for
+  additional features requested by the OEMs."
+
+## [@apvi-platform-certs] Android platform certificates leaked, used to sign malware
+
+- Paper claim (Sec. 12): platform signing keys have leaked and been used to sign malware in the
+  wild, so the secret-key assumption behind verified boot can fail in practice.
+- URL: https://bugs.chromium.org/p/apvi/issues/detail?id=100 (Android Partner Vulnerability Initiative, Issue 100, 2022; tracker returned empty on direct fetch, text corroborated via reputable press)
+- Quote: "The 'android' application runs with a highly privileged user id -- android.uid.system --
+  and holds system permissions, including permissions to access user data." / "Any other
+  application signed with the same certificate can declare that it wants to run with the same user
+  id, giving it the same level of access to the Android operating system."
+
+## [@bootstomp] BootStomp -- bootloader vulnerabilities subvert the chain of trust
+
+- Paper claim (Sec. 12): bootloader compromises that would subvert the verified-boot chain of
+  trust have been demonstrated in research.
+- URL: https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/redini (USENIX Security 2017; retrieved Oct. 30, 2026)
+- Quote (abstract): "Some of these vulnerabilities would allow an attacker to execute arbitrary
+  code as part of the bootloader (thus compromising the entire chain of trust)."
+
+## [@shakevsky-trustzone] Samsung TrustZone Keymaster -- hardware key material extracted
+
+- Paper claim (Sec. 12): a trusted-execution-environment compromise can extract the hardware key
+  material underpinning the keystore and attestation (demonstrated on ~100 million Samsung
+  devices, since patched).
+- URL: https://eprint.iacr.org/2022/208 (USENIX Security 2022; IACR ePrint; retrieved Oct. 30, 2026)
+- Quote: "We present an IV reuse attack on AES-GCM that allows an attacker to extract
+  hardware-protected key material" / "our specific attacks only apply to the ~100 million devices
+  made by Samsung."
+
 ---
 
 ## Remaining references (no online exact text; claim rests on the citation)
