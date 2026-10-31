@@ -64,13 +64,19 @@ with their reason -- never with an approximate quote.
   signals on some devices and will now integrate them more deeply on all devices running
   Android 13 or later."
 
-## [@aosp-auto-backup] Auto Backup -- covers only apps that permit it
+## [@aosp-auto-backup] Auto Backup -- OS-mediated, app-configured, size-capped; covers only apps that permit it
 
+- Paper claim (Sec. 5): the backup is mediated by the operating system -- Auto Backup includes
+  only system-assigned app directories, apps include and exclude files, and it is capped per app,
+  so it is partial, not a full device image.
 - Paper claim (Sec. 7): backup is enabled via the manifest; apps that disable it are omitted.
 - URL: https://developer.android.com/identity/data/autobackup (retrieved Oct. 26, 2026)
 - Quote: "Auto Backup for Apps automatically backs up a user's data from apps that target
   and run on Android 6.0 (API level 23) or higher." / "Your app can customize the backup
-  process or opt out by disabling backups."
+  process or opt out by disabling backups." / "By default, Auto Backup includes files in most
+  of the directories that are assigned to your app by the system." / "You can configure your
+  app to include and exclude particular files." / "Every app can allocate up to 25 MB of
+  backup data per app user."
 
 ## [@aosp-file-based-encryption] File-based encryption -- mandatory since Android 10, available since Android 7
 
@@ -703,16 +709,6 @@ with their reason -- never with an approximate quote.
   performed, disabling all cloud backups and device-to-device (D2D) transfers, even by a
   full-system backup that otherwise causes all application data to save using adb. The default
   value of this attribute is \"true\"."
-
-## [@android-auto-backup] Auto Backup -- OS-scoped, app-configured, size-capped (partial)
-
-- Paper claim (Sec. 5): the backup is mediated by the operating system -- Auto Backup includes
-  only system-assigned app directories, apps include and exclude files, and it is capped per app,
-  so it is partial, not a full device image.
-- URL: https://developer.android.com/identity/data/autobackup (retrieved Oct. 31, 2026)
-- Quote: "By default, Auto Backup includes files in most of the directories that are assigned to
-  your app by the system". / "You can configure your app to include and exclude particular
-  files." / "Every app can allocate up to 25 MB of backup data per app user."
 
 ---
 
