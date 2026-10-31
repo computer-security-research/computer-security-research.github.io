@@ -316,6 +316,15 @@ quotes = [
   { text = "\"You can choose to disable microG when setting up the device for the first time.\" / \"The presence of microG, even when disabled, will allow some apps to work that would not otherwise.\"" },
 ]
 
+[calyxos-banking]
+label = "CalyxOS -- banking-app compatibility is app-by-app; full-Play-Services apps (Google Pay) still fail"
+claims = [
+  { section = "Sec. 12", text = "signature spoofing does not make banking/payment apps pass: compatibility depends on the specific app, and apps needing full Play Services integration (e.g. Google Pay) still do not work." },
+]
+quotes = [
+  { text = "\"The experience of using banking or payment apps on CalyxOS depends on the specific apps you use.\" / \"apps that require full integration with Google Play Services for mandatory verifications will still not work, such as Google Pay.\"" },
+]
+
 [eos-microg]
 label = "/e/OS -- ships microG pre-installed; microG passes only Basic, not Device/Strong"
 claims = [
@@ -328,7 +337,7 @@ quotes = [
 [safetynet-fix]
 label = "Universal SafetyNet Fix -- Magisk module that works around SafetyNet / Play Integrity"
 claims = [
-  { section = "Sec. 12", text = "a rooted-device module that works around hardware attestation and SafetyNet / Play Integrity CTS-profile checks (supported through Android 13)." },
+  { section = "Sec. 12", text = "a rooted-device module that works around SafetyNet / Play Integrity CTS-profile checks, supported only through Android 13 and unmaintained since 2023 (GitHub: last push 2023-06-22, archived=false) -- a marker that the software-spoofing path is version-capped and declining." },
 ]
 quotes = [
   { text = "\"Magisk module to work around Google's SafetyNet and Play Integrity attestation.\" / \"This module works around hardware attestation and updates to SafetyNet and Play Integrity CTS profile checks.\" / \"Android versions up to 13 are supported\"." },
