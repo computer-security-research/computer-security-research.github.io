@@ -651,6 +651,49 @@ with their reason -- never with an approximate quote.
   public key)." / "The user-settable root of trust can only be set by the end user." / "The Google
   Pixel 2 devices use this approach and the virtual partition is called avb_custom_key."
 
+## [@nist-hwb-spec] NIST hardware write blocker -- read-only acquisition does not modify evidence
+
+- Paper claim (Sec. 13): a write blocker passes read commands while blocking any that would alter
+  the drive, so disk imaging does not modify the evidence.
+- URL: https://www.nist.gov/itl/ssd/cs/cftt/upload/hwb-posted.pdf (NIST CFTT, Hardware Write Blocker Device Specification; retrieved Oct. 31, 2026)
+- Quote: "The central requirement for a sound forensic examination of digital evidence is that the
+  original evidence must not be modified". / "HWB-RM-01 A HWB shall block modifying commands to a
+  protected storage device."
+
+## [@halderman-coldboot] Cold-boot attack -- DRAM retains contents after power loss
+
+- Paper claim (Sec. 13): RAM can be captured from outside the running OS by exploiting DRAM
+  remanence after a cold reboot.
+- URL: https://www.usenix.org/conference/17th-usenix-security-symposium/lest-we-remember-cold-boot-attacks-encryption-keys (USENIX Security 2008)
+- Quote: "DRAMs used in most modern computers retain their contents for several seconds after power
+  is lost, even at room temperature and even if removed from a motherboard."
+
+## [@markettos-thunderclap] Thunderclap -- DMA peripherals can read all memory; the IOMMU now resists
+
+- Paper claim (Sec. 13): a DMA-capable peripheral can read system memory from outside the OS, but
+  modern platforms increasingly block it with an IOMMU.
+- URL: https://www.ndss-symposium.org/ndss-paper/thunderclap/ (NDSS 2019)
+- Quote: "DMA-enabled I/O peripherals have complete access to the state of a computer and can fully
+  compromise it including reading and writing all of system memory." / "vendors have incorporated
+  support for Input-Output Memory Management Units (IOMMUs), which impose memory protection on DMA".
+
+## [@frisk-pcileech] PCILeech -- PCIe DMA reads target memory with no target driver
+
+- Paper claim (Sec. 13): DMA over an expansion bus can capture RAM with no software on the target.
+- URL: https://github.com/ufrisk/PCILeech (retrieved Oct. 31, 2026)
+- Quote: "PCILeech uses PCIe hardware devices to read and write target system memory. This is
+  achieved by using DMA over PCIe. No drivers are needed on the target system." (Caveat, same
+  source: "Recent Windows and Linux versions block DMA by default.")
+
+## [@muller-frost-coldboot] FROST -- on Android, cold boot first needs unlock, which wipes user data
+
+- Paper claim (Sec. 13): the demonstrated on-device cold-boot variant on Android first required
+  unlocking the bootloader, which wipes the user data it sought to recover.
+- URL: https://www.cs1.tf.fau.de/frost (FROST, ACNS 2013; doi 10.1007/978-3-642-38980-1_23)
+- Quote: "the bootloader must be unlocked before the attack because scrambled user partitions are
+  wiped during unlocking". / "Cooling the device down under 10 degree Celsius increases the success
+  of cold boot attacks considerably".
+
 ---
 
 ## Remaining references (no online exact text; claim rests on the citation)
