@@ -196,9 +196,12 @@
 
 ## [@magisk-install] Magisk -- systemless root needs an unlocked bootloader; patches the ramdisk, not /system
 
-- Paper claim (Sec. 8): modern rooting is systemless, patching the boot image's ramdisk
-  rather than /system, and still requires an unlocked bootloader, so it still forfeits the
-  verified-boot state and hardware-backed verdicts.
+- Paper claim (Sec. 8): modern rooting is systemless, patching the partition image that holds
+  the ramdisk (and the init it carries) rather than /system, and still requires an unlocked
+  bootloader to reflash that image, so it still forfeits the verified-boot state and
+  hardware-backed verdicts. (Which partition holds the ramdisk varies by device -- boot,
+  init_boot on Android 13+, or vendor_boot/recovery -- but it is never /system; the Magisk
+  docs phrase it as "the partition image that contains the ramdisk".)
 - URL: https://topjohnwu.github.io/Magisk/install.html (retrieved Oct. 31, 2026)
 - Quote: "Your device's bootloader has to be unlocked" / "you need to patch the partition
   image that contains the ramdisk".
