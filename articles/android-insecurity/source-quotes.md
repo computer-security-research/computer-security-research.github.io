@@ -694,6 +694,26 @@ with their reason -- never with an approximate quote.
   wiped during unlocking". / "Cooling the device down under 10 degree Celsius increases the success
   of cold boot attacks considerably".
 
+## [@android-allowbackup] android:allowBackup -- an app can exclude its data from any backup
+
+- Paper claim (Sec. 5): a "full backup" on a non-rooted device is partial and mediated by
+  individual applications, which can opt their data out via the android:allowBackup flag.
+- URL: https://developer.android.com/guide/topics/manifest/application-element (retrieved Oct. 31, 2026)
+- Quote: "If this attribute is set to \"false\", no backup or restore of the application is ever
+  performed, disabling all cloud backups and device-to-device (D2D) transfers, even by a
+  full-system backup that otherwise causes all application data to save using adb. The default
+  value of this attribute is \"true\"."
+
+## [@android-auto-backup] Auto Backup -- OS-scoped, app-configured, size-capped (partial)
+
+- Paper claim (Sec. 5): the backup is mediated by the operating system -- Auto Backup includes
+  only system-assigned app directories, apps include and exclude files, and it is capped per app,
+  so it is partial, not a full device image.
+- URL: https://developer.android.com/identity/data/autobackup (retrieved Oct. 31, 2026)
+- Quote: "By default, Auto Backup includes files in most of the directories that are assigned to
+  your app by the system". / "You can configure your app to include and exclude particular
+  files." / "Every app can allocate up to 25 MB of backup data per app user."
+
 ---
 
 ## Remaining references (no online exact text; claim rests on the citation)
