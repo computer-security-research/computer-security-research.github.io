@@ -103,9 +103,9 @@ quotes = [
 ]
 
 [grapheneos-attestation-compat]
-label = "GrapheneOS -- apps ban it; strong tier == hardware key attestation; no spoofing"
+label = "GrapheneOS -- apps ban it; strong tier == hardware key attestation"
 claims = [
-  { section = "Sec. 8, 12", text = "owner-controlled configs fail device/strong verdicts; a catalog of apps refuse to run; projects will not spoof attestation." },
+  { section = "Sec. 8, 12", text = "owner-controlled configs fail device/strong verdicts; a catalog of apps refuse to run. (The no-spoofing stance is GrapheneOS-specific -- see [grapheneos-usage]; it does not hold for all aftermarket projects, since CalyxOS and /e/OS ship microG, which signature-spoofs.)" },
 ]
 quotes = [
   { text = "\"Play Integrity API strong integrity level is directly based on the hardware key attestation API, but apps using it directly can support aftermarket operating systems...\" / \"This is a list of the apps banning GrapheneOS with the Play Integrity API...\"" },
@@ -289,13 +289,58 @@ quotes = [
 ]
 
 [playintegrityfork]
-label = "Play Integrity Fork -- a masking module's own admission it cannot forge the hardware-backed verdict"
+label = "Play Integrity Fork -- pre-13 device verdict is build-field-spoofable; A13+ device/strong need hardware key material"
 claims = [
-  { section = "Sec. 8", text = "integrity-masking modules spoof software-visible signals and pass only the basic/lock-agnostic verdict; the hardware-backed device and strong verdicts yield only to a leaked, unrevoked hardware keybox, not to spoofing." },
+  { section = "Sec. 8, 12", text = "integrity-masking modules spoof software-visible signals. On Android <13 they can pass the device-integrity verdict (the weaker ctsProfileMatch successor) by rewriting android.os.Build fields and properties, with NO keybox. The hardware-backed A13+ device verdict (locked-bootloader-anchored) and the strong verdict yield only to genuine certified hardware or a leaked, unrevoked hardware keybox, not to software spoofing." },
 ]
 quotes = [
-  { text = "\"relies on locked bootloader checks to pass even DEVICE integrity\" / \"you can't use values from recent devices due to them only being allowed with full hardware backed attestation\"." },
-  { text = "\"Using Tricky Store to achieve <A13 PI STRONG integrity (with an unrevoked hardware keybox.xml)\".", label = "Supporting" },
+  { text = "\"A Zygisk module which fixes \\\"MEETS_DEVICE_INTEGRITY\\\" for the Android <13 \\\"deviceRecognitionVerdict\\\" of the Play Integrity API.\" / \"you can include as few or as many android.os.Build class fields and Android system properties as needed to pass DEVICE integrity\"." },
+  { text = "\"the Android 13+ Play Integrity \\\"deviceRecognitionVerdict\\\" ... relies on locked bootloader checks to pass even DEVICE integrity\" / \"you can't use values from recent devices due to them only being allowed with full hardware backed attestation\" / \"Using Tricky Store to achieve <A13 PI STRONG integrity (with an unrevoked hardware keybox.xml)\".", label = "A13+/strong boundary" },
+]
+
+[microg-gmscore]
+label = "microG -- reimplements Play Services; depends on signature spoofing to impersonate them"
+claims = [
+  { section = "Sec. 12", text = "microG is a free reimplementation of Google Play Services that requires signature spoofing so it can present itself as the official Play Services to apps calling Google APIs." },
+]
+quotes = [
+  { text = "\"Your Android system needs to support signature spoofing so GmsCore can pretend the existence of the official Play Services to applications calling Google APIs.\"" },
+]
+
+[calyxos-microg]
+label = "CalyxOS -- bundles microG"
+claims = [
+  { section = "Sec. 12", text = "CalyxOS ships microG built in (and thus relies on signature spoofing)." },
+]
+quotes = [
+  { text = "\"You can choose to disable microG when setting up the device for the first time.\" / \"The presence of microG, even when disabled, will allow some apps to work that would not otherwise.\"" },
+]
+
+[eos-microg]
+label = "/e/OS -- ships microG pre-installed; microG passes only Basic, not Device/Strong"
+claims = [
+  { section = "Sec. 12", text = "/e/OS ships microG pre-installed; it passes only the Basic integrity verdict, while Device and Strong require certified hardware -- corroborating the A13+ hardware-backed boundary." },
+]
+quotes = [
+  { text = "\"/e/OS ships microG pre-installed and pre-configured\" / \"On /e/OS, microG can pass the Basic verdict; the Device and Strong verdicts require certified hardware and are out of reach.\" (source uses Unicode em dash / curly apostrophe; normalized to ASCII here)" },
+]
+
+[safetynet-fix]
+label = "Universal SafetyNet Fix -- Magisk module that works around SafetyNet / Play Integrity"
+claims = [
+  { section = "Sec. 12", text = "a rooted-device module that works around hardware attestation and SafetyNet / Play Integrity CTS-profile checks (supported through Android 13)." },
+]
+quotes = [
+  { text = "\"Magisk module to work around Google's SafetyNet and Play Integrity attestation.\" / \"This module works around hardware attestation and updates to SafetyNet and Play Integrity CTS profile checks.\" / \"Android versions up to 13 are supported\"." },
+]
+
+[tricky-store]
+label = "Tricky Store -- keystore trick; keybox provider for device/strong verdicts"
+claims = [
+  { section = "Sec. 12", text = "a keystore-hooking module (Android 12+); with an unrevoked hardware keybox.xml it reaches beyond device integrity -- the keybox-provider path the paper describes." },
+]
+quotes = [
+  { text = "\"A trick of keystore. Android 12 or above is required.\" / \"For more than DEVICE integrity, put an unrevoked hardware keybox.xml at /data/adb/tricky_store/keybox.xml (Optional).\" / \"Tricky Store will hack the leaf certificate by default.\"" },
 ]
 
 [amnesty-pegasus-methodology]
