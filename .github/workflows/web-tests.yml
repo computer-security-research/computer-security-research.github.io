@@ -10,9 +10,9 @@ name: web-tests
 
 "on":
   push:
-    branches: [master, main, ai]
+    branches: [master, main]
   pull_request:
-    branches: [master, main, ai]
+    branches: [master, main]
   workflow_dispatch:
 
 permissions:
