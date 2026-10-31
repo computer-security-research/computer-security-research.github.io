@@ -168,10 +168,13 @@ with their reason -- never with an approximate quote.
 
 ## [@nist-sp800-101r1] NIST SP 800-101r1 -- sound acquisition; chip-off is specialized/destructive
 
-- Paper claim (Secs. 7, 9, 13): official guidance on sound acquisition and evidence
-  preservation; a suspect device should not be relied on to examine itself.
-- Paper claim (Sec. 7): chip-level extraction of soldered storage is specialized and
-  destructive, beyond most owners.
+- Paper claim (Sec. 7): inspect acquired data on a separate, known-clean computer; sound
+  acquisition and evidence preservation.
+- Paper claim (Sec. 9): encryption and file-based access controls pose challenges to data
+  acquisition.
+- Paper claim (Sec. 13): a write blocker preserves source integrity during acquisition.
+- Paper claim (Sec. 7): chip-level extraction (physical removal of flash memory) is
+  specialized and destructive, beyond most owners.
 - URL: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-101r1.pdf
   (doi: 10.6028/NIST.SP.800-101r1; retrieved Oct. 27, 2026; chip-off quote retrieved Oct. 31, 2026)
 - Quote: "its ability to maintain the integrity of the original data source being acquired
@@ -184,8 +187,8 @@ with their reason -- never with an approximate quote.
 
 ## [@rfc3227] RFC 3227 -- do not trust the suspect system's own programs
 
-- Paper claim (Sec. 7): a device suspected of compromise cannot be relied upon to examine
-  itself; evidence gathering should run from trusted media outside the suspect system.
+- Paper claim (Sec. 7): a device suspected of compromise should not be relied upon to examine
+  itself using its own programs; run evidence-gathering tools from trusted, protected media.
 - URL: https://www.rfc-editor.org/rfc/rfc3227.txt
   (IETF BCP 55 / RFC 3227, Feb. 2002; doi: 10.17487/RFC3227; retrieved Oct. 31, 2026)
 - Quote (Sec. 2.2): "Don't trust the programs on the system. Run your evidence gathering
@@ -195,14 +198,13 @@ with their reason -- never with an approximate quote.
 
 ## [@mayrhofer-android-security-model] Android Platform Security Model -- per-app UID sandbox
 
-- Paper claim (Secs. 5, 7): each app gets a distinct kernel-level UID and a private data
-  directory other apps cannot read; system areas and other apps' files are inaccessible
-  without root or unlock.
-- URL: https://arxiv.org/abs/1904.05572 (arXiv:1904.05572v3, author preprint of the ACM TOPS
-  2021 paper; retrieved Oct. 31, 2026)
-- Quote (Sec. 4.3.3): "providing each application with a unique UID and a directory owned by
-  the app."
-- Supporting quote (Sec. 4.3): "With very few exceptions, the UID/process boundary is where
+- Paper claim (Secs. 5, 7): each app gets a distinct UNIX UID and a private directory owned by
+  the app, so other apps cannot read it (the DAC application sandbox).
+- URL: https://arxiv.org/abs/1904.05572v2 (arXiv:1904.05572v2, 14 Dec 2020; the 4-author
+  preprint matching the cited 2021 ACM TOPS paper; retrieved Oct. 31, 2026)
+- Quote (Sec. 4.3.2): "providing each application with a unique UNIX user ID (UID) and a
+  directory owned by the app."
+- Supporting quote (Sec. 4.3): "With very few exceptions, the process boundary is where
   security decisions are made and enforced."
 
 ## [@amnesty-pegasus-methodology] Amnesty International -- fewer forensic traces on Android than iOS
