@@ -225,6 +225,15 @@ quotes = [
   { text = "\"Your device's bootloader has to be unlocked\" / \"you need to patch the partition image that contains the ramdisk\"." },
 ]
 
+[magisk-details]
+label = "Magisk -- patched init runs first and shapes the SELinux policy it then runs under"
+claims = [
+  { section = "Sec. 8", text = "modern root is control of init: the patched init runs before the kernel loads the SELinux policy, so the installer authors the policy its own daemon runs under (an unconstrained, permissive domain) rather than being confined by it -- an administrative-tier initramfs modification, not an enlargement of in-system root." },
+]
+quotes = [
+  { text = "\"magiskinit replaces init as the first program to run.\" / \"Sets LD_PRELOAD (init-ld) on init to hook security_load_policy\" / \"An unconstrained, permissive domain that magiskd and all root shells run in.\"" },
+]
+
 [playintegrityfork]
 label = "Play Integrity Fork -- a masking module's own admission it cannot forge the hardware-backed verdict"
 claims = [
