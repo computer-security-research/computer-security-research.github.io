@@ -207,6 +207,15 @@ with their reason -- never with an approximate quote.
 - Supporting quote (Sec. 4.3): "With very few exceptions, the process boundary is where
   security decisions are made and enforced."
 
+## [@magisk-install] Magisk -- systemless root needs an unlocked bootloader; patches the ramdisk, not /system
+
+- Paper claim (Sec. 8): modern rooting is systemless, patching the boot image's ramdisk
+  rather than /system, and still requires an unlocked bootloader, so it still forfeits the
+  verified-boot state and hardware-backed verdicts.
+- URL: https://topjohnwu.github.io/Magisk/install.html (retrieved Oct. 31, 2026)
+- Quote: "Your device's bootloader has to be unlocked" / "you need to patch the partition
+  image that contains the ramdisk".
+
 ## [@amnesty-pegasus-methodology] Amnesty International -- fewer forensic traces on Android than iOS
 
 - Paper claim (Sec. 10): significantly more forensic traces are accessible on iOS than stock
@@ -580,6 +589,11 @@ with their reason -- never with an approximate quote.
 - Quote (MEETS_DEVICE_INTEGRITY): "The app is running on a genuine and certified Android device. On
   Android 13 and higher, there is hardware-backed proof that the device bootloader is locked and
   the loaded Android OS is a certified device manufacturer image."
+- Quote (MEETS_BASIC_INTEGRITY): "The device bootloader can be locked or unlocked, and the
+  boot state can be verified or unverified."
+- Quote (MEETS_STRONG_INTEGRITY): "On Android 13 and higher, the MEETS_STRONG_INTEGRITY
+  verdict requires MEETS_DEVICE_INTEGRITY and security updates in the last year for all
+  partitions of the device..."
 
 ## [@play-protect-certification] Play Protect certification -- user-facing status, separate from malware protection
 
