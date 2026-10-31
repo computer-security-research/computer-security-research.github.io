@@ -1,4 +1,4 @@
-# Source quotes -- structured reviewer-aid sidecar (see csr-rules).
+# Source quotes -- structured reviewer-aid sidecar.
 # Keyed by @citekey; attribution (author, venue, title, url, retrieved)
 # is pulled from refs.bib by journal-maker. Quotes are verbatim.
 
@@ -228,16 +228,25 @@ quotes = [
 [magisk-details]
 label = "Magisk -- patched init runs first and shapes the SELinux policy it then runs under"
 claims = [
-  { section = "Sec. 8", text = "modern root is control of init: the patched init runs before the kernel loads the SELinux policy, so the installer authors the policy its own daemon runs under (an unconstrained, permissive domain) rather than being confined by it -- an administrative-tier initramfs modification, not an enlargement of in-system root." },
+  { section = "Sec. 8", text = "modern root is control of init: the patched init runs before the SELinux policy is loaded (init loads it in userspace via security_load_policy, which magiskinit LD_PRELOAD-hooks), so the installer authors the policy its own daemon runs under (an unconstrained, permissive domain) rather than being confined by it -- an administrative-tier initramfs modification, not an enlargement of in-system root." },
 ]
 quotes = [
   { text = "\"magiskinit replaces init as the first program to run.\" / \"Sets LD_PRELOAD (init-ld) on init to hook security_load_policy\" / \"An unconstrained, permissive domain that magiskd and all root shells run in.\"" },
 ]
 
+[magisk-ota]
+label = "Magisk OTA -- leaving read-only partitions intact keeps OTAs applicable; root re-applied after"
+claims = [
+  { section = "Sec. 8", text = "leaving /system byte-identical keeps official OTAs applicable (not blocked as a modified /system would be); an OTA overwrites boot/init_boot, so root does not survive it automatically -- Magisk is restored to stock before the OTA and re-installed to the updated slot after." },
+]
+quotes = [
+  { text = "\"Magisk does not modify read-only partitions by default, which makes applying official OTAs much simpler.\" / \"When an OTA is available, first go to (Magisk app -> Uninstall -> Restore Images).\" / \"Go to the Magisk app and select (Install -> Install to Inactive Slot (After OTA)) to install Magisk to the updated slot.\"" },
+]
+
 [aosp-partitions]
 label = "AOSP -- the ramdisk lives in boot (<=A12) or the init_boot partition (A13+)"
 claims = [
-  { section = "Sec. 8", text = "the partition that holds the ramdisk Magisk patches is named: the boot partition on devices launched with Android 12 or lower, and the dedicated init_boot partition on devices launched with Android 13 or later." },
+  { section = "Sec. 8", text = "the partition that holds the ramdisk Magisk patches is named: the boot partition on devices launched with Android 12 or lower, and the dedicated init_boot partition on devices launched with Android 13 or later. (Not exhaustive: some devices use vendor_boot, and devices with no boot ramdisk are patched in recovery; it is never /system.)" },
 ]
 quotes = [
   { text = "\"This partition also contains the generic ramdisk in devices launched in Android 12 and lower.\" (boot) / \"This partition contains a generic ramdisk. In Android 11 and 12, the generic ramdisk is in the boot partition.\" (init_boot)" },
@@ -246,10 +255,28 @@ quotes = [
 [aosp-dm-verity]
 label = "AOSP dm-verity -- editing /system fails verification (why systemless)"
 claims = [
-  { section = "Sec. 8", text = "any edit to the verified /system partition would fail dm-verity and halt verified boot, which is why modern rooting leaves /system untouched and patches the boot/init_boot ramdisk instead." },
+  { section = "Sec. 8", text = "dm-verity is the integrity mechanism protecting /system (a hashtree); verified boot covers /system and boot/init_boot alike, so neither is editable on a locked device. dm-verity plus read-only EROFS/super make /system a harder, read-only target than the single flashable boot image -- a secondary reason the method patches boot, not because boot is unprotected." },
 ]
 quotes = [
   { text = "\"The ability to modify any of the blocks would be equivalent to breaking the cryptographic hash.\" / \"If verification fails, the device generates an I/O error indicating the block can't be read.\" / \"It appears as if the filesystem has been corrupted, as is expected.\"" },
+]
+
+[aosp-hal]
+label = "AOSP HAL -- hardware-specific code is vendor-implemented in the vendor partition"
+claims = [
+  { section = "Sec. 12", text = "working hardware is reached through vendor-implemented HALs, so an owner-built kernel cannot drive the device without the vendor's own hardware code." },
+]
+quotes = [
+  { text = "\"A hardware abstraction layer (HAL) is type of abstraction layer with a standard interface for hardware vendors to implement.\" / \"You must implement all required HALs listed in the compatibility matrix for the release you target in your vendor partition.\" / \"The hardware-specific code, such as the code that talks to your specific device's camera.\"" },
+]
+
+[aosp-gki]
+label = "AOSP GKI -- hardware support lives in loadable vendor modules, not the generic kernel"
+claims = [
+  { section = "Sec. 12", text = "the generic kernel contains no SoC/board code; hardware enablement is in loadable vendor modules bound through the KMI, so a vendor-free kernel cannot drive the device." },
+]
+quotes = [
+  { text = "\"moving SoC and board support out of the core kernel into loadable vendor modules\" / \"The GKI kernel doesn't contain SoC-specific or board-specific code.\" / \"GKI also presents a stable Kernel Module Interface (KMI) for vendor modules\"" },
 ]
 
 [playintegrityfork]
