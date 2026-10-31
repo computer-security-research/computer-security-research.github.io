@@ -234,6 +234,24 @@ quotes = [
   { text = "\"magiskinit replaces init as the first program to run.\" / \"Sets LD_PRELOAD (init-ld) on init to hook security_load_policy\" / \"An unconstrained, permissive domain that magiskd and all root shells run in.\"" },
 ]
 
+[aosp-partitions]
+label = "AOSP -- the ramdisk lives in boot (<=A12) or the init_boot partition (A13+)"
+claims = [
+  { section = "Sec. 8", text = "the partition that holds the ramdisk Magisk patches is named: the boot partition on devices launched with Android 12 or lower, and the dedicated init_boot partition on devices launched with Android 13 or later." },
+]
+quotes = [
+  { text = "\"This partition also contains the generic ramdisk in devices launched in Android 12 and lower.\" (boot) / \"This partition contains a generic ramdisk. In Android 11 and 12, the generic ramdisk is in the boot partition.\" (init_boot)" },
+]
+
+[aosp-dm-verity]
+label = "AOSP dm-verity -- editing /system fails verification (why systemless)"
+claims = [
+  { section = "Sec. 8", text = "any edit to the verified /system partition would fail dm-verity and halt verified boot, which is why modern rooting leaves /system untouched and patches the boot/init_boot ramdisk instead." },
+]
+quotes = [
+  { text = "\"The ability to modify any of the blocks would be equivalent to breaking the cryptographic hash.\" / \"If verification fails, the device generates an I/O error indicating the block can't be read.\" / \"It appears as if the filesystem has been corrupted, as is expected.\"" },
+]
+
 [playintegrityfork]
 label = "Play Integrity Fork -- a masking module's own admission it cannot forge the hardware-backed verdict"
 claims = [
