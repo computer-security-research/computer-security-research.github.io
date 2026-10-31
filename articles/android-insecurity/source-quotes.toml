@@ -129,6 +129,15 @@ quotes = [
   { text = "\"The Auditor app uses hardware-based security features to validate the identity of a device, along with the authenticity and integrity of the operating system. It ensures the device is running a verified operating system with a locked bootloader and that no tampering has occurred.\" / \"Any device with Android 13 or higher can run the Auditor app and use it to verify other devices. However, only devices launched with Android 8.0 or later have the necessary hardware support for being verified.\"" },
 ]
 
+[grapheneos-usage]
+label = "GrapheneOS -- stated position: will not spoof/bypass attestation checks"
+claims = [
+  { section = "Sec. 12", text = "GrapheneOS's stated position is that it will not spoof or circumvent attestation/integrity checks to impersonate a stock device. (Narrowed from a broader claim: CalyxOS and /e/OS ship microG, which uses signature spoofing, so a no-spoofing stance does not hold for all aftermarket projects; LineageOS also states a no-circumvention position but was not independently re-verified this pass.)" },
+]
+quotes = [
+  { text = "\"GrapheneOS doesn't attempt to bypass the checks since it would be very fragile and would repeatedly break as the checks are improved.\"" },
+]
+
 [grapheneos-install-locking]
 label = "GrapheneOS -- re-locking anchors verified boot to GrapheneOS's own key"
 claims = [
