@@ -1,10 +1,10 @@
 # AI-Assisted.
-# Playwright browser lanes for the generated site, in PARALLEL jobs. Each builds
-# HTML only (--skip-pdf: these lanes need no PDF) so NO texlive is installed --
-# fast and reliable. The browser-free webcheck lanes (check_site + svg) and the
-# full PDF build live in build-and-check.yml (the single texlive job). The heavier
-# lanes (lint/vnu/lighthouse/axe) are Qubes-sandbox-delegated and run host-driven
-# via `website-tests` -- see the csr skill.
+# Playwright browser lanes (mobile-overflow + width-utilization) for the
+# COMMITTED _site. The site is built locally in the sandbox (bin/csr-build) and
+# committed, so these lanes need NO build and NO journal-maker/texlive -- they
+# run the guards straight against the committed tree. The browser-free webcheck
+# lanes (check_site + svg) live in build.yml; the heavier lint/vnu/lighthouse/axe
+# lanes are Qubes-sandbox-delegated via `website-tests` -- see the csr skill.
 
 name: web-tests
 
@@ -31,29 +31,14 @@ jobs:
       - name: Check out content
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with: { path: content, persist-credentials: false }
-      - name: Check out journal-maker
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          repository: org-ai-assisted/journal-maker
-          path: journal-maker
-          persist-credentials: false
       - name: Check out dist-ai
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: org-ai-assisted/dist-ai
           path: dist-ai
           persist-credentials: false
-      - name: Install build dependencies
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends pandoc librsvg2-bin citation-style-language-styles
-      - name: Build site (HTML only)
-        run: |
-          journal-maker/usr/bin/journal-maker build \
-            --articles content/articles --journal content/site.toml \
-            --out _site --skip-pdf
       - name: Mobile-overflow guard
-        run: ./dist-ai/ci/website-mobile-check.sh "${GITHUB_WORKSPACE}/_site"
+        run: ./dist-ai/ci/website-mobile-check.sh "${GITHUB_WORKSPACE}/content/_site"
 
   width:
     if: vars.CI_ENABLED_ORG_AI_ASSISTED == 'true'
@@ -63,26 +48,11 @@ jobs:
       - name: Check out content
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with: { path: content, persist-credentials: false }
-      - name: Check out journal-maker
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          repository: org-ai-assisted/journal-maker
-          path: journal-maker
-          persist-credentials: false
       - name: Check out dist-ai
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: org-ai-assisted/dist-ai
           path: dist-ai
           persist-credentials: false
-      - name: Install build dependencies
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends pandoc librsvg2-bin citation-style-language-styles
-      - name: Build site (HTML only)
-        run: |
-          journal-maker/usr/bin/journal-maker build \
-            --articles content/articles --journal content/site.toml \
-            --out _site --skip-pdf
       - name: Width-utilization guard
-        run: ./dist-ai/ci/website-width-check.sh "${GITHUB_WORKSPACE}/_site"
+        run: ./dist-ai/ci/website-width-check.sh "${GITHUB_WORKSPACE}/content/_site"

@@ -1,11 +1,9 @@
 name: build-and-check
 
-# Fail-closed gate: build the site (with PDF) once, then run every check that
-# needs that built tree -- journal-maker's own Scholar/PDF/supply-chain check
-# PLUS the browser-free dist-ai webcheck lanes (check_site consistency + svg
-# safety). This is the ONLY job that installs texlive, so the PDF build is never
-# duplicated; the Playwright mobile/width lanes live in web-tests.yml (no texlive).
-# (VirusTotal of assets is a separate operator-run pre-publish gate.)
+# Verify the COMMITTED _site (built locally in the sandbox via bin/csr-build and
+# committed as text). CI does NOT regenerate the HTML; it only renders the
+# gitignored PDFs (journal-maker --pdf-only) so the PDF/Scholar gate can run, then
+# checks the committed tree. The browser mobile/width lanes live in web-tests.yml.
 
 "on":
   push:
@@ -22,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-check:
+  check:
     if: vars.CI_ENABLED_ORG_AI_ASSISTED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -47,29 +45,27 @@ jobs:
           path: dist-ai
           persist-credentials: false
 
-      - name: Install build + check dependencies
+      - name: Install check dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
             pandoc texlive-latex-recommended texlive-fonts-recommended lmodern \
-            poppler-utils qpdf librsvg2-bin citation-style-language-styles \
+            poppler-utils qpdf citation-style-language-styles \
             python3-bs4 python3-html5lib python3-pil python3-yaml python3-defusedxml
 
-      - name: Tool selftest
-        run: journal-maker/usr/bin/journal-maker selftest
-
-      - name: Build site (full, with PDF)
+      - name: Render PDFs into the committed site (no HTML rebuild)
         run: |
           journal-maker/usr/bin/journal-maker build \
             --articles content/articles \
             --journal content/site.toml \
-            --out _site
+            --out content/_site \
+            --pdf-only
 
       - name: Scholar / PDF / security check
-        run: journal-maker/usr/bin/journal-maker check _site
+        run: journal-maker/usr/bin/journal-maker check content/_site
 
       - name: Static consistency (check_site)
-        run: ./dist-ai/usr/share/website-tests/check_site.py "${GITHUB_WORKSPACE}/_site"
+        run: ./dist-ai/usr/share/website-tests/check_site.py "${GITHUB_WORKSPACE}/content/_site"
 
       - name: SVG active-content safety
-        run: ./dist-ai/usr/share/website-tests/check_svg_safety.py "${GITHUB_WORKSPACE}/_site"
+        run: ./dist-ai/usr/share/website-tests/check_svg_safety.py "${GITHUB_WORKSPACE}/content/_site"

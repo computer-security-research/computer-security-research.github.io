@@ -1,10 +1,12 @@
 name: pages-deploy
 
-# Deploy the journal to GitHub Pages in the computer-security-research org.
-# Gated to that org so the SAME file is harmless in the org-ai-assisted CI
-# mirror (it never runs there). Builds WITHOUT --publish, so the site stays
-# non-indexable (robots Disallow + per-page noindex) until a deliberate
-# go-live. Source stays as Markdown on master; nothing built is committed.
+# Deploy the previews site to GitHub Pages in the computer-security-research org.
+# Gated to that org so the SAME file is harmless in the org-ai-assisted CI mirror
+# (it never runs there). The site is BUILT LOCALLY in the sandbox (bin/csr-build)
+# and the rendered _site (HTML + .tex + assets) is COMMITTED -- CI does NOT
+# generate the HTML. Only the binary PDFs are gitignored and rendered here at
+# deploy (journal-maker --pdf-only) into the committed tree. The committed build
+# is non-indexable (robots Disallow + per-page noindex meta) until a go-live.
 
 "on":
   push:
@@ -21,7 +23,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-deploy:
+  deploy:
     # Owner-gated AND master-only: a manual workflow_dispatch can name any ref,
     # so without the ref guard a dispatch from a branch could deploy that
     # branch's content to the live site.
@@ -47,26 +49,23 @@ jobs:
           path: journal-maker
           persist-credentials: false
 
-      - name: Install build dependencies
+      - name: Install PDF dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            pandoc texlive-xetex texlive-latex-recommended \
-            texlive-fonts-recommended lmodern poppler-utils qpdf librsvg2-bin \
-            citation-style-language-styles
+            pandoc texlive-latex-recommended texlive-fonts-recommended lmodern \
+            poppler-utils qpdf citation-style-language-styles
 
-      - name: Tool selftest
-        run: journal-maker/usr/bin/journal-maker selftest
-
-      - name: Build site (non-indexable -- no --publish)
+      - name: Render PDFs into the committed site (no HTML rebuild)
         run: |
           journal-maker/usr/bin/journal-maker build \
             --articles content/articles \
             --journal content/site.toml \
-            --out _site
+            --out content/_site \
+            --pdf-only
 
       - name: Scholar / PDF / security check
-        run: journal-maker/usr/bin/journal-maker check _site
+        run: journal-maker/usr/bin/journal-maker check content/_site
 
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
@@ -74,7 +73,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
-          path: _site
+          path: content/_site
 
       - name: Deploy to GitHub Pages
         id: deploy

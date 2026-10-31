@@ -1,0 +1,6 @@
+# _site is GENERATED output (built in the sandbox by bin/csr-build), committed
+# verbatim for deploy. Mark it linguist-generated so the dist-ai-style gate skips
+# its STYLE/format rules (it would otherwise rewrite the rendered HTML and drift
+# from the generator's output); the secret / large-file / structural checks still
+# apply. GitHub also collapses it in diffs and excludes it from language stats.
+_site/** linguist-generated

@@ -1,0 +1,107 @@
+#!/bin/bash
+
+## Copyright (C) 2026 - 2026 ENCRYPTED SUPPORT LLC <adrelanos@kicksecure.com>
+## See the file COPYING for copying conditions.
+
+## AI-Assisted
+
+## csr-build: build the Computer Security Research previews site in the sandbox
+## qube (where pandoc + texlive live) and pull the rendered _site back here, then
+## commit + push it. The deployed HTML/.tex are built HERE, not in GitHub CI; the
+## binary PDF is gitignored and rendered at deploy time (journal-maker --pdf-only).
+##
+## Run from this VM; no host pandoc needed. The source of truth stays paper.md +
+## refs.bib + site.toml; running csr-build is how a change gets published.
+##
+## Usage: bin/csr-build [--no-commit]
+##   --no-commit   build + pull _site only; do not commit or push.
+##
+## Env overrides:
+##   CSR_SANDBOX_TARGET   sandbox qube (default: temp-claude)
+##   CSR_JOURNAL_MAKER    journal-maker checkout (default: sibling of this repo)
+
+set -o errexit
+set -o nounset
+set -o pipefail
+set -o errtrace
+shopt -s inherit_errexit
+shopt -s shift_verbose
+export LC_ALL=C
+
+target="${CSR_SANDBOX_TARGET:-temp-claude}"
+
+script_dir="$(dirname -- "$(readlink --canonicalize -- "$0")")"
+content_dir="$(dirname -- "${script_dir}")"
+journal_maker="${CSR_JOURNAL_MAKER:-$(dirname -- "${content_dir}")/journal-maker}"
+
+do_commit=1
+if [ "${1:-}" = "--no-commit" ]; then
+   do_commit=0
+elif [ "$#" -gt 0 ]; then
+   printf '%s\n' "csr-build: unknown argument: ${1}" >&2
+   exit 1
+fi
+
+if [ ! -f "${content_dir}/site.toml" ]; then
+   printf '%s\n' "csr-build: ${content_dir} is not a CSR content repo (no site.toml)" >&2
+   exit 1
+fi
+if [ ! -x "${journal_maker}/usr/bin/journal-maker" ]; then
+   printf '%s\n' "csr-build: journal-maker not found at ${journal_maker} (set CSR_JOURNAL_MAKER)" >&2
+   exit 1
+fi
+
+## Build into a staging dir OUTSIDE the content tree: the sandbox refuses to
+## --pull a path nested inside a --sync'd tree, and round-tripping the whole
+## content tree would risk clobbering a sibling session's in-progress source
+## edits. So the generator + content go IN read-only, the site builds into the
+## staging tree, and ONLY that tree is pulled back -- host sources are never
+## written. Both $SANDBOX_SYNC_* paths are the sandbox-side session locations the
+## run exposes for the --sync/--pull trees.
+staging="${HOME}/.cache/csr-build-site"
+
+printf '%s\n' "csr-build: building _site in sandbox ${target} ..."
+
+# shellcheck disable=SC2016
+sandbox --target "${target}" run --pid-scope private \
+   --sync "${journal_maker}" \
+   --sync "${content_dir}" \
+   --pull "${staging}" \
+   --workdir "${content_dir}" \
+   -- bash -c 'exec "${SANDBOX_SYNC_JOURNAL_MAKER}"/usr/bin/journal-maker build --articles articles --journal site.toml --out "${SANDBOX_SYNC_CSR_BUILD_SITE}"'
+
+if [ ! -f "${staging}/index.html" ]; then
+   printf '%s\n' "csr-build: index.html missing in staging after build (pull failed?)" >&2
+   exit 1
+fi
+
+## Mirror the freshly built tree into the committed _site. Source is the staging
+## dir (NOT a canonical checkout), so this does not copy a checkout out.
+rsync --archive --delete -- "${staging}/" "${content_dir}/_site/"
+printf '%s\n' "csr-build: built and mirrored into _site."
+
+if [ "${do_commit}" -eq 0 ]; then
+   printf '%s\n' "csr-build: --no-commit; leaving _site uncommitted."
+   exit 0
+fi
+
+cd -- "${content_dir}"
+git add -- _site
+if git diff --cached --quiet -- _site; then
+   printf '%s\n' "csr-build: _site unchanged; nothing to commit."
+   exit 0
+fi
+
+## Commit the generated tree by EXPLICIT file paths: the shared-index commit
+## guard refuses a directory pathspec (it would sweep a sibling session's staged
+## files). _site is wholly this tool's output, so listing its staged files is
+## safe and scopes the commit to them alone.
+mapfile -t site_files < <(git diff --cached --name-only -- _site)
+git commit -F - -- "${site_files[@]}" <<'MSG'
+Rebuild site
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+MSG
+
+git-push
+printf '%s\n' "csr-build: committed + pushed."
