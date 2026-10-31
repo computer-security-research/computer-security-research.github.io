@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build-deploy:
     # Owner-gated AND master-only: a manual workflow_dispatch can name any ref,
     # so without the ref guard a dispatch from a branch could deploy that
     # branch's content to the live site.
