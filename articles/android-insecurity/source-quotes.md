@@ -166,15 +166,44 @@ with their reason -- never with an approximate quote.
 - Quote: "Forensic readiness is defined as the ability of an organisation to maximise its
   potential to use digital evidence whilst minimising the costs of an investigation."
 
-## [@nist-sp800-101r1] NIST SP 800-101r1 -- sound acquisition preserves source integrity
+## [@nist-sp800-101r1] NIST SP 800-101r1 -- sound acquisition; chip-off is specialized/destructive
 
-- Paper claim (Sec. 10): official guidance on sound acquisition and evidence preservation; a
-  suspect device should not be relied on to examine itself.
+- Paper claim (Secs. 7, 9, 13): official guidance on sound acquisition and evidence
+  preservation; a suspect device should not be relied on to examine itself.
+- Paper claim (Sec. 7): chip-level extraction of soldered storage is specialized and
+  destructive, beyond most owners.
 - URL: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-101r1.pdf
-  (doi: 10.6028/NIST.SP.800-101r1; retrieved Oct. 27, 2026)
+  (doi: 10.6028/NIST.SP.800-101r1; retrieved Oct. 27, 2026; chip-off quote retrieved Oct. 31, 2026)
 - Quote: "its ability to maintain the integrity of the original data source being acquired
   and also that of the extracted data. The former is done by blocking or otherwise
   eliminating write requests to the device containing the data."
+- Quote (chip-off): "Level 4 Chip-Off methods involve the physical removal of memory from a
+  mobile device to extract data, requiring extensive training in electronic engineering and
+  file system forensics." / "the risk of causing physical damage to the chip during the
+  extraction process."
+
+## [@rfc3227] RFC 3227 -- do not trust the suspect system's own programs
+
+- Paper claim (Sec. 7): a device suspected of compromise cannot be relied upon to examine
+  itself; evidence gathering should run from trusted media outside the suspect system.
+- URL: https://www.rfc-editor.org/rfc/rfc3227.txt
+  (IETF BCP 55 / RFC 3227, Feb. 2002; doi: 10.17487/RFC3227; retrieved Oct. 31, 2026)
+- Quote (Sec. 2.2): "Don't trust the programs on the system. Run your evidence gathering
+  programs from appropriately protected media (see below)."
+- Supporting quote (Sec. 5): "you should consider that your tools might not be giving you a
+  full picture of the system."
+
+## [@mayrhofer-android-security-model] Android Platform Security Model -- per-app UID sandbox
+
+- Paper claim (Secs. 5, 7): each app gets a distinct kernel-level UID and a private data
+  directory other apps cannot read; system areas and other apps' files are inaccessible
+  without root or unlock.
+- URL: https://arxiv.org/abs/1904.05572 (arXiv:1904.05572v3, author preprint of the ACM TOPS
+  2021 paper; retrieved Oct. 31, 2026)
+- Quote (Sec. 4.3.3): "providing each application with a unique UID and a directory owned by
+  the app."
+- Supporting quote (Sec. 4.3): "With very few exceptions, the UID/process boundary is where
+  security decisions are made and enforced."
 
 ## [@amnesty-pegasus-methodology] Amnesty International -- fewer forensic traces on Android than iOS
 
