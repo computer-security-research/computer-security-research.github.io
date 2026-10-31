@@ -1,0 +1,1654 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage[numbers]{natbib}
+\bibliographystyle{unsrtnat}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Limits of Independent Security Verification on Vendor-Locked Devices},
+  pdfauthor={Patrick Schleizer},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Limits of Independent Security Verification on Vendor-Locked
+Devices}
+\author{Patrick Schleizer}
+\date{2026-10-24}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Vendor-locked devices, most prominently stock Android phones with a
+locked bootloader and no administrator access, are general-purpose
+computers whose owners are nonetheless structurally prevented from fully
+inspecting, controlling, or verifying the software running on their own
+device. Taking Android as its worked example, this paper systematizes
+that design for an owner who treats security as the ability to audit the
+device rather than the platform\textquotesingle s ability to enforce
+policy. It introduces owner-inspectability -\/- the property that an
+owner can examine and verify the whole system from a trusted vantage
+point without forfeiting the attested status the device reports to
+software -\/- and organizes the resulting limits: the owner cannot
+inspect the whole system from a clean environment, nor reach storage and
+memory without withheld privileges; application and update delivery is
+vendor-controlled, so compromise or coercion could push targeted
+malicious installs; and remote attestation ties the status a remote
+party relies on to the device staying unmodified, so enabling inspection
+forfeits the very status it validates. Obtaining root does not dissolve
+these limits: root is bounded by the platform\textquotesingle s own
+defenses and can be deceived by a kernel-space rootkit that falsifies
+what in-system tools observe. Many applications also refuse to run
+without a hardware-backed integrity verdict an owner-controlled
+configuration cannot produce, so the owner is squeezed from both sides
+-\/- declining to modify forecloses inspection, while modifying is
+costly and forfeits the status everyday use depends on. Against a
+conventional computer the owner fully controls, most established
+malware-analysis techniques are unavailable on a stock phone without
+first breaking its own verified-boot and attestation guarantees;
+surveying the main objections, the paper concludes that limited
+observability leaves absence of findings as weak evidence of integrity.
+It covers stock Android and extends to other vendor-locked devices only
+to varying degrees.
+\end{abstract}
+
+\subsection{1. Introduction}\label{introduction}
+
+On a vendor-locked device the owner is, in practice, obliged to trust
+the platform operator and device vendor -\/- on a stock Android phone,
+Google and the manufacturer -\/- for both application delivery and
+system updates, because the device cannot be fully examined from the
+outside while it remains locked down. If that trust relationship is
+abused -\/- through compromise of the delivery infrastructure, coercion
+of an operator, or a malicious insider -\/- targeted malicious
+installations or updates may be difficult to detect, independently
+verify, or prove to a third party.
+
+The same constraints bear on ordinary malware investigation. When a
+device is suspected of infection, the owner typically cannot perform a
+thorough inspection from a separate, known-clean computer without first
+unlocking or modifying the device. That modification can alter the
+evidence under examination, and a well-constructed backdoor could detect
+the onset of an investigation and erase itself or conceal its traces.
+
+This paper treats these properties not as implementation accidents but
+as consequences of a design in which administrative capability is
+deliberately withheld from the owner. It catalogs the resulting
+verification limits, grounds its claims in the available technical and
+forensic literature where such sources exist, and distinguishes claims
+supported by cited evidence from claims that remain asserted without a
+specific source.
+
+This is a systematization-and-position paper: it introduces no new
+experiment or dataset and instead organizes existing technical and
+forensic evidence around a single owner-centric criterion. Its
+contributions are:
+
+\begin{itemize}
+\tightlist
+\item
+  it names and defines owner-inspectability as the property an owner
+  needs in order to audit a device, and distinguishes it from the
+  related but distinct notion of organizational forensic readiness;
+\item
+  it catalogs, against that criterion, the specific verification limits
+  of stock Android and traces each to the same deliberate design choice
+  rather than to isolated implementation defects;
+\item
+  it shows that root access -\/- as distinct from the full
+  administrative control withheld from the owner -\/- does not restore
+  owner-inspectability on a modern hardened device, because root is
+  itself bounded by mandatory access control, kernel lockdown,
+  module-signature enforcement, and a hardware-rooted verified-boot
+  chain, and because root can in any case be deceived by a kernel-space
+  rootkit that falsifies what any in-system tool reports;
+\item
+  it documents how remote attestation, and the applications that depend
+  on it, increasingly penalize owner-controlled configurations,
+  deepening the circular trust problem; and
+\item
+  it provides a structured capability comparison with a fully controlled
+  host that makes the aggregate effect legible as a single design
+  trade-off.
+\end{itemize}
+
+The paper is organized as follows. Section 2 summarizes the platform
+mechanisms. Section 3 states the threat model, scope, and terminology,
+including the constrained meaning of root and the definition of
+owner-inspectability. Section 4 situates the work in prior literature.
+Sections 5 through 11 catalog the verification limits. Section 12
+addresses objections, including aftermarket operating systems. Section
+13 discusses the findings and their limitations, and Section 14
+concludes.
+
+\subsection{2. Background}\label{background}
+
+Android\textquotesingle s security model is built around several
+mutually reinforcing mechanisms. Android Verified Boot (AVB) establishes
+a chain of trust from an immutable hardware root of trust through the
+bootloader and operating-system partitions, so that only software signed
+by the vendor executes during startup; a locked bootloader refuses to
+load or boot any image that is not so signed. Application sandboxing
+isolates each application, giving it a distinct kernel-level user
+identity and a private data directory that other applications cannot
+read. Mandatory Access Control, implemented through SELinux, confines
+even privileged system processes to narrowly defined domains, so that a
+compromise of one component does not automatically yield access to the
+whole system. File-based encryption and full-disk encryption protect
+data at rest, with the principal encryption key bound to dedicated
+hardware.
+
+These mechanisms are effective at their stated purpose: constraining
+what ordinary software, including most malicious software, can do once
+it is running on the device. That effectiveness is real but neither
+symmetric nor complete. A sufficiently capable adversary is not reliably
+excluded by it -\/- as Sections 8 and 12 develop, such an adversary can
+compromise the already-booted, legitimately signed system at runtime, or
+arrive inside the vendor-signed image itself, without the device failing
+attestation, and verified boot has demonstrated defeats beneath the
+operating system. The same design, meanwhile, withholds from the device
+owner the administrative privileges that would permit raw disk access,
+live memory capture, kernel instrumentation, or the booting of an
+external trusted environment. The owner is therefore placed not in the
+same position as an attacker but in a worse one, for a structural rather
+than a measured reason: the owner\textquotesingle s only route to
+inspecting the device is the modification these protections are built to
+bar, whereas the capable adversary the owner most fears need not modify
+the device at all and keeps the runtime, supply-chain, and
+sub-operating-system routes just described. These controls therefore
+foreclose the owner\textquotesingle s single avenue -\/- and that of the
+security researcher who would audit the device on the
+owner\textquotesingle s behalf -\/- while leaving the
+adversary\textquotesingle s open. It is natural to read these mechanisms
+as existing chiefly for the owner\textquotesingle s protection; that is
+only half the picture. They do keep unauthorized third-party software
+off the device, but the same signed-image and attestation machinery also
+enforces objectives the owner may neither share nor be able to remove or
+audit -\/- that only a vendor-approved configuration runs, with
+application and service access gated by relying parties rather than by
+the owner -\/- so the guarantee runs in part to the platform and those
+relying parties, not to the owner alone. This paper treats those
+platform-control and content-protection objectives as out of scope to
+analyze (Section 3) and returns, for attestation, to whom that guarantee
+actually runs (Section 8).
+
+\subsection{3. Threat Model and Scope}\label{threat-model-and-scope}
+
+This paper defines security from the perspective of the end user and
+device owner: the ability to control, inspect, and independently verify
+the device. Under this definition a device is more secure when its owner
+can establish, from a trusted vantage point, whether it is running only
+the software they intend and what that software is doing -\/- free of
+malware or backdoors, whether planted by an outside attacker or by the
+platform itself -\/- and can produce evidence of that state that a
+skeptical third party could check.
+
+Three practical capabilities are treated as the goals of interest:
+inspecting the device deeply for malware and backdoors; proving the
+result to a skeptical third party; and creating complete device backups
+suitable for independent verification.
+
+Explicitly out of scope are digital-rights-management objectives and
+platform-control goals -\/- that is, the platform\textquotesingle s
+interest in enforcing policy against the owner, in guaranteeing content
+protection, or in ensuring that only vendor-approved configurations run.
+These objectives frequently stand in tension with owner-centric
+verifiability, and conflating the two obscures the specific limitations
+examined here. Where the platform regards a property as a security
+feature and the owner regards the same property as an obstacle to
+verification, this paper describes it from the owner\textquotesingle s
+standpoint and notes the platform\textquotesingle s view where relevant.
+
+Although this paper documents Android in detail as its worked example
+-\/- it is the most openly specified vendor-locked platform -\/- the
+owner-inspectability criterion and the limits it exposes are not
+Android-specific. They follow from vendor-lock itself: a locked boot
+chain, administrative capability withheld from the owner, and
+attestation that ties the device\textquotesingle s standing with apps
+and services to a vendor-approved state. By the same logic they apply,
+to varying degrees, to other vendor-locked devices, Apple iOS among
+them; the mechanisms differ in detail, but the owner\textquotesingle s
+structural position does not. This paper references such platforms only
+where a cited source speaks to them and does not document them to the
+same depth.
+
+Terminology is used consistently throughout. Stock Android denotes a
+typical device as sold, with a locked bootloader and without root
+access.
+
+Root access denotes uid-0 authority within the running operating system:
+the ability, in principle, to read and write files, inspect processes,
+and alter system components that an ordinary user cannot. The term is
+inherited from Unix, where "root" is the superuser account; Android,
+however, exposes no such login account. uid 0 exists as a kernel
+identity held by init and a deliberately shrinking set of system
+daemons, but a stock production ("user") build ships no owner-accessible
+"su" and refuses to run its debug bridge (adbd) as root, so the owner
+cannot assume that identity at all without first modifying the device.
+
+Equally important is what this authority does not include on a modern
+hardened device, because the common assumption that root confers total
+control of the machine no longer holds. Root runs inside, and is bounded
+by, the platform\textquotesingle s other defenses. Mandatory access
+control through SELinux confines even uid-0 processes to the domains the
+loaded policy permits, so that superuser identity gained within the
+already-booted system does not by itself grant unrestricted operations
+\citep{aosp-selinux}; the systemless root treated below escapes this
+confinement not by wielding more privilege within the booted system but
+by shaping the policy from beneath, as the boot image\textquotesingle s
+init is patched before the policy is loaded. The
+kernel\textquotesingle s lockdown facility, once engaged, withdraws a
+range of otherwise root-accessible interfaces that could be used to
+modify the running kernel \citep{kernel-lockdown}. Module-signature
+enforcement can require that any code loaded into the kernel carry a
+valid signature, so that root cannot insert an arbitrary kernel module
+\citep{kernel-module-signing}, and the kernel.modules\_disabled control,
+once set, blocks all further module loading until reboot in a one-way
+fashion that even root cannot reverse \citep{kernel-modules-disabled}.
+Beneath the operating system, Android Verified Boot and a locked
+bootloader anchor the boot chain to a hardware root of trust and refuse
+unsigned images, so that root -\/- an in-system privilege -\/- cannot by
+itself rewrite the firmware or boot chain that sit below it
+\citep{aosp-verified-boot}, \citep{aosp-bootloader-locking}. Throughout
+this paper, therefore, "root" names a powerful but bounded in-system
+privilege, not unconstrained control of the kernel, firmware, or boot
+chain; Section 10 and the discussion in Section 13 return to why
+obtaining it still does not deliver owner-inspectability.
+
+One honesty caveat attaches to the mechanisms just named:
+Android\textquotesingle s Generic Kernel Image does not enforce a valid
+signature on every loadable kernel module -\/- module signing is not
+supported for GKI vendor modules, and on devices that require verified
+boot the authenticity of kernel modules rests instead on dm-verity over
+the read-only partitions that hold them
+\citep{aosp-loadable-kernel-modules} rather than on per-module signature
+enforcement. The mechanisms above are capabilities of the platform,
+deployed to differing degrees across devices, not uniform guarantees on
+every device.
+
+Administrative control, by contrast, denotes the broader authority an
+owner traditionally holds over a general-purpose computer: the ability
+to replace the bootloader, kernel, kernel modules, initramfs, and
+operating system, and to boot an external trusted environment of the
+owner\textquotesingle s choosing, with uid-0 inside a system so
+constituted. On a traditional personal computer this authority over the
+operating-system and boot stack is the owner\textquotesingle s by
+default; on stock Android it is withheld from the owner and conferred
+only on the vendor. Root, when an owner obtains it at all, is a fragment
+of this authority -\/- superuser standing inside the
+vendor\textquotesingle s already-booted operating system, without
+command of the kernel and boot chain beneath it -\/- which is why, as
+Sections 8, 10, and 13 develop, obtaining root does not amount to
+administrative control and does not by itself deliver
+owner-inspectability. Section 13 contrasts the two stacks directly,
+including the firmware layers that remain opaque to the owner on both.
+
+A clean, trusted environment denotes a separate computer or externally
+booted system under the examiner\textquotesingle s control, as opposed
+to the device\textquotesingle s own currently running operating system.
+
+Owner-inspectability is the central property this paper isolates. A
+device is owner-inspectable when its owner can examine and verify the
+whole system -\/- storage, memory, and the boot and operating-system
+state -\/- from a clean, trusted vantage point, and can do so without
+forfeiting the attested status the device reports to the software and
+services it runs -\/- the vendor-approved standing a remote relying
+party, not the owner, relies on. The term is deliberately distinct from
+forensic readiness as defined in the digital-forensics literature, which
+concerns an organization\textquotesingle s advance preparation to
+collect and preserve admissible evidence about its own systems and users
+\citep{rowlingson-forensic-readiness}, \citep{iso-27043}: forensic
+readiness is a posture an institution arranges for investigators,
+whereas owner-inspectability is a property the device either affords its
+owner or withholds. Owner-inspectability is also narrower than a general
+right to modify or repair a device: it requires that the owner be able
+to establish, and to demonstrate, what the device is running -\/- not
+that the device be freely modifiable. That separation is clean only for
+persistent, at-rest state: inspecting the files, installed packages, and
+boot chain a device holds at rest is a read-only act that requires no
+modification. Detecting non-persistent, memory-resident malware is
+different, because such code leaves no durable artifact and can be
+observed only through live memory acquisition or runtime and kernel
+instrumentation \citep{sudhakar-fileless-malware}, which on a locked
+device is itself a modification -\/- unlocking, rooting, or booting a
+custom kernel \citep{yang-live-memory-acquisition} -\/- that, as Section
+8 shows, forfeits the device\textquotesingle s attested status. For such
+live threats inspectability and modifiability cannot be cleanly
+separated, and the squeeze on the owner deepens rather than eases. AOSP
+in principle allows a device to be locked to a user-controlled root of
+trust rather than only to the vendor\textquotesingle s
+\citep{aosp-verified-boot}; whether that latent capability is usable in
+practice, and whether it survives contact with the attestation
+ecosystem, is examined in Sections 8 and 12.
+
+\subsection{4. Related Work}\label{related-work}
+
+The platform mechanisms examined here are documented authoritatively in
+the Android platform security model, which sets out verified boot,
+application sandboxing, mandatory access control, and attestation as a
+coherent design and states the threat model they address
+\citep{mayrhofer-android-security-model}. That account is written from
+the platform\textquotesingle s standpoint -\/- the device defending
+itself, its users\textquotesingle{} data, and the ecosystem against a
+running adversary. The present paper adopts the complementary standpoint
+of the owner who wishes to audit the device, and reads the same
+mechanisms for what they deny that owner.
+
+Three bodies of prior work supply the evidence reorganized here. The
+mobile-forensics literature establishes how, and how far, data can be
+acquired from Android devices: official guidance on sound acquisition
+and its preconditions \citep{nist-sp800-101r1}, practitioner treatments
+of imaging and temporary-root techniques \citep{hoog-android-forensics},
+and field reports on the limited traces recoverable from stock devices
+in spyware investigations \citep{amnesty-pegasus-methodology},
+\citep{mvt-android-methodology}. The rootkit-detection literature
+establishes that trustworthy detection of kernel-level compromise
+requires a vantage point outside the running operating system, and
+explores hardware-assisted acquisition to obtain one
+\citep{guri-joker-jtag}, \citep{bickford-rootkits-smartphones},
+\citep{brodbeck-covert-rootkit-detection}. The anti-forensics and
+evasion literature establishes that malicious code routinely detects
+analysis environments and removes its own traces
+\citep{chen-anti-virtualization}, \citep{ruggia-evasive-malware},
+\citep{garfinkel-anti-forensics}. Each cluster is examined in detail in
+the sections that follow; the contribution of this paper is not new
+measurement within any one of them but their systematization around
+owner-inspectability.
+
+The owner-inspectability criterion relates to, but is distinct from,
+organizational forensic readiness \citep{rowlingson-forensic-readiness},
+\citep{iso-27043} and from remote-attestation design
+\citep{mayrhofer-android-security-model},
+\citep{play-integrity-improvements}; the distinctions are drawn where
+each is used. To the author\textquotesingle s knowledge, the limits of
+owner-side verification on stock Android have not previously been
+assembled into a single, criterion-driven account.
+
+\subsection{5. Independent Verification
+Limits}\label{independent-verification-limits}
+
+On most stock devices it is difficult to independently verify the state
+of the whole system. When malware, a hidden backdoor, or tampering is
+suspected, the owner generally cannot examine the system from a clean,
+trusted environment without first modifying the device. The owner is
+therefore left to trust the vendor-controlled software and services that
+deliver applications and updates, even though those channels could
+themselves be abused in a targeted manner.
+
+The underlying cause is architectural. Android is commonly shipped as a
+locked-down general-purpose computer in which administrative capability
+is deliberately withheld from the owner and the bootloader is locked.
+Many protections and integrity checks are implemented under vendor
+control, limiting what the owner can change, inspect, or replace. As a
+result the owner is typically prevented from inspecting the whole system
+and from producing a complete device backup without first bypassing
+these restrictions.
+
+These restrictions bear on the three goals defined above. First, deep
+inspection for malware and backdoors is impeded: on a non-rooted device,
+the private files of other applications are inaccessible, and system
+areas and logs are access-controlled rather than openly readable
+\citep{mayrhofer-android-security-model}, \citep{aosp-selinux}, which
+makes it harder to confirm whether suspicious behavior originates from
+malware or from a normal system component, and harder to rule out
+targeted tampering. Second, the owner cannot readily prove a clean or
+compromised result to a third party, because the evidence that would
+support such a proof cannot be collected. Third, a complete device
+backup -\/- for example, a full offline image of the relevant partitions
+-\/- generally requires privileges the device restricts; on a non-rooted
+device "full backup" in practice means a partial backup mediated by the
+operating system and by individual applications
+\citep{android-allowbackup}, \citep{aosp-auto-backup}.
+
+For the same reasons, demonstrating the presence or absence of a hidden
+backdoor is difficult. An examiner who cannot fully inspect system
+files, logs, and low-level components without first modifying the device
+is forced to rely on what the running operating system chooses to reveal
+-\/- precisely the situation that a well-concealed backdoor would seek
+to establish.
+
+\subsection{6. Vulnerability to Targeted Malicious
+Upgrades}\label{vulnerability-to-targeted-malicious-upgrades}
+
+Because key parts of application and update delivery are controlled by
+the platform operator and device vendor -\/- on Android, Google Play for
+applications and the manufacturer for system firmware -\/- vendor-locked
+devices are exposed to the risk of targeted malicious application
+installations, application upgrades, and system upgrades.
+
+A documented and ordinary feature illustrates the mechanism. Many
+devices permit a user to sign in to the Google Play web or desktop store
+using the same Google account, typically the same email address, that is
+used on the device. Selecting "Install" for an application in the web
+interface prompts the user, where multiple devices are registered, to
+choose a target device; the application is then installed on that
+device. This demonstrates that Google Play can initiate an installation
+to a specific, linked device without direct physical interaction with
+that device \citep{google-play-help}.
+
+The concern is not that an arbitrary outsider can invoke this capability
+without authorization. The concern is that control of the delivery
+system is itself powerful. If Google Play\textquotesingle s
+infrastructure were compromised, or if a privileged insider were
+malicious or coerced, this capability could in principle be abused to
+push a backdoored version of an application to a specific target. By the
+same logic, device manufacturers control firmware and system updates, so
+targeted malicious system upgrades are likewise possible if that control
+is abused.
+
+Update-related communication is, moreover, not anonymous on devices
+certified for Google Mobile Services (GMS). Google Play services
+periodically checks in with Google, transmitting persistent hardware
+identifiers -\/- the IMEI, hardware serial number, network MAC address,
+and Google Services Framework identifier -\/- that Google documents as
+associated with the signed-in Google account and used, among other
+purposes, to determine a device\textquotesingle s eligibility for
+software updates and security patches \citep{leith-handset-privacy},
+\citep{google-device-config-service}. Whether a particular firmware
+update is delivered through Google or through the device vendor varies
+by manufacturer. The AOSP security policy itself grants Google Play
+services access to the system-update service and to the A/B update
+engine, confirming its privileged role in the update path on such
+devices \citep{aosp-sepolicy-gmscore}.
+
+Network-level anonymization does not neutralize this exposure, because
+the exposure is at the identity layer rather than the network layer.
+Using Google Play on a stock Android device requires the device to be
+signed in to a Google account; the store cannot be browsed or used to
+install applications without one \citep{google-play-help}. Every
+interaction with Google Play authenticates that account to Google, so
+each install or update request is bound to a specific, persistent
+identity. Routing the device\textquotesingle s traffic through Tor
+conceals the network (IP) address from which a request originates, and
+in that narrow sense remains functional; but the account-based
+authentication required by the operating system still presents the
+user\textquotesingle s Google identity to Google on every request. The
+network layer is thus anonymized while the identity layer is not: Tor
+can hide where a connection comes from, yet the device itself discloses
+who is making it.
+
+\subsection{7. Limitations of Internal Storage Access on Non-Rooted
+Devices}\label{limitations-of-internal-storage-access-on-non-rooted-devices}
+
+Accessing internal storage for purposes such as data recovery or malware
+and rootkit analysis is not reasonably easy on most stock devices. The
+guiding principle of malware analysis and backdoor hunting is that a
+device suspected of compromise should not be relied upon to examine
+itself \citep{rfc3227}; the data should ideally be inspected from a
+separate, known-clean computer, in keeping with established forensic
+guidance on sound acquisition and evidence preservation
+\citep{nist-sp800-101r1}. Stock Android obstructs exactly this.
+
+The obstruction has two roots. First, internal storage is typically a
+soldered component that cannot be removed without specialized work
+\citep{nist-sp800-101r1}. Second, Android normally blocks access to many
+system files and to the private files of other applications unless the
+device is rooted or unlocked \citep{mayrhofer-android-security-model},
+\citep{hoog-android-forensics}.
+
+Reading the storage with a different device is generally impractical for
+routine verification and is often unsuitable in forensic contexts. If
+the device is physically damaged or unbootable, the storage is also
+unlikely to function reliably when transplanted. Even where specialized
+extraction is possible -\/- for example, chip-level desoldering and
+reading -\/- it demands equipment and expertise that most owners do not
+possess \citep{nist-sp800-101r1}.
+
+The available software paths are correspondingly limited. The
+platform\textquotesingle s backup facility covers only applications that
+permit backup: it is enabled through the application manifest and
+applications that disable it are omitted from the resulting archive, and
+the mechanism is further bounded by per-application size limits and
+excluded directories \citep{aosp-auto-backup}. Approaches that would
+copy a full raw disk image to a computer do not work on devices that are
+neither rooted nor rootable, and comprehensive imaging of internal
+storage is generally described in the forensic literature as requiring
+root or an unlocked bootloader \citep{hoog-android-forensics}.
+
+These limitations are compounded by storage encryption, which is
+effectively universal on recent mainstream devices: file-based
+encryption has been mandatory on devices that launched with Android 10
+or later, and has been available since Android 7
+\citep{aosp-file-based-encryption}. The consequences of a hardware-bound
+encryption key are examined further in Section 11. Encryption is a
+second barrier behind the first, not the main one. The main obstacle to
+offline imaging is physical: for most owners the soldered chip cannot be
+removed and read at all, as described above. Where chip-level extraction
+does nonetheless succeed, encryption limits what it yields -\/- the
+user-data partition comes out as ciphertext, because the key that
+decrypts it is derived on-device from a secret bound to hardware-backed
+secure storage and cannot be reproduced off the device by routine
+extraction. The read-only system partitions are not encrypted this way
+and can be read, but they hold the vendor\textquotesingle s code rather
+than the owner\textquotesingle s data. The owner\textquotesingle s own
+data is therefore doubly out of reach: the chip usually cannot be read,
+and on the rare occasion it can, that data is ciphertext. For most
+owners, therefore, inspection of internal storage is not reasonably
+achievable on a stock, non-rooted device.
+
+\subsection{8. Attestation and the Circular Trust
+Problem}\label{attestation-and-the-circular-trust-problem}
+
+Stock Android relies heavily on remote device attestation -\/-
+historically Google\textquotesingle s SafetyNet Attestation API, which
+Google deprecated in 2022 and withdrew in January 2025
+\citep{safetynet-attestation-deprecation}, now replaced by the Play
+Integrity API \citep{play-integrity-overview} -\/- by which the device
+cryptographically reports aspects of its own state to applications and
+services. The reported state is grounded in the device\textquotesingle s
+verified-boot status \citep{aosp-verified-boot} and backed by
+hardware-backed key attestation \citep{aosp-key-id-attestation}. Table 1
+summarizes three simplified device-state claims that the platform
+exposes through its device-integrity signals; the Play Integrity API
+additionally returns separate application-integrity and
+account-integrity fields that are not reproduced here
+\citep{play-integrity-overview}.
+
+Table 1. Device attestation: what is reported to applications.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Attestation claim
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Meaning (simplified)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Running vendor-approved software & The device reports that it runs an
+operating system or build approved by the vendor, and often by
+Google. \\
+Unmodified & The device reports that it has not been altered, for
+example that the bootloader has not been unlocked and the system has not
+been modified. \\
+Locked down & The device reports that security-relevant settings remain
+enforced, including a locked boot chain and an expected integrity
+state. \\
+\end{longtable}
+
+Attestation is a relying-party protocol, and naming its roles makes the
+direction of trust explicit. In the standard architecture the device is
+the Attester, which must produce evidence about itself; a Verifier
+appraises that evidence; and a Relying Party -\/- here the application
+developer, content provider, or platform operator -\/- is, in that
+architecture\textquotesingle s words, the party that "depends on the
+validity of information about an Attester" before it will grant service
+\citep{rfc9334-rats}. Remote attestation is in general the activity of
+making a claim about a target\textquotesingle s properties by supplying
+evidence to an appraiser over a network
+\citep{coker-remote-attestation}. The guarantee therefore runs to the
+relying party, not to the device owner: the device proves its compliance
+to a remote party that does not extend trust to the owner, and a passing
+verdict certifies the device to that party rather than giving the owner
+any means to audit or halt what an application does. That inversion -\/-
+software operating on the owner\textquotesingle s own device while it is
+the owner who is kept from inspecting or stopping it -\/- is the loss of
+owner control named as the coming war on general-purpose computing
+\citep{doctorow-general-computation}. Accordingly, both "trusted status"
+and "attested status" in this paper denote this attested,
+vendor-approved standing that a remote party relies on, not any trust
+the owner places in the device. Android does surface a status to the
+owner -\/- the Play Store\textquotesingle s Play Protect certification
+\citep{play-protect-certification} and the verified-boot warnings shown
+at startup \citep{aosp-boot-flow} -\/- but that status reports the
+platform\textquotesingle s own approval verdict, reflecting a locked
+bootloader and a vendor-certified image; the owner must trust that
+verdict rather than independently audit it, and it is not a verification
+that the device is actually uncompromised: the device-integrity verdict
+attests boot and configuration state, not runtime malware-freeness
+\citep{play-integrity-verdicts}, so a locked, certified device can still
+be compromised in ways this boot-time check does not cover -\/-
+malicious code shipped inside the certified image as pre-installed
+vendor software, as the Triada family was built into
+manufacturers\textquotesingle{} system images during production
+\citep{google-triada}, or a runtime, memory-resident compromise of the
+already-booted and legitimately signed kernel. A persistent rootkit that
+instead rewrites the verified boot or system partitions is the one case
+verified boot and dm-verity are built to catch
+\citep{aosp-verified-boot}; Section 12 returns to the deeper breaches
+that can defeat even that.
+
+This arrangement produces a circular trust dependency, summarized in
+Table 2. To inspect the system deeply, the owner must modify the device
+-\/- unlock the bootloader, obtain root, or install special builds -\/-
+which causes the device to fail attestation and to be treated as
+untrusted by applications. To remain trusted by applications, the owner
+must keep the device unmodified and locked down, which denies access to
+the disk, memory, logs, and low-level components that independent
+verification requires.
+
+Table 2. Circular trust dependency: inspection versus attestation.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Goal
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+What is typically required
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Consequence
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Inspect the system deeply & Modify the device (unlock bootloader, gain
+root, use special builds) & Device may fail attestation and be treated
+as untrusted by applications \\
+Remain trusted by applications & Keep the device unmodified and locked
+down & Limits access to the disk, memory, logs, and low-level components
+needed for independent verification \\
+\end{longtable}
+
+From the platform\textquotesingle s standpoint this is a security
+feature: it raises assurance that a device presenting itself to a
+service is in a known, unmodified state. From the standpoint of an owner
+facing a high-threat situation, the same mechanism is a verification
+dead-end, because the only configurations in which the device is
+considered trustworthy by the applications and services that demand it
+are precisely those in which the owner cannot examine it.
+
+The dependency has, moreover, tightened over time, and now reaches
+beyond the owner\textquotesingle s own verification into everyday use of
+the device. Attestation verdicts are tiered: the platform distinguishes
+a basic verdict from a device-integrity verdict and a stronger,
+hardware-backed verdict, and it exposes which tier a given device can
+satisfy \citep{play-integrity-improvements}. A device whose owner has
+unlocked the bootloader, installed an owner-controlled operating system,
+or obtained root typically cannot satisfy the device-integrity or strong
+verdicts, because those are tied to a Google-certified, vendor-signed
+configuration \citep{play-integrity-improvements},
+\citep{owasp-mastg-play-integrity}. A growing number of applications
+-\/- banking and payment applications, some enterprise and government
+applications, and content-protection components among them -\/- gate
+access on at least the hardware-backed device-integrity verdict, some
+additionally demanding the strong tier, and refuse to run, or silently
+degrade, on a device that cannot present them
+\citep{owasp-mastg-play-integrity}.
+
+The exact proportion of applications that do so is disputed and not
+rigorously measured, but the available evidence points firmly toward
+widespread and rising refusal. A code-level measurement reports that
+most banking applications contain no reference to
+Google\textquotesingle s own attestation frameworks in their first-party
+code -\/- roughly nine in ten reference neither the Play Integrity API
+nor the deprecated SafetyNet, and the minority that do still
+overwhelmingly ship only SafetyNet calls \citep{macdonald-attestlens}.
+That figure is a floor on lock-out, not a measure of it: such a count
+detects only Google\textquotesingle s own frameworks, and the same
+measurement observes that most attestation that is present originates
+from third-party packages rather than first-party code, so intentional
+adoption is systematically undercounted \citep{macdonald-attestlens}.
+The enforcement an owner actually encounters is delegated elsewhere -\/-
+to commercial application-shielding and runtime application
+self-protection (RASP) SDKs such as Promon SHIELD, Guardsquare/DexGuard,
+DexProtector, and Arxan, and to bespoke root, hook, and emulator checks
+that invoke no attestation API at all. A peer-reviewed systematization
+of mobile hardening finds these pervasive on current Android: root
+detection in 92.3 percent of apps, debugger detection in roughly 94
+percent, and emulator detection in nearly 99 percent, with hardening
+most concentrated in the finance and shopping categories and, by that
+study\textquotesingle s own account, driven largely by third-party
+libraries \citep{steinboeck-sok-hardening}. Consistent with this,
+crowd-sourced compatibility lists for owner-controlled operating systems
+catalog a long and growing set of banking and payment applications that
+refuse to run or install on them \citep{privsecdev-banking-grapheneos},
+\citep{grapheneos-attestation-compat}. The honest summary is therefore a
+floor-and-direction one: the first-party Play Integrity figure is a
+lower bound, the delegation of enforcement to RASP SDKs and
+non-attestation checks is why real-world refusal is substantially more
+common than that bound, and no single measurement yet fixes a precise
+lock-out rate. The owner, meanwhile, has no way to appeal a verdict
+except by returning the device to the vendor-approved state. The
+consequence for this paper\textquotesingle s argument is structural:
+even where an owner is technically able to reach an owner-inspectable
+configuration, the attestation-and-hardening ecosystem imposes a rising
+functional cost for remaining there, so that the circular trust
+dependency is enforced not only by the platform\textquotesingle s own
+refusal to trust a modified device but by the third-party software the
+owner must run on it.
+
+This also sharpens what "gaining root" can and cannot achieve, a point
+developed in Sections 10 and 13. Because root is a bounded in-system
+privilege (Section 3) and because reaching it generally forfeits the
+attestation standing just described, obtaining root does not hand the
+owner the clean, external, trusted vantage point that independent
+verification requires; it trades the device\textquotesingle s attested
+status for privileges that are themselves confined by mandatory access
+control, kernel lockdown, and the verified-boot chain.
+
+Modern rooting fits this bound rather than breaking it. The prevalent
+method is systemless: it gains root without writing to /system. Verified
+boot covers /system (guarded by a dm-verity hashtree
+\citep{aosp-dm-verity}) and the boot and init\_boot images (an AVB hash
+in the signed vbmeta) alike, so on a locked bootloader neither can be
+altered; the unlock is the shared precondition, after which the device
+boots an unsigned image and Magisk disables vbmeta verification
+\citep{aosp-verified-boot}, \citep{magisk-install}. It patches the init
+carried in the ramdisk -\/- in the boot partition, the init\_boot
+partition on devices launched with Android 13 or later, or, on some
+devices, vendor\_boot or a recovery image \citep{aosp-partitions},
+\citep{magisk-install} -\/- because init is the earliest userspace hook,
+then overlays its changes at runtime, leaving the read-only /system
+byte-identical: official OTAs stay applicable (root is re-applied to the
+updated slot afterward, not carried across) and the change is reversible
+by reflashing the stock boot image \citep{magisk-install},
+\citep{magisk-ota}. Modern "root" is in this sense better described as
+control of init than as an in-system account: the patched init runs
+before the SELinux policy is loaded, so the installer shapes the policy
+its own daemon then runs under -\/- an unconstrained, permissive domain
+confined to that daemon and the root shells it grants, while every other
+domain stays enforcing \citep{magisk-details} -\/- rather than being
+confined by it.
+
+Even so, this foothold is not the external vantage point verification
+needs. It is the administrative-tier power to replace the initramfs
+(Section 3), reached only through the unlock that forfeits verified
+boot, and the permissive domain sidesteps SELinux but not the running
+kernel beneath it: loading code into that kernel is blocked where
+lockdown, module-signature enforcement, or the one-way module-disable
+control are engaged \citep{kernel-lockdown},
+\citep{kernel-module-signing}, \citep{kernel-modules-disabled}, though
+not uniformly -\/- the Generic Kernel Image does not enforce per-module
+signatures (Section 3) -\/- and in any case this root observes the
+kernel only from within it, so a kernel-space rootkit beneath it
+falsifies what any in-system tool reports regardless of privilege
+(Sections 9 and 13). A clean, out-of-system vantage comes not from the
+ramdisk patch but from the same unlock\textquotesingle s further use
+-\/- booting a separate kernel or recovery to inspect the partitions at
+rest -\/- and even that leaves the suspect kernel\textquotesingle s live
+memory beyond trusted reach (Section 13). The modification has thus
+moved down into the boot chain that verified boot protects, not out of
+its reach, and the device still forfeits the hardware-backed verdicts
+described above. The integrity-masking modules an owner adds alongside
+it spoof the software-visible signals read by app-side root checks and
+the basic verdict, and on devices launched before Android 13 -\/- whose
+device-integrity verdict is the weaker successor to
+SafetyNet\textquotesingle s ctsProfileMatch -\/- they can pass that
+verdict too by rewriting android.os.Build fields and system properties,
+with no hardware key material \citep{playintegrityfork}. What software
+spoofing cannot forge is the hardware-backed device-integrity verdict
+that devices launched with Android 13 and later enforce through
+locked-bootloader checks, nor the strong verdict: passing those requires
+genuine certified hardware with a locked bootloader, or leaked,
+not-yet-revoked hardware key material of the kind Section 12 discusses
+\citep{play-integrity-verdicts}, \citep{play-integrity-improvements},
+\citep{grapheneos-attestation-compat}, \citep{playintegrityfork} -\/- a
+key compromise rather than a defeat of the mechanism.
+
+\subsection{9. Detection of Low-Level
+Rootkits}\label{detection-of-low-level-rootkits}
+
+Low-level rootkits conceal themselves by manipulating the operating
+system itself, so that security tools running on the same device may be
+unable to detect them reliably. Trusted detection can require obtaining
+a trusted snapshot of memory from outside the monitored operating system
+\citep{guri-joker-jtag}.
+
+The problem is structural rather than a matter of tool quality.
+Anti-virus software may successfully detect malicious applications yet
+remain ineffective against low-level rootkits that evade detection by
+masking their own presence \citep{guri-joker-jtag}. Any detection
+mechanism that runs on the same physical device as the monitored
+operating system can itself be compromised through application, kernel,
+or bootloader vulnerabilities, so trusted detection of kernel rootkits
+on mobile devices is, in practice, a challenging task
+\citep{guri-joker-jtag}.
+
+The distinction between user-space and kernel-space malware clarifies
+why. User-space malware can modify or inject code only into memory
+allocated to applications and user processes. Kernel-space malware can
+manipulate objects throughout the operating system\textquotesingle s
+memory. Although mandatory access-control mechanisms such as SELinux are
+integrated into current Android versions, rootkits running at the
+operating-system level of mobile devices have been demonstrated
+\citep{bickford-rootkits-smartphones},
+\citep{brodbeck-covert-rootkit-detection}. A rootkit is kernel-space
+malware that uses illicitly obtained privileges to hide its existence by
+manipulating the kernel\textquotesingle s internal data structures, and
+code that has penetrated kernel memory can neutralize any security tool
+running within the operating system. A request to the kernel for, say,
+the contents of a directory carries no guarantee of integrity in the
+returned list; consequently, detecting a rootkit requires a trusted
+snapshot of kernel memory obtained from outside \citep{guri-joker-jtag}.
+
+One proposed approach obtains such a snapshot through the JTAG hardware
+debugging interface rather than through the potentially compromised
+operating system. The approach exploits two debugging features: the
+ability to halt the processor instantly by issuing a special
+instruction, and the ability to read the device\textquotesingle s
+volatile memory while it is halted. Because the acquisition system does
+not execute on the device, it can read kernel memory in a trusted
+manner; the captured memory is then processed by scripts that
+reconstruct kernel data structures and analyze them for suspicious
+modifications. The acquisition offers the advantage of trusted
+inspection precisely because it originates from outside the monitored
+system \citep{guri-joker-jtag}.
+
+For most owners and most devices, JTAG-based memory acquisition is not
+practical. Some devices expose a JTAG interface, but it is usually not
+accessible to typical owners; access tends to be device-specific and to
+require specialized equipment and skills. No quantitative data on the
+proportion of devices for which JTAG is usable has been located, and the
+situation is highly device-specific. Manufacturers may treat JTAG as an
+attack surface and disable or lock it on production hardware
+\citep{patent-secure-jtag}, \citep{sguigna-jtag-attack-surface}: a
+recommended practice is to disable JTAG by default in production and
+end-user devices to reduce attack surface, enabling it only temporarily
+for authorized maintenance \citep{sguigna-jtag-attack-surface}. The same
+interface can nonetheless serve security analysis, and is an established
+forensic acquisition method for reading memory from embedded systems
+\citep{breeuwsma-jtag-imaging}. The approach\textquotesingle s own
+authors acknowledge its awkwardness: it requires physical access to a
+JTAG port on the circuit board, which is cumbersome compared with
+software-based methods \citep{guri-joker-jtag},
+\citep{brodbeck-covert-rootkit-detection}.
+
+On many devices, deep investigation -\/- including the search for
+sophisticated rootkits -\/- requires root access, and where the
+bootloader cannot be unlocked, researchers may be driven to rely on
+exploitable vulnerabilities to gain privileges temporarily. Forensic
+analyses report that application sandboxing, encryption, and file-based
+access controls pose challenges to data acquisition
+\citep{nist-sp800-101r1}, and that temporary-root techniques, which
+leverage operating-system vulnerabilities to obtain elevated privileges
+without permanently modifying the device, are used to obtain more
+comprehensive access including system-level files
+\citep{hoog-android-forensics}.
+
+For comparison, non-Android platforms such as desktop and server Linux
+provide suitable options for the same objectives. Anti-malware kernel
+modules designed to detect loadable-kernel-module rootkits, and runtime
+integrity guards, can run on the system \citep{thalium-rkchk},
+\citep{openwall-lkrg}. Alternatively, the system can be booted from
+external media and subjected to an offline integrity check using tools
+that verify installed files against a trusted manifest
+\citep{elstel-debcheckroot}. These options permit independent
+verification even where the original operating-system installation is
+itself suspected.
+
+\subsection{10. Malware-Analysis Capability
+Gaps}\label{malware-analysis-capability-gaps}
+
+The constraints above translate into concrete gaps in analysis
+capability. This section contrasts a fully controlled general-purpose
+host, represented by traditional Linux desktops and servers, with a
+stock Android device.
+
+On a traditional Linux host the examiner can replace the operating
+system, installing a known-good system or reinstalling from trusted
+media if compromise is suspected; boot from external media to obtain a
+clean, trusted environment without relying on the suspect system disk;
+inspect disks and memory from that trusted environment while minimizing
+reliance on the suspect operating system; instrument or replace the
+kernel to load debugging or integrity tooling; and run security tools
+outside the potentially compromised system, from an external host or
+trusted boot environment. Taken together, these capabilities permit
+independent verification even when the original installation is
+suspected to be malicious.
+
+On a stock Android device these same capabilities are, in general,
+absent. The operating system cannot be freely replaced, so restoring a
+known-good system is usually unsupported or impractical. Booting an
+external, fully trusted operating system that bypasses the installed
+system is not supported. Full disk and memory access -\/- raw disk
+imaging, comprehensive file inspection, and live RAM capture -\/- is
+blocked without special privileges. Gaining those privileges usually
+breaks verified boot and attestation, causing the device to be treated
+as untrusted; can disable or degrade security features that depend on
+the device remaining locked down and unmodified; and can cause many
+applications, including banking, enterprise, and content-protected
+applications, to refuse to run. The net effect is that the tools needed
+to verify the system require breaking those same guarantees before they
+can be applied -\/- and, as Section 8 showed, the privileges so gained
+are themselves bounded and do not amount to the external trusted vantage
+point that verification needs.
+
+Table 3 compares specific analysis capabilities. The values "Yes" and
+"No" indicate that a capability is, respectively, generally available or
+generally unavailable to the examiner on a stock device; "Partial"
+indicates that the capability exists only under significant constraints,
+typically requiring root, debugging permissions, or vendor or forensic
+access. The entries describe the device in its stock, as-sold
+configuration. An owner who unlocks the bootloader and installs an
+owner-controlled system can move several Android entries toward the
+Linux column, but only by forfeiting the attestation standing discussed
+in Section 8 and, with it, the ability to run the applications that
+depend on it; the comparison therefore characterizes the trade-off the
+owner faces on the device as sold, not an immutable property of the
+hardware.
+
+Table 3. Comparison of malware-analysis capabilities: traditional Linux
+versus stock Android (as sold).
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Aspect
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Traditional Linux
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Stock Android (as sold)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+System access (examiner-controlled) & Yes -\/- full root access common
+in testbeds and forensic imaging & No -\/- root typically restricted;
+requires manufacturer unlock (often unavailable) or an exploit to gain
+privileged access \\
+User-controlled root & Yes -\/- commonly available in lab and test
+environments and on self-managed systems & No -\/- not available on the
+device as sold; typically requires bootloader unlock, custom builds, or
+an exploit \\
+Raw disk imaging & Yes -\/- straightforward via standard forensic
+imaging workflows, including booting from external media & No -\/- not
+feasible on the device as sold; generally requires root, an unlocked
+bootloader, or specialized vendor or forensic access \\
+Live memory acquisition & Yes -\/- readily possible with standard
+memory-capture tooling & No -\/- not feasible without root; no official
+RAM-acquisition interfaces \\
+Kernel analysis & Yes -\/- kernel modules can be inserted, traced, or
+extracted; symbols often available & No -\/- unavailable on the device
+as sold without root, special builds, or vendor support \\
+Kernel integrity verification & Yes -\/- possible using external boot
+media and host-controlled integrity tooling & No -\/- not available in a
+user-controlled way; verification is typically limited and
+vendor-controlled \\
+Independent OS attestation & Yes -\/- possible by booting a trusted
+environment and performing independent integrity checks & No -\/-
+limited on the device as sold; attestation and integrity guarantees are
+typically vendor-controlled \\
+Binary reverse engineering & Yes -\/- straightforward access to malware
+files, system binaries, and logs & Partial -\/- possible, but often
+limited to application-level packages unless rooted or firmware access
+is available \\
+Hook and injection analysis & Yes -\/- library preloading, process
+tracing, and syscall interposition easily observed & Partial -\/-
+requires rooting; SELinux and sandboxing block injection methods by
+default \\
+Dynamic instrumentation & Yes -\/- tracing and debugging tools available
+and effective & Partial -\/- requires root or debugging permissions \\
+Filesystem analysis & Yes -\/- full access to logs, temporary files,
+droppers, and rootkits & Partial -\/- the application sandbox limits
+access to other applications\textquotesingle{} data; root or a forensic
+image is required for a full view \\
+Network monitoring and command-and-control analysis & Yes -\/-
+packet-capture and filtering tools usable without restriction & Partial
+-\/- requires root or VPN-based monitoring \\
+External monitoring & Yes -\/- broad options, including out-of-band
+approaches and host-controlled capture and analysis & No -\/- limited on
+the device as sold; out-of-band monitoring is generally unavailable
+without elevated access or specialized tooling \\
+Log-based forensics & Yes & Partial -\/- limited; absence of traces
+after thorough manual analysis does not establish that a device was not
+compromised, and log-based methods may need to be combined with other
+forensic techniques where compromise is strongly suspected
+\citep{socialtic-log-forensics} \\
+\end{longtable}
+
+\subsection{11. Limitations on Encryption Key
+Backups}\label{limitations-on-encryption-key-backups}
+
+Backing up the device\textquotesingle s encryption keys is not
+reasonably easy. Recent devices use file-based encryption, mandatory
+since Android 10 \citep{aosp-file-based-encryption}; the keys that
+protect user data are not held as ordinary files the owner can copy but
+are wrapped by a key bound to hardware-backed secure storage, such as a
+secure element or trusted execution environment, which places the
+protective key beyond the owner\textquotesingle s reach. (Earlier
+devices used full-disk encryption, which likewise bound its master key
+to hardware rather than exposing it as a copyable file
+\citep{aosp-full-disk-encryption}.) The use of a hardware-protected key
+is not in itself anomalous or an indication of a backdoor.
+
+It is, rather, the normal arrangement in most Linux desktop
+distributions that offer full-disk encryption. In those systems the
+master key is itself stored on disk, and entering the passphrase at boot
+decrypts not the disk directly but the master key, which in turn
+decrypts the volume. The arrangement allows the passphrase to be changed
+without re-encrypting the entire volume, since only the stored master
+key must be re-wrapped. The difference on a stock device is that
+hardware protection of the key places it beyond the
+owner\textquotesingle s reach rather than leaving it in a file the owner
+could back up.
+
+Backing up the key may be possible on some devices if the device still
+boots and root can be obtained, but for most owners this is not
+straightforward.
+
+\subsection{12. Objections and
+Counterarguments}\label{objections-and-counterarguments}
+
+A principal objection holds that practical forensic tooling for mobile
+devices already exists and therefore contradicts the claim that stock
+devices resist verification. The Mobile Verification Toolkit (MVT), a
+consensual forensic tool intended to help analyze mobile devices for
+signs of spyware, is the usual example.
+
+There is, however, no contradiction. Such a tool can identify known
+indicators of compromise using the data that the device exposes, but the
+stock mobile operating-system design limits that observability. The
+toolkit\textquotesingle s own documentation states that Android devices
+provide much less observability than comparable iOS devices, that
+Android stores very little diagnostic information useful for triaging
+potential compromises, and that the toolkit\textquotesingle s Android
+capabilities are correspondingly limited, while noting that not all is
+lost \citep{mvt-android-methodology}. Investigators are thus obliged to
+work with partial data and with known indicators of compromise, and a
+lack of findings is not definitive proof that a device was not
+compromised.
+
+Independent forensic experience reinforces this. Investigating NSO
+Group\textquotesingle s Pegasus spyware, Amnesty
+International\textquotesingle s Security Lab reported that significantly
+more forensic traces are accessible to investigators on Apple iOS
+devices than on stock Android devices, and that its methodology was
+focused on iOS for that reason; as of that 2021 report, most of the
+then-recently confirmed Pegasus infections had involved iPhones
+\citep{amnesty-pegasus-methodology}. The report cautions that this does
+not by itself establish that iOS is more secure than Android. The same
+report characterized the difficulty of detecting attacks even after the
+fact as the result of an asymmetry between the capabilities available to
+attackers and the protections available to targeted individuals,
+observed that devices other than iOS provide little to no help for
+consensual forensic analysis, and encouraged device vendors to make
+their devices more auditable without sacrificing existing security and
+privacy protections \citep{amnesty-pegasus-methodology}. These
+observations support, rather than undermine, the conclusion that limited
+observability is a property of the platform design.
+
+A second objection points to aftermarket Android-based operating systems
+-\/- GrapheneOS, CalyxOS, LineageOS, /e/OS, postmarketOS, and others
+-\/- as counterexamples that an owner can install in place of the
+vendor\textquotesingle s build. They do not form a single case, and the
+differences are exactly what the owner-inspectability criterion
+measures. Most such systems are installed with the bootloader left
+unlocked, because the device cannot be re-locked against a key the
+vendor does not recognize, and an unlocked bootloader cuts both ways
+against the owner-inspectability criterion. It restores much of what the
+criterion\textquotesingle s first half demands: the owner regains
+privileged, at-rest inspection a stock device withholds -\/- imaging the
+partitions above all, and, on well-supported hardware, booting an
+owner-controlled kernel or recovery to instrument the system -\/- the
+capabilities Sections 9 and 10 found absent. This reaches less far in
+practice than in principle: a fully functional owner-built kernel is
+confined to a minority of devices, because the vendor
+hardware-abstraction interface \citep{aosp-hal}, the generic-kernel
+module boundary \citep{aosp-gki}, \citep{aosp-loadable-kernel-modules},
+and non-rebuildable firmware blobs tie working hardware to the
+vendor\textquotesingle s own code; and the suspect
+system\textquotesingle s live memory stays out of reach, since live
+acquisition runs in the already-booted kernel, so booting
+one\textquotesingle s own kernel first reboots the device and discards
+the volatile state that soldered memory already places beyond trusted
+external capture (Section 13). What it gives up is the
+criterion\textquotesingle s second half: without a locked chain the boot
+images are no longer cryptographically verified against a hardware root
+of trust on each startup, and although hardware key attestation still
+functions it can now report only an unverified boot state, not certify a
+locked, vendor-approved one, so a tamper of the boot chain between
+inspections is no longer prevented but at best detectable by hand. Such
+an installation therefore satisfies inspection while giving up the
+enforced, attestable verified-boot state -\/- an illustration of the
+squeeze this paper describes, not a counterexample to it. A smaller
+number support re-locking the bootloader after installation
+\citep{grapheneos-install-locking}, \citep{grapheneos-setup-wizard}, and
+this is where the owner-inspectability criterion does its sharpest
+discriminating work, because the re-locked chain can be anchored to
+either of two very different keys. Anchored to the
+project\textquotesingle s own key -\/- the default when an owner flashes
+official GrapheneOS release builds, which replace the
+vendor\textquotesingle s verified-boot key in the
+device\textquotesingle s secure element with
+GrapheneOS\textquotesingle s own \citep{grapheneos-install-locking} -\/-
+re-locking restores verified boot but only substitutes one
+vendor\textquotesingle s root of trust for another\textquotesingle s:
+the signing key is now GrapheneOS\textquotesingle s rather than
+Google\textquotesingle s, and the owner still does not hold it. On the
+key-control half of the criterion this official-build configuration is
+the stock position with a different, more transparent vendor, not owner
+control of the boot chain; swapping an official Google image for an
+official GrapheneOS image changes the vendor, not the
+owner\textquotesingle s standing. Even having such a build whitelisted
+for the hardware-backed integrity verdicts would be relying-party
+acceptance, not owner inspection. GrapheneOS is nonetheless the
+furthest-developed case on which to test the thesis, because it adds
+what the stock platform withholds from the owner: owner-accessible
+attestation tooling -\/- the Auditor app, which from a second device
+verifies that the system is the expected, untampered build running on a
+locked bootloader \citep{grapheneos-auditor}, built on the standard
+hardware attestation primitive but packaged as a verify-to-yourself
+capability rather than a relying-party one. The configuration that
+actually meets the key-control half is the other anchoring: an owner who
+builds GrapheneOS from source, signs it with keys they generate and
+keep, and re-locks to their own enrolled verified-boot key holds a root
+of trust that is genuinely theirs \citep{grapheneos-build} -\/- though
+the stock Auditor does not recognize that owner key: its attestation
+accepts only official GrapheneOS keys for a self-signed state
+\citep{grapheneos-attestation-compat}, so verifying an owner-signed
+build to a second device needs a verifier the owner configures with
+their own key. That owner-signed path is the strongest available
+approximation of an owner-inspectable device, and the right case on
+which to test the thesis.
+
+Even there the limitations are relocated, not dissolved. The
+owner-signed configuration delivers verified boot under the
+owner\textquotesingle s own key, but it steps outside any
+pre-established attestation relationship, so the "prove it to a
+skeptical third party" goal is met only against verifiers the owner has
+personally provisioned -\/- one configured with the
+owner\textquotesingle s own key, or an application developer who has
+chosen to accept it. Decisively for everyday use, neither the
+owner-signed build nor the official GrapheneOS build is a
+Google-certified configuration, so neither obtains the device-integrity
+or strong attestation verdicts that mainstream applications increasingly
+demand \citep{play-integrity-improvements},
+\citep{owasp-mastg-play-integrity}: the same owner-controlled posture
+that makes the device inspectable makes a growing set of applications
+refuse to run on it, and GrapheneOS\textquotesingle s stated position is
+that it will not spoof or otherwise circumvent these checks to
+impersonate a stock device \citep{grapheneos-usage}. Other
+owner-controlled systems take the opposite tack: the microG-based
+distributions CalyxOS and /e/OS bundle a reimplementation of Google Play
+Services that depends on signature spoofing to impersonate those
+services to the apps that call them \citep{microg-gmscore},
+\citep{calyxos-microg}, \citep{eos-microg}, and rooted owners add
+integrity-masking modules -\/- Universal SafetyNet Fix and the Play
+Integrity Fix family, optionally paired with a keybox provider such as
+Tricky Store -\/- that spoof the attestation signals themselves
+\citep{safetynet-fix}, \citep{playintegrityfork}, \citep{tricky-store}.
+Signature spoofing of this kind restores access to
+Google\textquotesingle s APIs, not a passing attestation: microG obtains
+at most the software basic-integrity verdict, while the hardware-backed
+device and strong verdicts require a certified device with a locked
+bootloader and stay out of reach \citep{eos-microg}, so the banking- and
+payment-application refusals of Section 8 persist on these systems -\/-
+CalyxOS\textquotesingle s own guidance states that compatibility depends
+on the specific app and that apps requiring full Play Services
+integration, such as Google Pay, will still not work
+\citep{calyxos-banking}. That spoofing path is itself narrow and
+shrinking: as Section 8 describes, only the basic and legacy
+pre-Android-13 verdicts fall to software spoofing -\/- Universal
+SafetyNet Fix states that "Android versions up to 13 are supported" and
+has been unmaintained since 2023 \citep{safetynet-fix} -\/- while the
+hardware-backed verdict on devices launched with Android 13 or later
+yields only to a leaked attestation keybox, and those are not durable,
+publicly shared keys being banned by Google as they surface
+\citep{playintegrityfork}, \citep{tricky-store}; it is the steadily
+losing arms race Section 13 describes \citep{nguyen-vu-android-rooting}.
+Aftermarket operating systems thus confirm rather than refute the
+paper\textquotesingle s thesis: owner-inspectability is attainable, but
+only by leaving the as-sold, vendor-keyed configuration behind, after
+which the attestation ecosystem imposes the functional penalty described
+in Section 8. For the overwhelming majority of devices, which run their
+as-sold vendor software, the inspection limits catalogued here are
+unchanged.
+
+One limit even this configuration cannot reach is that the owner still
+cannot independently image or re-verify every component the device runs.
+The cellular baseband is the clearest case: it executes its own
+vendor-controlled firmware on a separate processor that the
+application-processor operating system -\/- stock or aftermarket -\/-
+does not inspect, and remotely exploitable memory corruption in a
+baseband stack is a demonstrated class of attack
+\citep{weinmann-baseband}. A discrete secure element, where present,
+likewise runs vendor firmware on its own chip. The trusted execution
+environment should not be conflated with these: on a platform such as
+this one it shares the application processor and is signed and checked
+by the bootloader, so it falls under verified boot rather than being an
+uninspected separate processor; its limitation for the owner is that its
+firmware, like the baseband\textquotesingle s, is not something the
+owner can independently image and audit, not that it runs unverified.
+The broader pattern is that persistent implants have migrated toward
+low-level firmware beneath the operating system, installable by ordinary
+malware once the system is compromised \citep{zaddach-hdd-backdoor}; the
+strongest owner-inspectable configuration still cannot independently
+audit that firmware layer, echoing in a new place the principle that a
+system cannot be trusted to report truthfully on its own state
+\citep{thompson-trusting-trust}.
+
+Verified boot is itself a strong defense but not an absolute one, and
+the owner cannot independently confirm that it holds. Its guarantees
+rest on assumptions -\/- that the signing keys stay secret, and that the
+bootloader and trusted execution environment enforcing the chain are
+themselves correct -\/- and these have been broken. Platform signing
+keys have leaked and been used to sign malware in the wild
+\citep{apvi-platform-certs}, and bootloader and
+trusted-execution-environment compromises that would subvert the chain,
+including extraction of the hardware key material that underpins
+attestation, have been demonstrated in research and are reachable by
+malware that already controls the operating system, though none has been
+observed as an in-the-wild boot implant on a locked device
+\citep{bootstomp}, \citep{shakevsky-trustzone}. Such malware cannot
+simply overwrite the bootloader -\/- the immutable hardware root of
+trust above it verifies the bootloader\textquotesingle s signature and
+refuses a tampered image -\/- but it can exploit a flaw in the signed
+bootloader or trusted code to execute within the chain, which is how a
+software-only compromise reaches beneath the operating system. The
+hardware root of trust that anchors this check is itself a physical
+assumption rather than an absolute: the boot ROM is typically immutable
+mask ROM, so where it is a flaw in it is permanent and unpatchable, and
+glitching it can bypass signature verification altogether
+\citep{ncc-mediatek-bootrom} -\/- a class not specific to one vendor
+\citep{checkm8-vu}; some systems-on-chip instead expose a ROM-patch
+path: a small vendor-signed patch, held in one-time-programmable fuses,
+that redirects the boot ROM\textquotesingle s early execution and is
+itself locked by a fuse \citep{opentitan-rom-patch}. Immutability is
+therefore a vendor design choice rather than a constant, and either way
+the mechanism is the vendor\textquotesingle s and not the
+owner\textquotesingle s; and being signed code gated by fuses, that
+patch path is itself subject to the same key-compromise and glitching
+failure modes, and adds early-boot attack surface of its own. An
+invasive silicon attack can further read out the fused device keys
+beneath the chain \citep{ioactive-antifuse}; but every such defeat
+documented to date requires physical possession of the device and
+belongs to the forensic and unlock class, not to any remote, in-the-wild
+implant on a locked consumer phone. A remote-seeded, locally-triggered
+variant -\/- malware or a malicious update planting malformed data that
+an early boot stage parses on the next boot -\/- is conceivable in
+principle, but none has been documented, and on a locked device the code
+the boot ROM loads is signature-verified against a fuse-anchored key
+\citep{aosp-verified-boot}, so a purely over-the-air boot-ROM compromise
+is not a realistic or observed attack surface. The deeper point for the
+owner is epistemic: on the stock, vendor-keyed configuration the green
+boot state the device shows and the attestation certificate it presents
+are the platform\textquotesingle s own self-report, which a sufficiently
+deep breach can forge and which the owner has no independent means to
+check. This limit is the hardware beneath the chain, not the
+verified-boot signing key above it: on devices that support it, Pixel
+among them, the owner can enroll a custom signing key and re-lock to it,
+reaching a yellow boot state whose on-screen key fingerprint the owner
+can themselves verify \citep{aosp-boot-flow}, \citep{aosp-device-state}
+-\/- what stays beyond any owner is the boot ROM and the fused keys
+under that key, which none can replace or read out.
+
+\subsection{13. Discussion}\label{discussion}
+
+The limitations examined here are not independent defects but facets of
+a single design choice: administrative capability is withheld from the
+device owner and conferred only on the vendor and manufacturer. Verified
+boot, sandboxing, mandatory access control, attestation, and
+hardware-bound key storage each advance the platform\textquotesingle s
+assurance that only approved, unmodified software runs, and each
+simultaneously removes a means by which an owner might inspect the
+device from a trusted vantage point. The circular trust dependency of
+Section 8 is the sharpest expression of the tension: the configurations
+an owner would need in order to verify the device are exactly those the
+platform declines to trust.
+
+The owner is consequently placed in a position analogous to that of an
+attacker with respect to introspection -\/- indeed a worse one: these
+controls foreclose the owner\textquotesingle s sole avenue -\/-
+modifying the device to inspect it -\/- while leaving open the runtime
+and sub-operating-system routes the capable adversary of Sections 8 and
+12 uses, and the owner brings none of an attacker\textquotesingle s
+willingness to damage the device. The practical recourses -\/-
+JTAG-based memory acquisition, chip-level storage extraction, and
+exploit-driven temporary root -\/- are, respectively, rarely available,
+destructive or specialized, and dependent on the existence of
+exploitable vulnerabilities that the platform is otherwise trying to
+eliminate. The physical-acquisition path is further foreclosed where
+unlocking the bootloader triggers a mandatory wipe of user data, so that
+gaining access to the storage also erases its contents
+\citep{aosp-bootloader-locking}. None of these recourses offers the
+routine, non-destructive, owner-driven verification that the threat
+model of Section 3 calls for, and, as Sections 3 and 8 established, even
+a successful temporary root yields only a bounded in-system privilege on
+a device that has already forfeited its attested standing -\/- not the
+external, trusted vantage point that verification requires. Nor would
+more privilege close the gap: a kernel-space rootkit manipulates the
+very kernel structures that any in-system observer, root included, must
+query, so it can neutralize a privileged security tool and falsify its
+results regardless of the privilege level at which that tool runs
+\citep{guri-joker-jtag}, \citep{bickford-rootkits-smartphones}.
+Subversion-resistant detection must therefore observe the system from
+outside the running operating system \citep{guri-joker-jtag},
+\citep{garfinkel-vmi}, echoing the long-established principle that a
+system cannot be trusted to report truthfully on its own state
+\citep{thompson-trusting-trust}.
+
+The contrast with a fully controlled host is one of category, not merely
+degree. On a desktop or server the baseline acquisition workflow -\/-
+detach the storage and image it through a write blocker, a device that
+passes read commands while blocking any that would alter the drive, so
+the acquisition does not modify the evidence \citep{nist-sp800-101r1},
+\citep{nist-hwb-spec}, then decrypt the image with the
+owner\textquotesingle s passphrase-derived key -\/- is available to
+essentially any owner, and remains so even though the storage device
+itself runs opaque controller firmware that a determined attacker can
+subvert: compromising the firmware of a commercial off-the-shelf drive
+to backdoor data as it is written has been demonstrated using only
+public information and reverse engineering, installable by ordinary
+malware once the operating system is compromised
+\citep{zaddach-hdd-backdoor}, and such drive-firmware implants have been
+found in the wild \citep{kaspersky-equation}, with persistence that
+survives disk formatting and a full operating-system reinstall
+\citep{kaspersky-equation-qa}. Implants one layer lower still, in the
+motherboard\textquotesingle s own UEFI flash, persist even across a
+storage replacement, because they do not reside on the storage at all
+\citep{eset-lojax}. That residual is real, but it is a different thing
+from the phone\textquotesingle s barrier: an advanced and partially
+mitigable attack vector layered beneath an acquisition path that
+otherwise works, not a wall that forecloses the path for every owner. On
+a stock phone the same baseline workflow is foreclosed at its first
+step, because the storage is soldered, and at its last, because even a
+successful chip-level read returns the user\textquotesingle s data as
+ciphertext under a hardware-bound key. The firmware-implant concern,
+common to both platforms and marking the floor of what either owner can
+verify, thus compounds on the phone a barrier that is already
+categorical rather than standing, as on the host, as the one residual
+beneath an otherwise working path.
+
+Hardware memory acquisition sharpens the same contrast, but only partly,
+because it is closing on both sides. On a conventional computer an
+examiner can in principle capture RAM from outside the running operating
+system -\/- by direct memory access over an expansion bus
+\citep{markettos-thunderclap}, \citep{frisk-pcileech} or by exploiting
+the residual charge in DRAM after a cold reboot
+\citep{halderman-coldboot} -\/- yet modern platforms increasingly block
+such access with an input-output memory management unit
+\citep{markettos-thunderclap}, and cold-boot capture needs physical
+access to the memory. A stock phone forecloses even this residual
+avenue: its memory is soldered in package-on-package stacks that cannot
+be transplanted, it exposes no external bus capable of such access, and
+the one demonstrated on-device cold-boot variant first required
+unlocking the bootloader, which wipes the user data it sought to recover
+\citep{muller-frost-coldboot}.
+
+Table 4 sets the owner\textquotesingle s control over each layer of the
+stack side by side for the two platforms, read downward from the
+bootloader to the firmware beneath the operating system. The pattern is
+a categorical difference across the upper, operating-system-and-boot
+layers, where the personal-computer owner holds administrative control
+and the stock-phone owner holds none, and a shared opaque floor at the
+firmware and management-coprocessor layers below them, where neither
+owner can inspect what runs.
+
+Table 4. Owner control over the stack: traditional personal computer
+versus stock Android (as sold).
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Stack layer
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Traditional personal computer (owner)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Stock Android, as sold (owner)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Bootloader & Replaceable; Secure Boot is optional, and the owner can
+enroll custom keys or disable it & Locked and vendor-signed; unlocking
+wipes user data and drops attestation, and some devices are unlockable
+only by exploit or not at all \\
+Kernel & Owner builds and boots an arbitrary kernel & Vendor-signed boot
+image; a custom kernel requires unlocking \\
+Kernel modules & Owner loads arbitrary modules & Lockdown,
+module-signature, and dm-verity enforcement restrict loading \\
+initramfs & Owner controls & Part of the signed boot image; not
+owner-modifiable on stock \\
+init (first userspace, PID 1) & Owner chooses or replaces the init
+system, and can boot to an alternate init or single-user mode & Android
+init ships in the signed ramdisk and system partitions under verified
+boot and dm-verity, runs under SELinux, and is not owner-modifiable on
+stock \\
+Operating system & Owner installs any operating system & A custom
+operating system requires unlocking and incurs an attestation penalty \\
+In-system superuser (root) & Available to the owner by default &
+Withheld as sold; reachable only by exploit or unlocking, and then
+bounded by SELinux and kernel lockdown \\
+Boot an external trusted system & Yes, from external media & Not
+supported \\
+Remove and image storage & Yes: detach the storage and image it on a
+trusted controller & Storage is soldered; chip-level reading is
+destructive, and the data returns as ciphertext under a hardware-bound
+key \\
+Platform firmware & BIOS/UEFI: reflashable but vendor-signed and opaque
+in practice, and in-the-wild implants have been demonstrated
+\citep{eset-lojax} & Bootloader and vendor firmware: vendor-controlled
+and owner-opaque \\
+Management co-processor & Intel ME or AMD PSP: a vendor-firmware
+co-processor the owner cannot inspect -\/- the ME embedded in the
+chipset with privileged access to platform data
+\citep{ermolov-intel-me}, the AMD-SP a boot-time root of trust that runs
+before the main cores \citep{jacob-faultpm} & Cellular baseband, and any
+discrete secure element: vendor firmware on separate silicon the owner
+cannot inspect \citep{weinmann-baseband} \\
+Storage-controller firmware & Opaque; controller-firmware implants
+demonstrated in the lab \citep{zaddach-hdd-backdoor} and found in the
+wild \citep{kaspersky-equation} & Opaque \\
+\end{longtable}
+
+The division is systematic. On the personal computer the owner commands
+the entire operating-system-and-boot stack and is blocked only at the
+firmware and management-coprocessor floor; on the stock phone the owner
+commands essentially none of the stack, so the same firmware floor sits
+beneath a barrier that is already categorical at every layer above it.
+Administrative control, in the sense defined in Section 3, is exactly
+what the left column has and the right column lacks; root, where a phone
+owner reaches it, adds only the single "in-system superuser" row and
+leaves every other row unchanged.
+
+The ease of this recourse is routinely overstated. The casual
+prescription to "just root it" presumes an act that retail devices are
+configured to resist: they ship with the bootloader locked, and
+unlocking it -\/- where the vendor permits it at all -\/- is gated
+behind an explicit warning and a mandatory wipe of user data
+\citep{aosp-bootloader-locking}, \citep{aosp-boot-flow}. A large and
+well-documented class of carrier- and vendor-locked devices cannot be
+unlocked by their owners at all, or only by means of an exploit
+\citep{bootloader-wall-of-shame}. Unlocking is widely said to void the
+device warranty, although consumer-protection law in the United States
+and the European Union limits blanket voiding and requires a defect to
+be causally linked to the modification before coverage may be refused
+\citep{magnuson-moss-act}, \citep{eu-directive-2019-771}. Several
+mainstream vendors attach irreversible hardware-level consequences to
+unlocking, by distinct mechanisms rather than a single universal one:
+one permanently trips a one-time-programmable e-fuse that disables
+hardware-backed attestation and the protected features that depend on it
+and cannot be reset \citep{samsung-knox-hw-security}; another
+irrevocably erases device-unique keys that relocking does not restore
+\citep{sony-unlock-bootloader}; and one-time-programmable (eFuse)
+hardware is, more generally, the standard system-on-chip primitive for
+secure-boot enablement and anti-rollback enforcement, whose blowing is a
+one-way operation \citep{qualcomm-secure-boot}. The honest
+counter-example is that not every platform is irreversible: on some
+devices unlocking can be reversed and the verified-boot and attestation
+state is restored on relocking -\/- to the full state under the
+vendor\textquotesingle s stock key, or to a reduced state under an
+owner-enrolled key \citep{aosp-verified-boot},
+\citep{aosp-key-id-attestation}. Even there the squeeze holds, because
+the reversible path returns the owner to the vendor-keyed configuration
+without ever granting the top attestation standing while the device
+remains open to inspection. Taken together, these frictions make
+unlocking a high-barrier step rather than a routine one. The privileged
+state an owner does reach is, as Section 8 established, self-defeating
+for verification; and the cloaking tools owners deploy to pass integrity
+checks work only by impersonating a still-vulnerable stock device,
+leaving them locked in a steadily losing arms race against detection
+\citep{nguyen-vu-android-rooting}.
+
+The unlock procedure is, moreover, not silent to software already
+resident on the device. Preparing a device for inspection changes
+observable system state, and unlocking the bootloader triggers a
+mandatory wipe that destroys the user-data partition before any image of
+it can be taken -\/- so the inspection a high-threat owner attempts can
+itself alert, and then erase, a resident implant. That such
+environmental signals drive evasion is established rather than
+speculative: measurement studies show modern malware checks for
+virtualized or instrumented environments and withholds its behavior when
+it detects them \citep{chen-anti-virtualization},
+\citep{ruggia-evasive-malware}, and the anti-forensics literature names
+the matching capabilities of artifact wiping, trail obfuscation, and
+self-removal \citep{garfinkel-anti-forensics},
+\citep{mitre-attack-evasion}. Mobile spyware has combined the two in the
+wild: NSO\textquotesingle s Pegasus for Android shipped "suicide
+functionality to remove itself" \citep{lookout-chrysaor} (Suicide
+Functionality section), triggered among other cases when it cannot find
+a valid cellular subscriber identity -\/- behavior attributed to
+avoiding analysis and emulator environments -\/- while the iOS variant
+self-destructs when "a great probability of exposing the agent exists"
+\citep{marczak-million-dollar-dissident} (Section 3.5), and later
+versions were observed deleting their own process records to hide their
+traces \citep{amnesty-pegasus-methodology}. The specific loop -\/- an
+implant watching for unlock preparation and erasing itself before
+acquisition -\/- remains a reasoned extrapolation rather than a
+documented exploit; its constituent capabilities are each demonstrated,
+and the principle that a compromised system cannot be trusted to report
+truthfully on itself is long established
+\citep{thompson-trusting-trust}, \citep{garfinkel-vmi}. The nearest
+realized case, the Rombertik malware, destroys its host on detecting
+that its own code has been analyzed \citep{talos-rombertik}; this is a
+genuine detect-then-destroy reaction, but it is keyed to tampering with
+the malware\textquotesingle s own image rather than to a forensic
+acquisition, and it wrecks the host rather than quietly erasing the
+implant so the device passes inspection clean. No reported case closes
+the precise loop posited here.
+
+\subsubsection{Limitations of this
+analysis}\label{limitations-of-this-analysis}
+
+Several limitations bound the claims made here. The paper is a
+systematization of existing evidence, not a new empirical study: it
+reports no measurements of its own, and where the literature is thin
+-\/- notably on the precise prevalence of attestation-gated applications
+and on the fraction of devices for which hardware acquisition is
+feasible -\/- it says so rather than substituting an estimate. Its
+central construct, owner-inspectability, is a qualitative criterion
+rather than a metric; this paper defines and applies it but does not
+quantify it, and an operational scale by which devices and
+configurations could be scored is left to future work. The analysis is
+deliberately scoped to the owner\textquotesingle s standpoint and to the
+Android platform as shipped on mainstream devices; it does not weigh the
+owner-side costs against the genuine ecosystem-wide benefits that the
+same mechanisms deliver against running adversaries, which the platform
+literature documents \citep{mayrhofer-android-security-model}, and it
+does not extend its specific claims to other platforms except where a
+cited source does so. Finally, the platform is a moving target: verdict
+tiers, acquisition techniques, and project capabilities change between
+releases, and the specific mechanisms cited here are current as of
+writing rather than permanent.
+
+A measured reading is that the platform optimizes for resistance to the
+ordinary running adversary at the cost of owner-side auditability, and
+that the two objectives, while not strictly incompatible, are in current
+designs rarely satisfied together. The forensic literature surveyed here
+does not claim that compromise is undetectable on stock devices; it
+claims that detection is constrained by observability, that negative
+results are weak evidence, and that auditability could be improved
+without abandoning existing protections. That position suggests a design
+space -\/- owner-attestable inspection modes, exportable integrity
+measurements, or supported trusted-boot verification paths -\/- in which
+verifiability and platform integrity might be advanced together rather
+than traded off.
+
+\subsection{14. Conclusion}\label{conclusion}
+
+Vendor-locked devices systematically limit the owner\textquotesingle s
+ability to inspect, control, and independently verify the software they
+run. Stock Android, the most openly specified such platform and this
+paper\textquotesingle s worked example, is the case developed here: the
+owner cannot practically examine the whole system from a clean, trusted
+environment; application and update delivery is mediated by centralized
+providers whose abuse could enable targeted malicious installation;
+internal storage and live memory are inaccessible without withheld
+privileges; attestation couples a device\textquotesingle s attested
+standing to the device remaining unmodified; low-level rootkit detection
+generally demands a trusted memory snapshot taken from outside the
+running system; and the established techniques of host-based malware
+analysis are, as a class, unavailable without first breaking the
+verified-boot and attestation guarantees the platform enforces.
+Obtaining root does not lift these limits, because root on a hardened
+device is a bounded in-system privilege -\/- not the full administrative
+control over the boot chain, kernel, and firmware that an owner would
+need -\/- and reaching it forfeits the attested status the owner is
+trying to preserve. Backing up the hardware-bound encryption key is
+likewise impractical for most owners. The existence of consensual
+forensic tooling, and of hardened aftermarket operating systems such as
+GrapheneOS, does not overturn these conclusions: such tooling is bounded
+by the limited diagnostic data the platform exposes, owner-inspectable
+configurations are reachable only by leaving the as-sold device behind
+and paying an attestation penalty to do so, and an absence of findings
+is accordingly weak evidence of integrity. These limits are not
+accidents of one vendor\textquotesingle s engineering but consequences
+of vendor-lock itself, and the owner\textquotesingle s structural
+position recurs, to varying degrees, on other vendor-locked devices.
+Treating security as owner-side verifiability, rather than as
+platform-side policy enforcement, makes these limitations visible as a
+coherent whole and identifies owner-inspectability as the property most
+in need of improvement.
+
+  \bibliography{refs}
+
+\end{document}

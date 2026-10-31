@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /*.pdf$
+Disallow: /*.tex$
+Disallow: /*.bib$
+
+Sitemap: https://computer-security-research.github.io/sitemap.xml

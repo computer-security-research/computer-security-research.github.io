@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+<title>Computer Security Research</title>
+<link>https://computer-security-research.github.io/</link>
+<description>Occasional computer-security research previews, posted for public commentary.</description>
+  <item><title>Limits of Independent Security Verification on Vendor-Locked Devices</title><link>https://computer-security-research.github.io/android-insecurity/</link><guid isPermaLink="true">https://computer-security-research.github.io/android-insecurity/</guid><pubDate>Sat, 24 Oct 2026 00:00:00 +0000</pubDate><description>Vendor-locked devices, most prominently stock Android phones with a locked bootloader and no administrator access, are general-purpose computers whose owners are nonetheless structurally prevented from fully inspecting, controlling, or verifying the software running on their own device. Taking Andro</description></item>
+</channel></rss>
