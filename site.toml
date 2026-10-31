@@ -10,6 +10,12 @@ license = "All rights reserved"
 license_url = ""
 language = "en"
 
+# Repo blob root for the "Markdown source" links on each article + its sources
+# page (-> <base>/articles/<slug>/{paper,source-quotes}.md). The public Pages-home
+# repo: permanent + vendor-neutral (never the interim org-ai-assisted mirror,
+# which the served-content gate forbids and which will break on the org move).
+source_base_url = "https://github.com/computer-security-research/computer-security-research.github.io/blob/master"
+
 # Consistent footer navigation, rendered identically on every page (relative
 # hrefs are resolved from each page's depth). Vendor-neutral and standalone.
 footer_links = [
