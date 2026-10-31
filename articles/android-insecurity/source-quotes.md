@@ -216,6 +216,18 @@ with their reason -- never with an approximate quote.
 - Quote: "Your device's bootloader has to be unlocked" / "you need to patch the partition
   image that contains the ramdisk".
 
+## [@playintegrityfork] Play Integrity Fork -- a masking module's own admission it cannot forge the hardware-backed verdict
+
+- Paper claim (Sec. 8): integrity-masking modules spoof software-visible signals and pass only
+  the basic/lock-agnostic verdict; the hardware-backed device and strong verdicts yield only to
+  a leaked, unrevoked hardware keybox, not to spoofing.
+- URL: https://github.com/osm0sis/PlayIntegrityFork (retrieved Oct. 31, 2026)
+- Quote: "relies on locked bootloader checks to pass even DEVICE integrity" / "you can't use
+  values from recent devices due to them only being allowed with full hardware backed
+  attestation".
+- Supporting quote: "Using Tricky Store to achieve <A13 PI STRONG integrity (with an unrevoked
+  hardware keybox.xml)".
+
 ## [@amnesty-pegasus-methodology] Amnesty International -- fewer forensic traces on Android than iOS
 
 - Paper claim (Sec. 10): significantly more forensic traces are accessible on iOS than stock
