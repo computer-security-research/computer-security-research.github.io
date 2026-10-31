@@ -49,12 +49,20 @@ jobs:
           path: journal-maker
           persist-credentials: false
 
-      - name: Install PDF dependencies
+      - name: Check out dist-ai (webcheck suite)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: org-ai-assisted/dist-ai
+          path: dist-ai
+          persist-credentials: false
+
+      - name: Install PDF + check dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
             pandoc texlive-latex-recommended texlive-fonts-recommended lmodern \
-            poppler-utils qpdf citation-style-language-styles
+            poppler-utils qpdf citation-style-language-styles \
+            python3-bs4 python3-html5lib python3-pil python3-yaml python3-defusedxml
 
       - name: Render PDFs into the committed site (no HTML rebuild)
         run: |
@@ -66,6 +74,16 @@ jobs:
 
       - name: Scholar / PDF / security check
         run: journal-maker/usr/bin/journal-maker check content/_site
+
+      # Fail-closed on what is actually SERVED: the deploy org never runs
+      # build.yml (owner-gated, no CI var), so gate the committed _site here too.
+      - name: Static consistency (check_site)
+        run: ./dist-ai/usr/share/website-tests/check_site.py "${GITHUB_WORKSPACE}/content/_site"
+
+      # Block active-content SVG (stored XSS on the header-less Pages origin)
+      # before it can be uploaded + deployed.
+      - name: SVG active-content safety
+        run: ./dist-ai/usr/share/website-tests/check_svg_safety.py "${GITHUB_WORKSPACE}/content/_site"
 
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5

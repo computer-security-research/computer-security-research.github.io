@@ -7,9 +7,9 @@ name: build-and-check
 
 "on":
   push:
-    branches: [master, main]
+    branches: [master, main, ai]
   pull_request:
-    branches: [master, main]
+    branches: [master, main, ai]
   workflow_dispatch:
 
 permissions:
