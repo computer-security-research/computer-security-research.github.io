@@ -1,18 +1,4 @@
-# Source quotes (reviewer aid)
-
-Verbatim source passages behind the paraphrased claims in the paper, keyed by the same
-`@citekey` as `refs.bib` and the body, so a reviewer can check each paraphrase against the
-original wording. journal-maker publishes a read-only HTML rendering of this file beside
-the paper (linked from the article) as a review aid. It is NOT part of the paper and must
-be stripped -- or the few genuinely needed quotes converted to short inline quotes --
-before journal submission. See the `csr-rules` skill.
-
-Only real, fetched source text goes here. Each entry gives the source URL and the date the
-text was retrieved. Quotes were lifted from the raw source pages, not a summarizer. Refs
-whose exact text could not be retrieved this pass are listed under "Remaining references"
-with their reason -- never with an approximate quote.
-
----
+# Source quotes
 
 ## [@aosp-selinux] SELinux -- MAC binds even root
 
