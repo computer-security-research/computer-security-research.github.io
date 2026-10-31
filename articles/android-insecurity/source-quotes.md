@@ -124,6 +124,33 @@
   and use it to verify other devices. However, only devices launched with Android 8.0 or
   later have the necessary hardware support for being verified."
 
+## [@grapheneos-install-locking] GrapheneOS -- re-locking anchors verified boot to GrapheneOS's own key
+
+- Paper claim (Sec. 12): re-locking restores verified boot, but on official builds the root of
+  trust is GrapheneOS's key (not Google's, not the owner's) -- a different vendor, not owner
+  control.
+- URL: https://grapheneos.org/install/web#locking-the-bootloader (retrieved Oct. 31, 2026)
+- Quote: "Locking the bootloader is important as it enables full verified boot." / "Installing
+  GrapheneOS flashes the GrapheneOS verified boot public key to the secure element. Each boot,
+  this key is loaded and used to verify the OS."
+
+## [@grapheneos-setup-wizard] GrapheneOS -- first-run flow detects an unlocked bootloader and assists locking
+
+- Paper claim (Sec. 12): re-locking is part of the supported install/first-run flow.
+- URL: https://grapheneos.org/features#setup-wizard (retrieved Oct. 31, 2026)
+- Quote: "It detects an unlocked bootloader at the start and warns the user about it with a
+  button for rebooting to fastboot mode in order to lock the device."
+
+## [@grapheneos-build] GrapheneOS -- owner-signed builds: the owner generates and holds the keys
+
+- Paper claim (Sec. 12): the owner-inspectable configuration is the owner-signed build re-locked
+  to the owner's own enrolled key; the owner generates and keeps the signing keys.
+- URL: https://grapheneos.org/build#generating-release-signing-keys (retrieved Oct. 31, 2026)
+- Quote: "Keys need to be generated for resigning completed builds from the publicly available
+  test keys." / "there's no value in a locked bootloader without signing the build using
+  release keys, since verified boot will be meaningless and the keys used to verify sideloaded
+  updates are also public."
+
 ## [@aosp-loadable-kernel-modules] Loadable kernel modules -- GKI module signing not supported; dm-verity instead
 
 - Paper claim (Sec. 3): module signing is not supported for GKI vendor modules; authenticity
