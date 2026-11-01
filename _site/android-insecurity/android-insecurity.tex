@@ -799,19 +799,18 @@ device compromise \citep{projectzero-badbinder}.
 
 These runtime compromises are documented, not hypothetical: commercial
 surveillance vendors sell turnkey exploit chains that defeat current,
-fully patched devices \citep{citizenlab-forcedentry}, and
-Google\textquotesingle s Threat Analysis Group attributes about half of
-known zero-day exploits against Google and Android targets to such
-vendors \citep{tag-buying-spying}, in one case observing a full chain
-fired against an up-to-date Samsung phone running the latest Chrome
-\citep{tag-cytrox}; Project Zero maintains the running in-the-wild
-record \citep{projectzero-itw}. Once resident, such an implant operates
-inside the running system\textquotesingle s own trust boundaries -\/-
-the Predator spyware\textquotesingle s loader injects into zygote to
-assume other application identities and move between SELinux domains
-\citep{talos-predator} -\/- so the application sandbox and SELinux
-confinement of Section 2 restrain it far less than they restrain
-ordinary software.
+fully patched devices, and Google\textquotesingle s Threat Analysis
+Group attributes about half of known zero-day exploits against Google
+and Android targets to such vendors \citep{tag-buying-spying}, in one
+case observing a full chain fired against an up-to-date Samsung phone
+running the latest Chrome \citep{tag-cytrox}; Project Zero maintains the
+running in-the-wild record \citep{projectzero-itw}. Once resident, such
+an implant operates inside the running system\textquotesingle s own
+trust boundaries -\/- the Predator spyware\textquotesingle s loader
+injects into zygote to assume other application identities and move
+between SELinux domains \citep{talos-predator} -\/- so the application
+sandbox and SELinux confinement of Section 2 restrain it far less than
+they restrain ordinary software.
 
 A persistent rootkit that instead rewrites the verified boot or system
 partitions is the one case verified boot and dm-verity are built to
@@ -1455,39 +1454,36 @@ proprietary radio-interface-layer software on the application processor
 -\/- the vendor library that mediates the modem -\/- was moreover found
 to implement a remote-file-service protocol through which the modem can
 read, write, and delete files on that storage; its finders characterized
-this as a backdoor, though, the handler being an ordinary modem
-file-service routine in vendor software, whether it was a deliberate
-backdoor rather than an incidental feature is not established
-\citep{replicant-samsung-backdoor}. Analysis of current Samsung hardware
-continues to uncover undisclosed baseband command interfaces and
-vendor-confirmed zero-day flaws, including denial of cellular service
-and arbitrary access to the application processor\textquotesingle s file
-system from the baseband \citep{li-basemirror}. The Samsung finding was
-itself obtained by reverse-engineering that proprietary vendor library,
-a reminder that realizing inspectability in practice can draw on the
+this as a backdoor, though whether it was a deliberate backdoor rather
+than an incidental feature of the modem\textquotesingle s file service
+is not established \citep{replicant-samsung-backdoor}. More recent
+analysis of Samsung devices continues to uncover undisclosed baseband
+command interfaces and vendor-confirmed zero-day flaws, including denial
+of cellular service and arbitrary access to the application
+processor\textquotesingle s file system from the baseband
+\citep{li-basemirror}. The Samsung finding was itself obtained by
+reverse-engineering that proprietary vendor library, a reminder that
+realizing inspectability in practice can draw on the
 modify-and-reverse-engineer freedoms held conceptually distinct from it
 in Section 3, and can carry legal exposure the owner or researcher must
 navigate: the finders rested the lawfulness of their decompilation on
 the interoperability exception in Article 6 of the EU Computer Programs
 Directive \citep{replicant-samsung-backdoor-wiki},
-\citep{eu-computer-programs-directive}, whose United States parallel is
-the permanent reverse-engineering-for-interoperability exemption to the
-DMCA\textquotesingle s anti-circumvention prohibition
-\citep{dmca-1201f}. A discrete secure element, where present, likewise
-runs vendor firmware on its own chip. The trusted execution environment
-should not be conflated with these: on a platform such as this one it
-shares the application processor and is signed and checked by the
-bootloader, so it falls under verified boot rather than being an
-uninspected separate processor; its limitation for the owner is that its
-firmware, like the baseband\textquotesingle s, is not something the
-owner can independently image and audit, not that it runs unverified.
-The broader pattern is that persistent implants have migrated toward
-low-level firmware beneath the operating system, installable by ordinary
-malware once the system is compromised \citep{zaddach-hdd-backdoor}; the
-strongest owner-inspectable configuration still cannot independently
-audit that firmware layer, echoing in a new place the principle that a
-system cannot be trusted to report truthfully on its own state
-\citep{thompson-trusting-trust}.
+\citep{eu-computer-programs-directive}. A discrete secure element, where
+present, likewise runs vendor firmware on its own chip. The trusted
+execution environment should not be conflated with these: on a platform
+such as this one it shares the application processor and is signed and
+checked by the bootloader, so it falls under verified boot rather than
+being an uninspected separate processor; its limitation for the owner is
+that its firmware, like the baseband\textquotesingle s, is not something
+the owner can independently image and audit, not that it runs
+unverified. The broader pattern is that persistent implants have
+migrated toward low-level firmware beneath the operating system,
+installable by ordinary malware once the system is compromised
+\citep{zaddach-hdd-backdoor}; the strongest owner-inspectable
+configuration still cannot independently audit that firmware layer,
+echoing in a new place the principle that a system cannot be trusted to
+report truthfully on its own state \citep{thompson-trusting-trust}.
 
 A third objection holds that verified boot and hardware key attestation
 already furnish the integrity assurance that owner-inspection is meant
@@ -1872,14 +1868,14 @@ designs rarely satisfied together. The forensic literature surveyed here
 does not claim that compromise is undetectable on stock devices; it
 claims that detection is constrained by observability, and that a
 negative result is accordingly weak evidence of integrity. Building on
-that, and on the owner-enrolled verified-boot path of Section 3 and the
-owner-signed GrapheneOS configuration of Section 12, this
-paper\textquotesingle s own position is that auditability could be
-improved without abandoning existing protections. That position suggests
-a design space -\/- owner-attestable inspection modes, exportable
-integrity measurements, or supported trusted-boot verification paths
--\/- in which verifiability and platform integrity might be advanced
-together rather than traded off.
+that, and on the user-controlled root of trust that AOSP allows in
+principle (Section 3) and the owner-signed GrapheneOS configuration of
+Section 12, this paper\textquotesingle s own position is that
+auditability could be improved without abandoning existing protections.
+That position suggests a design space -\/- owner-attestable inspection
+modes, exportable integrity measurements, or supported trusted-boot
+verification paths -\/- in which verifiability and platform integrity
+might be advanced together rather than traded off.
 
 \subsection{14. Conclusion}\label{conclusion}
 
