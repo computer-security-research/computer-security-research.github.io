@@ -220,16 +220,6 @@ quotes = [
   { text = "Google's Threat Analysis Group (TAG), Android Security, and Project Zero team received information suggesting that NSO had a 0-day exploit for Android that was part of an attack chain that installed Pegasus spyware on target devices.", label = "Exploited in the wild (Pegasus chain)" },
 ]
 
-[citizenlab-forcedentry]
-label = "Citizen Lab FORCEDENTRY -- zero-click turnkey chain defeats the latest device"
-claims = [
-  { section = "Sec. 8", text = "A commercial surveillance vendor's zero-click, zero-day chain remotely compromised the latest, up-to-date devices with no user interaction." },
-]
-quotes = [
-  { text = "we discovered a zero-day zero-click exploit against iMessage", label = "Zero-click, zero-day", note = "Citizen Lab, FORCEDENTRY (2021); verified verbatim." },
-  { text = "the mercenary spyware company NSO Group used the vulnerability to remotely exploit and infect the latest Apple devices with the Pegasus spyware", label = "Commercial vendor defeats the latest devices" },
-]
-
 [talos-predator]
 label = "Cisco Talos -- Predator defeats in-OS confinement at runtime"
 quotes = [
@@ -1182,7 +1172,7 @@ quotes = [
 ]
 
 [replicant-samsung-backdoor]
-label = "Samsung modem back-door -- proprietary modem firmware with file I/O into AP storage (intent disputed)"
+label = "Samsung Galaxy back-door -- AP-side vendor RIL library with modem-driven file I/O into phone storage (intent disputed)"
 claims = [
   { section = "Sec. 12", text = "On several Samsung Galaxy models the proprietary radio-interface-layer software on the application processor (the vendor library that mediates the modem) implements a protocol through which the modem can read, write, and delete files on that storage; its finders called it a backdoor, while whether the capability was deliberate rather than an incidental modem file-service feature is not established." },
 ]
@@ -1195,19 +1185,10 @@ quotes = [
 [eu-computer-programs-directive]
 label = "EU Computer Programs Directive -- Art. 6 permits decompilation for interoperability"
 claims = [
-  { section = "Sec. 12", text = "EU law permits reproduction/translation of program code where indispensable to achieve interoperability of an independently created program; the Replicant finders invoked this (Art. 6 of the 1991 directive, codified as 2009/24/EC) as the legal basis for their modem-binary reverse engineering." },
+  { section = "Sec. 12", text = "EU law permits reproduction/translation of program code where indispensable to achieve interoperability of an independently created program; the Replicant finders invoked this (Art. 6 of the 1991 directive, codified as 2009/24/EC) as the legal basis for reverse-engineering that vendor RIL library." },
 ]
 quotes = [
   { text = "The authorisation of the rightholder shall not be required where reproduction of the code and translation of its form within the meaning of points (a) and (b) of Article 4(1) are indispensable to obtain the information necessary to achieve the interoperability of an independently created computer program with other programs", label = "Art. 6(1) -- decompilation for interoperability", note = "Directive 2009/24/EC (codified; same right as Art. 6 of the 1991 directive 91/250/EEC the Replicant disclaimer names). Verified verbatim via rendered EUR-Lex; UK spelling preserved." },
-]
-
-[dmca-1201f]
-label = "DMCA 17 USC 1201(f) -- permanent reverse-engineering-for-interoperability exemption"
-claims = [
-  { section = "Sec. 12", text = "US law has a permanent (non-triennial) exemption permitting circumvention to reverse-engineer a lawfully obtained program for interoperability -- the US parallel to Article 6 of the EU Computer Programs Directive." },
-]
-quotes = [
-  { text = "a person who has lawfully obtained the right to use a copy of a computer program may circumvent a technological measure that effectively controls access to a particular portion of that program for the sole purpose of identifying and analyzing those elements of the program", label = "17 USC 1201(f)(1) -- RE for interoperability", note = "US Copyright Office, Title 17 Chapter 12; verified verbatim via copyright.gov." },
 ]
 
 [replicant-samsung-backdoor-wiki]
