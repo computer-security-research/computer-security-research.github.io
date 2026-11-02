@@ -2008,6 +2008,19 @@ that \citep{grapheneos-auditor-tutorial}, while scheduled remote
 verification additionally requires editing and self-hosting the
 attestation server \citep{grapheneos-attestation-server}.
 
+Two points from the wild bear this out. An owner who locks the
+bootloader to their own AVB key and tries to enable remote verification
+against the official service is turned away with an HTTP 400
+\citep{grapheneos-attestation-400}. And where an owner-rooted key is
+accepted at all, it is by forking both components: DiamaneOS, a
+downstream build, ships its own key allowlists, externalizes the trusted
+keys to a replaceable configuration, and adds a second trust profile
+that accepts a device reporting self-signed verified boot whose key
+chains to no manufacturer root -\/- generalized owner-key attestation,
+but gated by that project\textquotesingle s own release list and the
+account holder\textquotesingle s approval rather than offered as an
+end-user facility \citep{diamaneos-attestation}.
+
 Source: GrapheneOS Auditor,
 \texttt{app/src/main/java/app/attestation/auditor/AttestationProtocol.java},
 at commit d5d326453e6e3b328d7a11198d9f99174ac7f4f3
