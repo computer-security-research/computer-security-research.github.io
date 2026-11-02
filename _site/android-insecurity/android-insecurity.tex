@@ -1364,13 +1364,18 @@ capability rather than a relying-party one. The configuration that
 actually meets the key-control half is the other anchoring: an owner who
 builds GrapheneOS from source, signs it with keys they generate and
 keep, and re-locks to their own enrolled verified-boot key holds a root
-of trust that is genuinely theirs \citep{grapheneos-build} -\/- though
-GrapheneOS\textquotesingle s own Auditor app, in its released form, does
-not recognize that owner key: its attestation accepts only official
-GrapheneOS keys in the self-signed verified-boot state -\/- an alternate
-OS re-locked under a non-stock key -\/- because an alternate
-system\textquotesingle s verified-boot key must be compiled into the
-released app and server to be recognized \citep{grapheneos-auditor},
+of trust that is genuinely theirs \citep{grapheneos-build}; tooling
+exists to produce such owner-signed builds from signed over-the-air
+updates without a full source rebuild, though only on supported Pixel
+hardware, and it too documents that no owner-signed configuration can
+satisfy the hardware-backed Play Integrity verdict
+\citep{resign-android-image}. GrapheneOS\textquotesingle s own Auditor
+app, in its released form, nonetheless does not recognize that owner
+key: its attestation accepts only official GrapheneOS keys in the
+self-signed verified-boot state -\/- an alternate OS re-locked under a
+non-stock key -\/- because an alternate system\textquotesingle s
+verified-boot key must be compiled into the released app and server to
+be recognized \citep{grapheneos-auditor},
 \citep{grapheneos-auditor-source} (Appendix A), so verifying an
 owner-signed build needs a verifier the owner configures with their own
 key -\/- an owner-built Auditor and, if remote checking is wanted, an
@@ -1998,15 +2003,22 @@ if (device == null) {
 \end{verbatim}
 
 At the time of writing, GrapheneOS publishes no user-facing procedure
-for adding or replacing an accepted verified-boot key
-\citep{grapheneos-auditor}; it states only that an alternative operating
-system\textquotesingle s verified-boot key must be "included in the
-Auditor app and Attestation Server." Recognizing an owner-signed build
-therefore means editing these hardcoded tables in the source and
-rebuilding the Auditor app: local second-device verification needs only
-that \citep{grapheneos-auditor-tutorial}, while scheduled remote
-verification additionally requires editing and self-hosting the
-attestation server \citep{grapheneos-attestation-server}.
+for adding or replacing an accepted verified-boot key with an
+owner\textquotesingle s own -\/- its device-support tutorial covers only
+submitting a locked-stock sample for GrapheneOS itself to add a new
+factory device, not an owner or alternative-OS key
+\citep{grapheneos-auditor}, \citep{grapheneos-auditor-tutorial}. It
+states only that an alternative operating system\textquotesingle s
+verified-boot key must be "included in the Auditor app and Attestation
+Server." Recognizing an owner-signed build therefore means editing these
+hardcoded tables in the source and rebuilding the Auditor app: local
+second-device verification needs only that
+\citep{grapheneos-auditor-tutorial}, while scheduled remote verification
+additionally requires rebuilding the app to point at a different server
+-\/- the released Auditor pins attestation.app and rejects any other
+\citep{grapheneos-auditor-domain} -\/- and self-hosting a
+correspondingly keyed attestation server
+\citep{grapheneos-attestation-server}.
 
 Two points from the wild bear this out. An owner who locks the
 bootloader to their own AVB key and tries to enable remote verification
