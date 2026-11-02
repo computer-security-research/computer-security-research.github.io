@@ -203,6 +203,12 @@ quotes = [
   { text = "totally ruining verified boot by trusting persistent state", label = "Even that ruins verified boot", note = "Same comment; Micay argues re-signing the OS does not avoid the security cost of such a feature. Verified verbatim." },
 ]
 
+[grapheneos-root-forum]
+label = "GrapheneOS (official account) -- root destroys the verified-boot and attestation security model"
+quotes = [
+  { text = "A minor vulnerability in an app is now a complete persistent compromise of the OS and the security model for verified boot and attestation are not intact to detect that.", label = "Verified boot + attestation cannot detect it", note = "discuss.grapheneos.org d/2275 post 8, the official GrapheneOS project account, 2022-12-09, answering whether Magisk-style root can be added while keeping the security model. Verified verbatim via the Flarum JSON API." },
+]
+
 [calyxos-root-faq]
 label = "CalyxOS -- does not support or recommend rooted operation"
 quotes = [
