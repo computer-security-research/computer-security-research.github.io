@@ -101,8 +101,12 @@ malware-analysis techniques are unavailable on a stock phone without
 first breaking its own verified-boot and attestation guarantees;
 surveying the main objections, the paper concludes that limited
 observability leaves absence of findings as weak evidence of integrity.
-It covers stock Android and extends to other vendor-locked devices only
-to varying degrees.
+It then frames owner-controlled privileged inspection -\/- a secure root
+that would preserve verified boot and attestation -\/- as the capability
+that would dissolve this squeeze, systematizes the approaches proposed
+or shipped, and identifies the open gap none yet closes. It covers stock
+Android and extends to other vendor-locked devices only to varying
+degrees.
 \end{abstract}
 
 \subsection{1. Introduction}\label{introduction}
@@ -143,7 +147,7 @@ being the extreme case \citep{aosp-bootloader-locking}; and a
 well-constructed backdoor could detect the onset of an investigation and
 erase itself or conceal its traces \citep{chen-anti-virtualization},
 \citep{ruggia-evasive-malware}, \citep{garfinkel-anti-forensics}, as
-Section 13 develops.
+Section 14 develops.
 
 This paper treats these properties not as implementation accidents but
 as consequences of a design in which administrative capability is
@@ -183,7 +187,13 @@ contributions are:
 \item
   it provides a structured capability comparison with a fully controlled
   host that makes the aggregate effect legible as a single design
-  trade-off.
+  trade-off; and
+\item
+  it frames owner-controlled privileged inspection -\/- a secure root
+  that preserves verified boot and relying-party attestation -\/- as the
+  capability owner-inspectability requires, systematizes the design
+  space of approaches shipped or proposed, and identifies the gap no
+  current approach closes.
 \end{itemize}
 
 The paper is organized as follows. Section 2 summarizes the platform
@@ -192,8 +202,9 @@ including the constrained meaning of root and the definition of
 owner-inspectability. Section 4 situates the work in prior literature.
 Sections 5 through 11 catalog the verification limits. Section 12
 addresses objections, including aftermarket operating systems. Section
-13 discusses the findings and their limitations, and Section 14
-concludes.
+13 asks whether an owner-controlled secure root could dissolve the
+squeeze, and maps the design space of attempts. Section 14 discusses the
+findings and their limitations, and Section 15 concludes.
 
 \subsection{2. Background}\label{background}
 
@@ -414,7 +425,7 @@ itself rewrite the firmware or boot chain that sit below it
 \citep{aosp-verified-boot}, \citep{aosp-bootloader-locking}. Throughout
 this paper, therefore, "root" names a powerful but bounded in-system
 privilege, not unconstrained control of the kernel, firmware, or boot
-chain; Section 10 and the discussion in Section 13 return to why
+chain; Section 10 and the discussion in Section 14 return to why
 obtaining it still does not deliver owner-inspectability.
 
 One caveat attaches to the mechanisms just named:
@@ -440,9 +451,9 @@ only on the vendor. Root, when an owner obtains it at all, is a fragment
 of this authority -\/- superuser standing inside the
 vendor\textquotesingle s already-booted operating system, without
 command of the kernel and boot chain beneath it -\/- which is why, as
-Sections 8, 10, and 13 develop, obtaining root does not amount to
+Sections 8, 10, and 14 develop, obtaining root does not amount to
 administrative control and does not by itself deliver
-owner-inspectability. Section 13 contrasts the two stacks directly,
+owner-inspectability. Section 14 contrasts the two stacks directly,
 including the firmware layers that remain opaque to the owner on both.
 
 A clean, trusted environment denotes a separate computer or externally
@@ -476,7 +487,7 @@ to establish, and to demonstrate, what the device is running -\/- not
 that the device be freely modifiable. That separation is conceptual: in
 practice the two entangle, since establishing what a locked device runs
 -\/- most of all its live, whole-system state -\/- can itself require
-modifying it (Section 13).
+modifying it (Section 14).
 
 That separation is clean only for persistent, at-rest state: inspecting
 the files, installed packages, and boot chain a device holds at rest is
@@ -539,6 +550,22 @@ organizational forensic readiness \citep{rowlingson-forensic-readiness},
 each is used. To the author\textquotesingle s knowledge, the limits of
 owner-side verification on stock Android have not previously been
 assembled into a single, criterion-driven account.
+
+Two further strands bear directly on the objections in Section 12. The
+security cost of rooting as actually deployed has been measured: a study
+of the commercial one-click-root ecosystem found that root providers
+distribute well-engineered kernel exploits which malware can equally
+abuse, so root as shipped tends to enlarge the device\textquotesingle s
+attack surface rather than hand the owner safe control of it
+\citep{zhang-root-providers}. And the tension between owner control and
+remote attestation has a prior line of remedy: property-based
+attestation proposes certifying that a platform satisfies required
+security properties rather than that it runs one specific binary
+configuration, which would let an owner-modified system attest without
+being locked to a vendor image \citep{sadeghi-property-attestation}; the
+owner-signed configuration examined in Section 12 is a concrete instance
+of the same impulse, bounded in practice by attestation roots the owner
+does not control.
 
 \subsection{5. Independent Verification
 Limits}\label{independent-verification-limits}
@@ -927,7 +954,7 @@ platform\textquotesingle s own refusal to trust a modified device but by
 the third-party software the owner must run on it.
 
 This also sharpens what "gaining root" can and cannot achieve, a point
-developed in Sections 10 and 13. Because root is a bounded in-system
+developed in Sections 10 and 14. Because root is a bounded in-system
 privilege (Section 3) and because reaching it generally forfeits the
 attestation standing just described, obtaining root does not hand the
 owner the clean, external, trusted vantage point that independent
@@ -971,11 +998,11 @@ not uniformly -\/- the Generic Kernel Image does not enforce per-module
 signatures (Section 3) -\/- and in any case this root observes the
 kernel only from within it, so a kernel-space rootkit beneath it
 falsifies what any in-system tool reports regardless of privilege
-(Sections 9 and 13). A clean, out-of-system vantage comes not from the
+(Sections 9 and 14). A clean, out-of-system vantage comes not from the
 ramdisk patch but from the same unlock\textquotesingle s further use
 -\/- booting a separate kernel or recovery to inspect the partitions at
 rest -\/- and even that leaves the suspect kernel\textquotesingle s live
-memory beyond trusted reach (Section 13). The modification has thus
+memory beyond trusted reach (Section 14). The modification has thus
 moved down into the boot chain that verified boot protects, not out of
 its reach, and the device still forfeits the hardware-backed verdicts
 described above. The integrity-masking modules an owner adds alongside
@@ -1315,7 +1342,7 @@ system\textquotesingle s live memory stays out of reach, since live
 acquisition runs in the already-booted kernel, so booting
 one\textquotesingle s own kernel first reboots the device and discards
 the volatile state that soldered memory already places beyond trusted
-external capture (Section 13).
+external capture (Section 14).
 
 What it gives up is the criterion\textquotesingle s second half: without
 a locked chain the boot images are no longer cryptographically verified
@@ -1440,34 +1467,13 @@ hardware-backed verdict on devices launched with Android 13 or later
 yields only to a leaked attestation keybox, and those are not durable,
 publicly shared keys being banned by Google as they surface
 \citep{playintegrityfork}, \citep{tricky-store}; it is the steadily
-losing arms race Section 13 describes \citep{nguyen-vu-android-rooting}.
+losing arms race Section 14 describes \citep{nguyen-vu-android-rooting}.
 
-These workarounds also make explicit why none of these systems offers
-what would actually dissolve the squeeze -\/- a secure root, a superuser
-facility that restores administrative inspection without surrendering
-verified boot and attestation -\/- and the most security-focused among
-them reject root for precisely that reason. CalyxOS "does not support
-running in rooted mode, nor do we recommend this," on the ground that
-"Running any Android device with root permissions severely undermines
-the security of the device" \citep{calyxos-root-faq}; the discontinued
-DivestOS likewise "does not support or encourage the use of root or
-runtime modification frameworks," which "break the trust model that AOSP
-employs and reduce the integrity of the system"
-\citep{divestos-root-faq}. GrapheneOS, the furthest-developed case, has
-weighed even a deliberately minimal root: its lead developer describes
-"an on-device root terminal which requires a special boot mode and
-isn\textquotesingle t persistent" as nonetheless "totally ruining
-verified boot by trusting persistent state"
-\citep{grapheneos-root-statement}; the project\textquotesingle s own
-account, asked whether root could be added without breaking the model,
-replied that once an app is fully trusted "the security model for
-verified boot and attestation are not intact to detect" a resulting
-compromise \citep{grapheneos-root-forum}. The boundedness of root
-established in Section 3 is thus not merely a restriction the stock
-vendor imposes and an aftermarket system could lift at will; it is a
-trade-off that the projects best placed to offer owner-controlled root
-instead affirm, because a superuser able to rewrite the running system
-is exactly what verified boot and attestation are built to detect.
+That squeeze raises a further question -\/- whether any owner-controlled
+privilege could dissolve it rather than merely confirm it, a secure root
+that preserves both verified boot and attestation -\/- which Section 13
+takes up, systematizing the design space and the gap none of its
+approaches closes.
 
 Aftermarket operating systems thus confirm rather than refute the
 paper\textquotesingle s thesis: owner-inspectability is attainable, but
@@ -1614,13 +1620,207 @@ the network stack and other fundamental parts of the system."
 owner-inspectability concerns: a kernel-level or sub-operating-system
 implant sits beneath the vantage point these tools occupy and can
 neutralize or evade an in-system scanner whatever its privileges, as
-Sections 9 and 13 develop. Consumer antivirus therefore catches the
+Sections 9 and 14 develop. Consumer antivirus therefore catches the
 known and the application-level but does not supply the external,
 trusted vantage point verification requires -\/- narrowing the gap for
 commodity malware without closing it for the targeted, low-level
 compromise, and so confirming rather than refuting the thesis.
 
-\subsection{13. Discussion}\label{discussion}
+\subsection{13. Owner-Controlled Inspection and the Secure-Root
+Gap}\label{owner-controlled-inspection-and-the-secure-root-gap}
+
+The objections above return repeatedly to a single missing capability.
+Owner-inspectability is foreclosed because the privileged access an
+owner needs in order to inspect the system -\/- to examine it from a
+clean vantage, to hunt a kernel-level rootkit or a vendor backdoor, and
+to let independent researchers work on hardware they own -\/- is exactly
+the access that forfeits the device\textquotesingle s attested standing.
+The capability that would dissolve this squeeze is what this paper calls
+a secure root: owner-controlled privileged inspection that surrenders
+neither verified boot nor the attestation a relying party accepts. This
+section asks whether such a capability exists. It proposes and evaluates
+no system; it systematizes the approaches that have been shipped or
+proposed, locates each against the verified-boot security model, and
+identifies the gap none of them closes -\/- an open problem whose
+resolution would widen owner-inspectability well beyond the few who can
+tolerate the attestation penalty.
+
+The most security-focused aftermarket systems reject root for precisely
+this reason. CalyxOS "does not support running in rooted mode, nor do we
+recommend this," on the ground that "Running any Android device with
+root permissions severely undermines the security of the device"
+\citep{calyxos-root-faq}; the discontinued DivestOS likewise "does not
+support or encourage the use of root or runtime modification
+frameworks," which "break the trust model that AOSP employs and reduce
+the integrity of the system" \citep{divestos-root-faq}. That trust model
+is itself platform-centric: the Android platform security model requires
+agreement among user, platform, and developer rather than making the
+owner sovereign, and it classes rooting, "both intentional and
+malicious," as "a non-compliant change which violates CDD" -\/- the
+Compatibility Definition Document a device must satisfy to ship as
+Android \citep{aosp-cdd} -\/- holding that ownership is "a legal concept
+rather than a technical one and therefore outside the scope of an OS
+security model" \citep{mayrhofer-android-security-model}. GrapheneOS,
+the furthest-developed case, has weighed the question directly, and the
+answer from its lead developer is more precise than a flat refusal: a
+carefully constrained root -\/- "an on-device root terminal which
+requires a special boot mode and isn\textquotesingle t persistent,"
+limited to the user and barred from hijacking by apps -\/- is
+"theoretically possible to do it in a way that doesn\textquotesingle t
+throw away a lot of security," but "isn\textquotesingle t being done by
+anyone right now"; the phrase "totally ruining verified boot by trusting
+persistent state" is directed instead at the persistent, fully-trusted
+way the root-enabled forks integrate it
+\citep{grapheneos-root-statement}. The project\textquotesingle s own
+account put that cost plainly: once persistent state and the application
+layer are fully trusted, "the security model for verified boot and
+attestation are not intact to detect" a resulting compromise
+\citep{grapheneos-root-forum}. The boundedness of root established in
+Section 3 is thus not merely a restriction the stock vendor imposes and
+an aftermarket system could lift for free: a persistent root exacts a
+cost, and it falls on the owner, not the vendor. An owner can relock
+under a self-signed key and keep cryptographic verified boot even with
+root present \citep{resign-android-image}, and the vendor-anchored
+attestation verdict that stock relying parties demand is in any case
+already forfeited by leaving the vendor\textquotesingle s key behind,
+rooted or not; but a persistent, fully-trusted superuser defeats the
+verified-boot security model of not trusting persistent state, so the
+self-signed state the owner could otherwise check no longer tells them
+the device is untampered. That owner-side verifiability is what a
+persistent root costs, and a root that keeps it is, by these
+projects\textquotesingle{} own accounts, unbuilt where it is thought
+possible at all and rejected outright elsewhere. Hardware attestation is
+designed around exactly this: GrapheneOS\textquotesingle s own
+documentation notes that the attestation API reports the
+device\textquotesingle s state "in a way that even an attacker
+exploiting the OS after boot to gain root cannot trivially bypass"
+\citep{grapheneos-attestation-compat}.
+
+Restricting attention to what an owner can do while keeping the
+bootloader locked and verified boot engaged, the approaches differ on
+what actually varies among them (Table 4): whether they grant a full
+superuser, and whether they preserve the verified-boot security model
+under which the owner can still detect tampering. The pattern is that a
+full root forfeits that security model even on a locked, owner-signed
+device -\/- a persistent, fully-trusted superuser is the compromise the
+model exists to catch -\/- while the configurations that keep it are
+either non-persistent or not a full superuser at all.
+
+Table 4. Owner root and privilege options that keep the bootloader
+locked and verified boot engaged.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Approach
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Full root?
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Verified-boot security model preserved (owner can detect tampering)?
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Root baked into a signed image and relocked under an owner key: a
+Magisk-style systemless patch (avbroot \citep{avbroot},
+resign-android-image \citep{resign-android-image}) & Yes & No -\/- a
+persistent, fully-trusted superuser \\
+Scoped kernel root baked in the same way: KernelSU, with per-app
+profiles \citep{kernelsu} & Yes, scoped per app & No -\/- a persistent
+kernel-level superuser; app-profile scoping narrows the surface but is
+not a security boundary \\
+Non-persistent root: a special-boot-mode terminal not retained across
+reboot \citep{grapheneos-root-statement} & Only transiently & Yes -\/-
+preserved because nothing persists \\
+Signed, verified extension shipped inside the image: Android APEX
+\citep{aosp-apex} (the Linux analogue, under a verity-and-signature
+image policy, is systemd-sysext \citep{systemd-sysext}) & No -\/-
+bounded, policy-confined verified capability & Yes -\/- part of the
+verified image, not mutable persistent state \\
+Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
+No -\/- capped at the shell permission set & Yes -\/- stock image
+unmodified \\
+\end{longtable}
+
+Two qualifications attach to Table 4. The non-persistent row can be
+realized by a RAM-backed overlay, but an overlay\textquotesingle s upper
+layer lies outside the verified-boot hashtree \citep{aosp-dm-verity}, so
+the content it serves is unverified whatever backs it; ephemerality
+bounds the window of unverified operation rather than keeping the
+running system verified. And the design space is not closed in
+principle: image-based operating systems have prompted proposals for an
+owner-facing "developer mode" that would reconcile locally built or
+signed code with an immutable, cryptographically validated system, but
+such a mode remains a design proposal rather than a shipping feature
+\citep{poettering-developer-mode}.
+
+A concrete form makes the persistent-root row vivid. An owner could bake
+a root-accessible SSH daemon into the owner-signed image and authorize
+it with the very key that signs that image -\/- the
+owner\textquotesingle s verified-boot public key placed in the
+daemon\textquotesingle s list of authorized keys, so that a single owner
+key governs both boot verification and administrative login while its
+private half stays off the device. Cryptographic verified boot is
+preserved and the credential story is clean, yet a persistent root
+service is exactly the fully-trusted persistent state the model is built
+to distrust -\/- a verdict that holds whether it is reached locally or
+over the network, since what the model declines to trust is the
+persistent, fully-privileged state itself, not the transport that
+reaches it. A key-only daemon is in itself a mature and widely accepted
+surface; what the network transport adds is narrower -\/- compromise no
+longer requires physical possession of the device, which leaves behind
+the on-device, physically-present case on which the safe reading
+depends. Gated instead to a non-persistent maintenance mode, it
+collapses into the non-persistent row.
+
+Role separation sharpens the same conclusion. Confining administrative
+capability to a separate account or a deliberately entered maintenance
+session, while the owner\textquotesingle s daily session runs
+unprivileged with no reachable escalation path, applies the principle of
+least privilege \citep{saltzer-schroeder} and separation of duty
+\citep{clark-wilson} and keeps the everyday attack surface off the
+privileged path. But the account boundary alone does not preserve the
+verified-boot model: a persistent, writable administrative role is
+offline persistent root, so the model survives only if that maintenance
+context is itself ephemeral or re-sealed -\/- its integrity re-measured
+against the owner\textquotesingle s own key -\/- on exit. In the
+owner-signed configuration the owner does hold that key and can re-seal
+\citep{avbroot}; the catch is operational: secure practice keeps the
+private half off the device (only the public key is enrolled), so
+re-sealing is an off-device re-sign and reflash from a trusted
+workstation rather than an in-situ maintenance step, and keeping the key
+on the device to make it in-situ would reintroduce the persistent
+trusted secret the locked chain exists to avoid. Such a re-seal restores
+the owner\textquotesingle s own verified state, not the vendor-anchored
+attestation verdict, and no shipping system integrates it.
+
+No approach in this design space, then, delivers all three of persistent
+owner administrative control, the verified-boot security model, and a
+relying-party-accepted attestation at once. The configurations that keep
+the security model do so by giving up persistence -\/- the
+non-persistent root -\/- or full privilege -\/- a verified extension, or
+shell-tier brokering -\/- while the one that keeps full persistent
+privilege under the owner\textquotesingle s own key gives up the model
+and, with its non-vendor key, relying-party attestation. A capability
+that closed the gap would have to assemble three things the shipped
+approaches reach only in pairs: privileged inspection the owner can
+invoke; an integrity state the owner, and ideally an independent
+verifier, can still check afterward, which points to non-persistent or
+verified-extension privilege with an owner-held re-seal, subject to the
+off-device-key constraint above; and, for the relying-party half, an
+independent trust anchor for owner-enrolled keys that the attestation
+ecosystem does not presently provide. Each is individually plausible;
+none is assembled into a shipping system today. Treating that assembly
+as an open problem, rather than a settled impossibility, is what would
+let owner-inspectability -\/- and with it independent malware and
+backdoor investigation -\/- reach beyond the owners who can accept the
+attestation penalty.
+
+\subsection{14. Discussion}\label{discussion}
 
 The limitations examined here are not independent defects but facets of
 a single design choice: administrative capability is withheld from the
@@ -1713,7 +1913,7 @@ the one demonstrated on-device cold-boot variant first required
 unlocking the bootloader, which wipes the user data it sought to recover
 \citep{muller-frost-coldboot}.
 
-Table 4 sets the owner\textquotesingle s control over each layer of the
+Table 5 sets the owner\textquotesingle s control over each layer of the
 stack side by side for the two platforms, read downward from the
 bootloader to the firmware beneath the operating system. The pattern is
 a categorical difference across the upper, operating-system-and-boot
@@ -1722,7 +1922,7 @@ and the stock-phone owner holds none, and a shared opaque floor at the
 firmware and management-coprocessor layers below them, where neither
 owner can inspect what runs.
 
-Table 4. Owner control over the stack: traditional personal computer
+Table 5. Owner control over the stack: traditional personal computer
 versus stock Android (as sold).
 
 \begin{longtable}[]{@{}
@@ -1939,7 +2139,7 @@ modes, exportable integrity measurements, or supported trusted-boot
 verification paths -\/- in which verifiability and platform integrity
 might be advanced together rather than traded off.
 
-\subsection{14. Conclusion}\label{conclusion}
+\subsection{15. Conclusion}\label{conclusion}
 
 Vendor-locked devices systematically limit the owner\textquotesingle s
 ability to inspect, control, and independently verify the software they
