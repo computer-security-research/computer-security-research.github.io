@@ -238,6 +238,18 @@ claims = [
   { section = "Sec. 4", text = "proposes attesting that a platform satisfies required security properties rather than that it runs one specific configuration -- a prior line toward reconciling attestation with configuration freedom; the paper's owner-signed attestation is a concrete instance, bounded by attestation roots the owner does not control." },
 ]
 
+[avbroot]
+label = "avbroot -- owner re-signs + relocks, with optional baked-in root"
+claims = [
+  { section = "Sec. 12", text = "re-signs Android OTA images with the owner's own keys and can bake in Magisk/KernelSU root, then relock the bootloader against a custom AVB key; keeps cryptographic verified boot (self-signed state) but not a relying-party attestation verdict." },
+]
+
+[shizuku]
+label = "Shizuku/Sui -- ADB-shell privilege brokering, not root"
+claims = [
+  { section = "Sec. 12", text = "brokers system-API access at the ADB/shell permission tier via an app_process-launched helper; preserves the stock, unmodified image (verified boot and attestation intact) precisely because it is not root; Sui's true-root mode falls back to Magisk." },
+]
+
 [aosp-cdd]
 label = "Android CDD -- the compatibility requirements a device must meet to be Android"
 quotes = [
