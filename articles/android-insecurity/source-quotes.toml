@@ -226,6 +226,24 @@ quotes = [
   { text = "break the trust model that AOSP employs and reduce the integrity of the system", label = "Breaks trust model", note = "Same FAQ; listed consequence of root/runtime-modification frameworks ('Will break the trust model ...'). Verified verbatim via sandbox render." },
 ]
 
+[zhang-root-providers]
+label = "Android root as deployed enlarges attack surface (CCS 2015)"
+claims = [
+  { section = "Sec. 4", text = "empirical study of the commercial one-click-root ecosystem: root providers distribute well-engineered kernel exploits abusable by malware, so root as shipped enlarges rather than narrows the device's attack surface." },
+]
+
+[sadeghi-property-attestation]
+label = "Property-based attestation -- certify properties, not a specific binary (NSPW 2004)"
+claims = [
+  { section = "Sec. 4", text = "proposes attesting that a platform satisfies required security properties rather than that it runs one specific configuration -- a prior line toward reconciling attestation with configuration freedom; the paper's owner-signed attestation is a concrete instance, bounded by attestation roots the owner does not control." },
+]
+
+[aosp-cdd]
+label = "Android CDD -- the compatibility requirements a device must meet to be Android"
+quotes = [
+  { text = "To be considered compatible with Android, device implementations MUST meet the requirements presented in this Compatibility Definition, including any documents incorporated via reference.", label = "Compatibility requirement", note = "Android Compatibility Definition Document, source.android.com/docs/compatibility/cdd. Verified verbatim via host curl." },
+]
+
 [google-play-protect]
 label = "Google Play Protect -- the built-in app scanner"
 quotes = [
