@@ -172,6 +172,18 @@ quotes = [
   { text = 'static final String DOMAIN = "attestation.app";', label = "Released Auditor pins attestation.app", note = "GrapheneOS/Auditor RemoteVerifyJob.java (pinned d5d3264); BASE_URL derives from it and AttestationActivity rejects a remote-verify QR whose domain is not DOMAIN, so remote verification against a self-hosted server needs the app rebuilt with a changed domain. Verified verbatim." },
 ]
 
+[grapheneos-auditor-issue140]
+label = "AttestationServer issue 140 -- official Auditor pins its server; both trees must be modified"
+quotes = [
+  { text = "Yes, you will need to substitute values in both AttestationServer and Auditor to accommodate your setup.", label = "Both app and server must be modified", note = "GrapheneOS/AttestationServer issue 140; GrapheneOS maintainer flawedworld (2022-01-21). Maintainer thestinger adds the official Auditor 'could eventually support other servers but it doesn't at the moment.' The report is the 'Scanned invalid account QR code' a self-hosted server triggers. Verified via the GitHub API." },
+]
+
+[robotnix-attestation]
+label = "robotnix -- build system that keys the Auditor app + AttestationServer to owner-created keys"
+quotes = [
+  { text = "Robotnix patches the Auditor app and Remote Attestation service to allow for using the user-created keys.", label = "Owner-key Auditor + server", note = "nix-community/robotnix docs/src/modules/attestation.md (pinned b731f1a, MIT). The signing module supplies owner keys; apps.auditor and services.attestation-server rebuild the app and server keyed to the owner's Auditor-signature and AVB fingerprints. Third-party tooling, not GrapheneOS; documented limit of one custom device per attestation service. Verified verbatim." },
+]
+
 [diamaneos-attestation]
 label = "DiamaneOS -- downstream fork accepting an owner-rooted (self-signed, no manufacturer root) key"
 quotes = [
