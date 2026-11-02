@@ -234,8 +234,10 @@ Table 4. Owner root and privilege options that keep the bootloader locked and ve
 
 | Approach | Full root? | Verified-boot security model preserved (owner can detect tampering)? |
 | --- | --- | --- |
-| Root baked into a signed image and relocked under an owner or project key (avbroot [@avbroot], resign-android-image [@resign-android-image]) | Yes | No -- a persistent, fully-trusted superuser |
+| Root baked into a signed image and relocked under an owner key: a Magisk-style systemless patch (avbroot [@avbroot], resign-android-image [@resign-android-image]) | Yes | No -- a persistent, fully-trusted superuser |
+| Scoped kernel root baked in the same way: KernelSU, with per-app profiles [@kernelsu] | Yes, scoped per app | No -- a persistent kernel-level superuser; app-profile scoping narrows the surface but is not a security boundary |
 | Non-persistent root: a special-boot-mode terminal not retained across reboot [@grapheneos-root-statement] | Only transiently | Yes -- preserved because nothing persists |
+| Signed, verified extension shipped inside the image: Android APEX [@aosp-apex] (the Linux analogue is systemd-sysext [@systemd-sysext]) | No -- bounded, policy-confined verified capability | Yes -- part of the verified image, not mutable persistent state |
 | Privileged but not root: ADB-shell brokering (Shizuku, Sui) [@shizuku] | No -- capped at the shell permission set | Yes -- stock image unmodified |
 
 Aftermarket operating systems thus confirm rather than refute the paper's thesis: owner-inspectability is attainable, but only by leaving the as-sold, vendor-keyed configuration behind, after which the attestation ecosystem imposes the functional penalty described in Section 8. For the overwhelming majority of devices, which run their as-sold vendor software, the inspection limits catalogued here are unchanged.

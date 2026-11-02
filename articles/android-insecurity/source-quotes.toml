@@ -238,10 +238,28 @@ claims = [
   { section = "Sec. 4", text = "proposes attesting that a platform satisfies required security properties rather than that it runs one specific configuration -- a prior line toward reconciling attestation with configuration freedom; the paper's owner-signed attestation is a concrete instance, bounded by attestation roots the owner does not control." },
 ]
 
+[aosp-apex]
+label = "Android APEX -- signed, dm-verity-verified, read-only modular system component"
+claims = [
+  { section = "Sec. 12", text = "signed modular system component (apex_payload.img backed by dm-verity, signed with the APK v3 scheme and verified at install against a key anchored in the verified partition); delivers owner- or vendor-authored capability as part of the verified image, still SELinux-policed; owner-wieldable only where the owner controls the OS signing keys (a custom build relocked to the owner's key), not on a vendor-locked stock device." },
+]
+
+[systemd-sysext]
+label = "systemd-sysext -- signed, verity-authenticated, read-only system-extension images (Linux)"
+claims = [
+  { section = "Sec. 12", text = "merges additional read-only files into /usr and /opt from dm-verity + PKCS#7-signed extension images verified against keys in the kernel keyring; the Linux instance of the signed/verified/immutable-extension principle -- it extends the verified image rather than handing out a mutable superuser." },
+]
+
 [avbroot]
 label = "avbroot -- owner re-signs + relocks, with optional baked-in root"
 claims = [
   { section = "Sec. 12", text = "re-signs Android OTA images with the owner's own keys and can bake in Magisk/KernelSU root, then relock the bootloader against a custom AVB key; keeps cryptographic verified boot (self-signed state) but not a relying-party attestation verdict." },
+]
+
+[kernelsu]
+label = "KernelSU -- kernel-level Android root with per-app (app-profile) scoping"
+claims = [
+  { section = "Sec. 12", text = "kernel-based Android root whose per-app profiles scope the su permissions in the kernel; baked into a signed image and relocked under an owner key it keeps cryptographic verified boot, but it remains a persistent kernel-level superuser and its own docs disclose escape paths (an app can re-invoke su; NO_NEW_PRIVS can be escaped via other Linux mechanisms), so the scoping narrows surface rather than preserving the verified-boot security model." },
 ]
 
 [shizuku]
