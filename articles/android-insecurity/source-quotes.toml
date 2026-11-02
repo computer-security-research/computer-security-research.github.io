@@ -154,6 +154,16 @@ quotes = [
   { text = "This is a generic guide on setting up the attestation server.", label = "Self-hostable", note = "AttestationServer README; the server is Open Source (MIT-licensed), so an owner can run their own instance instead of the public attestation.app service." },
 ]
 
+[grapheneos-auditor-source]
+label = "Auditor source -- accepted verified-boot keys are a compiled allowlist; an unlisted key is rejected"
+claims = [
+  { section = "Sec. 12", text = "In the released Auditor the accepted verified-boot keys are a fixed allowlist compiled into the app, keyed by the key's SHA-256; the self-signed branch holds only the official GrapheneOS keys, and a verified-boot key absent from the maps is rejected rather than attested, so an owner-signed build is recognized only by an Auditor the owner rebuilds with their own key." },
+]
+quotes = [
+  { text = 'private static final ImmutableMap<String, DeviceInfo> fingerprintsNonStock = ImmutableMap', label = "Compiled allowlist of accepted keys", note = "GrapheneOS/Auditor AttestationProtocol.java (pinned commit d5d3264): the self-signed (non-stock) table of accepted verified-boot keys, with parallel fingerprintsStock and StrongBox tables, each keyed by the hex SHA-256 of the verified boot key. Verified verbatim." },
+  { text = 'throw new GeneralSecurityException("invalid verified boot key fingerprint: " + verifiedBootKey);', label = "An unlisted key is rejected, not attested", note = "Same file; thrown under if (device == null), where device is the allowlist lookup fingerprintsNonStock.get(verifiedBootKey) on the attested verified-boot key, so a key not compiled in is refused. Verified verbatim." },
+]
+
 [google-play-protect]
 label = "Google Play Protect -- the built-in app scanner"
 quotes = [
