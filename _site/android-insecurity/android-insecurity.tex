@@ -1371,14 +1371,14 @@ GrapheneOS keys in the self-signed verified-boot state -\/- an alternate
 OS re-locked under a non-stock key -\/- because an alternate
 system\textquotesingle s verified-boot key must be compiled into the
 released app and server to be recognized \citep{grapheneos-auditor},
-\citep{grapheneos-auditor-source}, so verifying an owner-signed build
-needs a verifier the owner configures with their own key -\/- an
-owner-built Auditor and, if remote checking is wanted, an owner-run
-attestation server. That owner-signed path is the configuration that
-actually satisfies the owner-inspectability criterion for the main
-system -\/- the owner both holds the root of trust and can verify the
-device against it, to themselves or to any verifier they provision -\/-
-and is the right case on which to test the thesis.
+\citep{grapheneos-auditor-source} (Appendix A), so verifying an
+owner-signed build needs a verifier the owner configures with their own
+key -\/- an owner-built Auditor and, if remote checking is wanted, an
+owner-run attestation server. That owner-signed path is the
+configuration that actually satisfies the owner-inspectability criterion
+for the main system -\/- the owner both holds the root of trust and can
+verify the device against it, to themselves or to any verifier they
+provision -\/- and is the right case on which to test the thesis.
 
 Even there one limitation is relocated rather than dissolved, and it is
 worth naming precisely. The owner-signed configuration delivers verified
@@ -1943,6 +1943,78 @@ owner-side verifiability, rather than as platform-side policy
 enforcement, makes these limitations visible as a coherent whole and
 identifies owner-inspectability as the property most in need of
 improvement.
+
+\subsection{Appendix A. GrapheneOS Auditor verified-boot key
+allowlist}\label{appendix-a.-grapheneos-auditor-verified-boot-key-allowlist}
+
+Section 12\textquotesingle s claim that the released GrapheneOS Auditor
+recognizes only keys compiled into it rests on the app\textquotesingle s
+own source. Accepted verified-boot keys are fixed
+\texttt{ImmutableMap\textless{}String,\ DeviceInfo\textgreater{}} tables
+keyed by the hex SHA-256 of the verified-boot key:
+\texttt{fingerprintsNonStock} for the self-signed state and
+\texttt{fingerprintsStock} for the stock state, each with a StrongBox
+variant. The GrapheneOS release keys are hardcoded in the self-signed
+table \citep{grapheneos-auditor-source}:
+
+\begin{verbatim}
+private static final ImmutableMap<String, DeviceInfo> fingerprintsNonStock = ImmutableMap
+        .<String, DeviceInfo>builder()
+        // GrapheneOS
+        .put("F0A890375D1405E62EBFD87E8D3F475F948EF031BBF9DDD516D5F600A23677E8",
+                new DeviceInfo(R.string.device_pixel_6, 100, 100, false, R.string.os_graphene))
+        ...
+\end{verbatim}
+
+Verification looks the attested key up in the table for the reported
+boot state and rejects any key that is absent, so a build signed with a
+key not compiled in -\/- including an owner\textquotesingle s
+self-signed build of otherwise unmodified GrapheneOS -\/- is refused
+rather than attested:
+
+\begin{verbatim}
+final RootOfTrust.VerifiedBootState verifiedBootState = rootOfTrust.verifiedBootState;
+final String verifiedBootKey = BaseEncoding.base16().encode(rootOfTrust.verifiedBootKey);
+final DeviceInfo device;
+if (verifiedBootState == RootOfTrust.VerifiedBootState.SELF_SIGNED) {
+    if (attestationSecurityLevelEnum == ParsedAttestationRecord.SecurityLevel.STRONG_BOX) {
+        device = fingerprintsStrongBoxNonStock.get(verifiedBootKey);
+    } else {
+        device = fingerprintsNonStock.get(verifiedBootKey);
+    }
+} else if (verifiedBootState == RootOfTrust.VerifiedBootState.VERIFIED) {
+    if (attestationSecurityLevelEnum == ParsedAttestationRecord.SecurityLevel.STRONG_BOX) {
+        device = fingerprintsStrongBoxStock.get(verifiedBootKey);
+    } else {
+        device = fingerprintsStock.get(verifiedBootKey);
+    }
+} else {
+    throw new GeneralSecurityException("verified boot state is not verified or self signed");
+}
+
+if (device == null) {
+    throw new GeneralSecurityException("invalid verified boot key fingerprint: " + verifiedBootKey);
+}
+\end{verbatim}
+
+At the time of writing, GrapheneOS publishes no user-facing procedure
+for adding or replacing an accepted verified-boot key
+\citep{grapheneos-auditor}; it states only that an alternative operating
+system\textquotesingle s verified-boot key must be "included in the
+Auditor app and Attestation Server." Recognizing an owner-signed build
+therefore means editing these hardcoded tables in the source and
+rebuilding the Auditor app: local second-device verification needs only
+that \citep{grapheneos-auditor-tutorial}, while scheduled remote
+verification additionally requires editing and self-hosting the
+attestation server \citep{grapheneos-attestation-server}.
+
+Source: GrapheneOS Auditor,
+\texttt{app/src/main/java/app/attestation/auditor/AttestationProtocol.java},
+at commit d5d326453e6e3b328d7a11198d9f99174ac7f4f3
+(https://github.com/GrapheneOS/Auditor). Copyright (c) 2018-2025
+GrapheneOS, MIT License. These excerpts are reproduced for scholarly
+commentary; they remain under their original copyright and MIT license,
+not this paper\textquotesingle s license.
 
   \bibliography{refs}
 
