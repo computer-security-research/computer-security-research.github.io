@@ -197,10 +197,12 @@ quotes = [
 ]
 
 [grapheneos-root-statement]
-label = "GrapheneOS lead developer -- even a minimal, non-persistent root terminal ruins verified boot"
+label = "GrapheneOS lead developer -- a constrained root is theoretically possible but unbuilt; persistent-state root ruins verified boot"
 quotes = [
-  { text = "an on-device root terminal which requires a special boot mode and isn't persistent", label = "Minimal root terminal", note = "Hacker News item 39675220; user strcat = Daniel Micay (GrapheneOS founder and lead developer), 2024-03-12. Verified verbatim via WebFetch." },
-  { text = "totally ruining verified boot by trusting persistent state", label = "Even that ruins verified boot", note = "Same comment; Micay argues re-signing the OS does not avoid the security cost of such a feature. Verified verbatim." },
+  { text = "an on-device root terminal which requires a special boot mode and isn't persistent", label = "Constrained root terminal", note = "Hacker News item 39675220; user strcat = Daniel Micay (GrapheneOS founder and lead developer), 2024-03-12. Describes the form said to be theoretically possible without much security loss. Verified verbatim via host curl of the raw HTML." },
+  { text = "theoretically possible to do it in a way that doesn't throw away a lot of security", label = "Secure-ish root theoretically possible", note = "Same comment; of the constrained terminal above. Verified verbatim." },
+  { text = "isn't being done by anyone right now", label = "But unbuilt", note = "Same comment; no project ships such a constrained root. Verified verbatim." },
+  { text = "totally ruining verified boot by trusting persistent state", label = "Persistent-state root ruins verified boot", note = "Same comment; directed at the way root-enabled forks integrate root (persistent, fully trusted), NOT the non-persistent terminal. Verified verbatim." },
 ]
 
 [grapheneos-root-forum]
