@@ -154,6 +154,18 @@ quotes = [
   { text = "This is a generic guide on setting up the attestation server.", label = "Self-hostable", note = "AttestationServer README; the server is Open Source (MIT-licensed), so an owner can run their own instance instead of the public attestation.app service." },
 ]
 
+[grapheneos-attestation-400]
+label = "Forum report -- owner-AVB-key device rejected (HTTP 400) by the official attestation service"
+quotes = [
+  { text = "My bootloader is locked with my AVB key. When I try to enable remote attestation, I am greeted with a response code: 400 notification.", label = "Owner key -> HTTP 400 from attestation.app", note = "discuss.grapheneos.org discussion 24128 (2025-07-17), user cancername; the sole reply offers generic troubleshooting and the report is left unresolved. Verified via sandbox render of the forum page." },
+]
+
+[diamaneos-attestation]
+label = "DiamaneOS -- downstream fork accepting an owner-rooted (self-signed, no manufacturer root) key"
+quotes = [
+  { text = "Some phones attest only with keys that chain to no manufacturer root. A second trust profile accepts their first pairing under these conditions: [...] The phone is locked, boots with a configured OS key and reports self-signed verified boot.", label = "Second trust profile -- self-signed, no manufacturer root", note = "DiamaneOS/AttestationServer DOWNSTREAM.md (pinned 0308fc1). DiamaneOS forks both Auditor and AttestationServer; trusted keys live in src/main/resources/.../diamaneos-trust.json, overridable via -Ddiamaneos.trust, and a profile-2 pairing waits for the account holder's approval. Verified verbatim." },
+]
+
 [google-play-protect]
 label = "Google Play Protect -- the built-in app scanner"
 quotes = [
