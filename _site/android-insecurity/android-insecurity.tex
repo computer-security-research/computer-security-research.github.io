@@ -1469,21 +1469,23 @@ in Section 3, and can carry legal exposure the owner or researcher must
 navigate: the finders rested the lawfulness of their decompilation on
 the interoperability exception in Article 6 of the EU Computer Programs
 Directive \citep{replicant-samsung-backdoor-wiki},
-\citep{eu-computer-programs-directive}. A discrete secure element, where
-present, likewise runs vendor firmware on its own chip. The trusted
-execution environment should not be conflated with these: on a platform
-such as this one it shares the application processor and is signed and
-checked by the bootloader, so it falls under verified boot rather than
-being an uninspected separate processor; its limitation for the owner is
-that its firmware, like the baseband\textquotesingle s, is not something
-the owner can independently image and audit, not that it runs
-unverified. The broader pattern is that persistent implants have
-migrated toward low-level firmware beneath the operating system,
-installable by ordinary malware once the system is compromised
-\citep{zaddach-hdd-backdoor}; the strongest owner-inspectable
-configuration still cannot independently audit that firmware layer,
-echoing in a new place the principle that a system cannot be trusted to
-report truthfully on its own state \citep{thompson-trusting-trust}.
+\citep{eu-computer-programs-directive}.
+
+A discrete secure element, where present, likewise runs vendor firmware
+on its own chip. The trusted execution environment should not be
+conflated with these: on a platform such as this one it shares the
+application processor and is signed and checked by the bootloader, so it
+falls under verified boot rather than being an uninspected separate
+processor; its limitation for the owner is that its firmware, like the
+baseband\textquotesingle s, is not something the owner can independently
+image and audit, not that it runs unverified. The broader pattern is
+that persistent implants have migrated toward low-level firmware beneath
+the operating system, installable by ordinary malware once the system is
+compromised \citep{zaddach-hdd-backdoor}; the strongest
+owner-inspectable configuration still cannot independently audit that
+firmware layer, echoing in a new place the principle that a system
+cannot be trusted to report truthfully on its own state
+\citep{thompson-trusting-trust}.
 
 A third objection holds that verified boot and hardware key attestation
 already furnish the integrity assurance that owner-inspection is meant
