@@ -306,7 +306,7 @@ private static final ImmutableMap<String, DeviceInfo> fingerprintsNonStock = Imm
         // GrapheneOS
         .put("F0A890375D1405E62EBFD87E8D3F475F948EF031BBF9DDD516D5F600A23677E8",
                 new DeviceInfo(R.string.device_pixel_6, 100, 100, false, R.string.os_graphene))
-        // ... further GrapheneOS device keys; parallel fingerprintsStock (stock) and StrongBox tables
+        ...
 ```
 
 Verification looks the attested key up in the table for the reported boot state and rejects any key that is absent, so a build signed with a key not compiled in -- including an owner's self-signed build of otherwise unmodified GrapheneOS -- is refused rather than attested:
@@ -336,6 +336,6 @@ if (device == null) {
 }
 ```
 
-At the time of writing, GrapheneOS documents no procedure for adding or replacing an accepted verified-boot key [@grapheneos-auditor]: the project states only that an alternative operating system's verified-boot key must be "included in the Auditor app and Attestation Server." Recognizing an owner-signed build therefore requires editing these hardcoded tables in the source of both components and rebuilding and redeploying them, including a self-hosted attestation server [@grapheneos-attestation-server].
+At the time of writing, GrapheneOS publishes no user-facing procedure for adding or replacing an accepted verified-boot key [@grapheneos-auditor]; it states only that an alternative operating system's verified-boot key must be "included in the Auditor app and Attestation Server." Recognizing an owner-signed build therefore means editing these hardcoded tables in the source and rebuilding the Auditor app: local second-device verification needs only that [@grapheneos-auditor-tutorial], while scheduled remote verification additionally requires editing and self-hosting the attestation server [@grapheneos-attestation-server].
 
 Source: GrapheneOS Auditor, `app/src/main/java/app/attestation/auditor/AttestationProtocol.java`, at commit d5d326453e6e3b328d7a11198d9f99174ac7f4f3 (https://github.com/GrapheneOS/Auditor). Copyright (c) 2018-2025 GrapheneOS, MIT License. These excerpts are reproduced for scholarly commentary; they remain under their original copyright and MIT license, not this paper's license.
