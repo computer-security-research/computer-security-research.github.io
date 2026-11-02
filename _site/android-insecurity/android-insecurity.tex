@@ -473,8 +473,11 @@ whereas owner-inspectability is a property the device either affords its
 owner or withholds. Owner-inspectability is also narrower than a general
 right to modify or repair a device: it requires that the owner be able
 to establish, and to demonstrate, what the device is running -\/- not
-that the device be freely modifiable, even though establishing what a
-locked device runs can itself require modifying it.
+that the device be freely modifiable. That separation is conceptual,
+though: in practice the two entangle, since on a locked device
+establishing what it runs can itself require modifying it, and the
+single unlock that permits modification is the only gate to inspection
+as well (Section 13).
 
 That separation is clean only for persistent, at-rest state: inspecting
 the files, installed packages, and boot chain a device holds at rest is
@@ -1862,6 +1865,28 @@ cited source does so. Finally, the platform is a moving target: verdict
 tiers, acquisition techniques, and project capabilities change between
 releases, and the specific mechanisms cited here are current as of
 writing rather than permanent.
+
+Inspectability and modifiability are distinct as ends -\/- the criterion
+asks that the owner establish and demonstrate what the device runs, not
+that the device be freely modifiable -\/- yet under current designs they
+cannot be cleanly separated, in three ways. Mechanically, the unlock
+that admits an arbitrary replacement system is the same coarse act that
+first opens the device to inspection, so neither can be granted without
+the other. Through the software-freedom ecosystem, the freedoms to
+study, rebuild, and redistribute sustain inspection from upstream:
+auditable source and reproducible builds are what let an owner establish
+that a running image matches audited code, and shared tools and findings
+are what make inspection practical at all. And since inspectability is
+only a proxy for the owner\textquotesingle s actual end -\/- security
+for the owner, not the platform -\/- modification can reach that end by
+another route: replacing an opaque firmware component with a more
+trustworthy build can improve security where inspecting it is
+impossible, though it substitutes a better-placed trust rather than
+delivering the verification the criterion measures, the same move as
+re-locking to a more transparent vendor\textquotesingle s key (Section
+12). That the inspection the owner needs cannot, as devices are built,
+be had without the unrestricted modification the platform withholds is
+itself the case for decoupling the two by design.
 
 A measured reading is that the platform optimizes for resistance to the
 ordinary running adversary at the cost of owner-side auditability, and
