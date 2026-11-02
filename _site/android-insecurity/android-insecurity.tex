@@ -80,11 +80,11 @@ device. Taking Android as its worked example, this paper systematizes
 that design for an owner who treats security as the ability to audit the
 device rather than the platform\textquotesingle s ability to enforce
 policy. It introduces owner-inspectability -\/- the property that an
-owner can examine and verify the whole system from a trusted vantage
-point without forfeiting the attested status the device reports to
-software -\/- and organizes the resulting limits: the owner cannot
-inspect the whole system from a clean environment, nor reach storage and
-memory without withheld privileges; application and update delivery is
+owner can examine and verify the whole system from a clean, trusted
+vantage point and demonstrate what it is running to any verifier they
+choose -\/- and organizes the resulting limits: the owner cannot inspect
+the whole system from a clean environment, nor reach storage and memory
+without withheld privileges; application and update delivery is
 vendor-controlled, so compromise or coercion could push targeted
 malicious installs; and remote attestation ties the status a remote
 party relies on to the device staying unmodified, so enabling inspection
@@ -183,7 +183,7 @@ contributions are:
 \item
   it documents how remote attestation, and the applications that depend
   on it, increasingly penalize owner-controlled configurations,
-  deepening the circular trust problem; and
+  deepening the circular trust problem;
 \item
   it provides a structured capability comparison with a fully controlled
   host that makes the aggregate effect legible as a single design
@@ -191,9 +191,9 @@ contributions are:
 \item
   it frames owner-controlled privileged inspection -\/- a secure root
   that preserves verified boot and relying-party attestation -\/- as the
-  capability owner-inspectability requires, systematizes the design
-  space of approaches shipped or proposed, and identifies the gap no
-  current approach closes.
+  capability that would dissolve the inspection-versus-attestation
+  squeeze, systematizes the design space of approaches shipped or
+  proposed, and identifies the gap no current approach closes.
 \end{itemize}
 
 The paper is organized as follows. Section 2 summarizes the platform
@@ -1735,12 +1735,14 @@ kernel-level superuser; app-profile scoping narrows the surface but is
 not a security boundary \\
 Non-persistent root: a special-boot-mode terminal not retained across
 reboot \citep{grapheneos-root-statement} & Only transiently & Yes -\/-
-preserved because nothing persists \\
+nothing persists, so a reboot restores the verified state (an active
+session\textquotesingle s root serves unverified content; see below) \\
 Signed, verified extension shipped inside the image: Android APEX
 \citep{aosp-apex} (the Linux analogue, under a verity-and-signature
 image policy, is systemd-sysext \citep{systemd-sysext}) & No -\/-
-bounded, policy-confined verified capability & Yes -\/- part of the
-verified image, not mutable persistent state \\
+bounded, policy-confined verified capability & Yes -\/- a signed,
+verity-checked image, so its contents are verified rather than arbitrary
+mutable state \\
 Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
 No -\/- capped at the shell permission set & Yes -\/- stock image
 unmodified \\
