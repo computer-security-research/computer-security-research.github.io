@@ -1370,15 +1370,15 @@ not recognize that owner key: its attestation accepts only official
 GrapheneOS keys in the self-signed verified-boot state -\/- an alternate
 OS re-locked under a non-stock key -\/- because an alternate
 system\textquotesingle s verified-boot key must be compiled into the
-released app and server to be recognized \citep{grapheneos-auditor}, so
-verifying an owner-signed build needs a verifier the owner configures
-with their own key -\/- an owner-built Auditor and, if remote checking
-is wanted, an owner-run attestation server. That owner-signed path is
-the configuration that actually satisfies the owner-inspectability
-criterion for the main system -\/- the owner both holds the root of
-trust and can verify the device against it, to themselves or to any
-verifier they provision -\/- and is the right case on which to test the
-thesis.
+released app and server to be recognized \citep{grapheneos-auditor},
+\citep{grapheneos-auditor-source}, so verifying an owner-signed build
+needs a verifier the owner configures with their own key -\/- an
+owner-built Auditor and, if remote checking is wanted, an owner-run
+attestation server. That owner-signed path is the configuration that
+actually satisfies the owner-inspectability criterion for the main
+system -\/- the owner both holds the root of trust and can verify the
+device against it, to themselves or to any verifier they provision -\/-
+and is the right case on which to test the thesis.
 
 Even there one limitation is relocated rather than dissolved, and it is
 worth naming precisely. The owner-signed configuration delivers verified
