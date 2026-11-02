@@ -196,6 +196,27 @@ quotes = [
   { text = "Some phones attest only with keys that chain to no manufacturer root. A second trust profile accepts their first pairing under these conditions: [...] The phone is locked, boots with a configured OS key and reports self-signed verified boot.", label = "Second trust profile -- self-signed, no manufacturer root", note = "DiamaneOS/AttestationServer DOWNSTREAM.md (pinned 0308fc1). DiamaneOS forks both Auditor and AttestationServer; trusted keys live in src/main/resources/.../diamaneos-trust.json, overridable via -Ddiamaneos.trust, and a profile-2 pairing waits for the account holder's approval. Verified verbatim." },
 ]
 
+[grapheneos-root-statement]
+label = "GrapheneOS lead developer -- even a minimal, non-persistent root terminal ruins verified boot"
+quotes = [
+  { text = "an on-device root terminal which requires a special boot mode and isn't persistent", label = "Minimal root terminal", note = "Hacker News item 39675220; user strcat = Daniel Micay (GrapheneOS founder and lead developer), 2024-03-12. Verified verbatim via WebFetch." },
+  { text = "totally ruining verified boot by trusting persistent state", label = "Even that ruins verified boot", note = "Same comment; Micay argues re-signing the OS does not avoid the security cost of such a feature. Verified verbatim." },
+]
+
+[calyxos-root-faq]
+label = "CalyxOS -- does not support or recommend rooted operation"
+quotes = [
+  { text = "CalyxOS does not support running in rooted mode, nor do we recommend this.", label = "Unsupported", note = "CalyxOS Security FAQ, section 'Is it possible to root CalyxOS?'. Verified verbatim via WebFetch." },
+  { text = "Running any Android device with root permissions severely undermines the security of the device.", label = "Security rationale", note = "Same FAQ section. Verified verbatim." },
+]
+
+[divestos-root-faq]
+label = "DivestOS -- does not support root; it breaks the AOSP trust model"
+quotes = [
+  { text = "DivestOS does not support or encourage the use of root or runtime modification frameworks.", label = "Unsupported", note = "DivestOS FAQ (project discontinued), via Internet Archive snapshot 2024-06-01. Verified verbatim via sandbox render." },
+  { text = "break the trust model that AOSP employs and reduce the integrity of the system", label = "Breaks trust model", note = "Same FAQ; listed consequence of root/runtime-modification frameworks ('Will break the trust model ...'). Verified verbatim via sandbox render." },
+]
+
 [google-play-protect]
 label = "Google Play Protect -- the built-in app scanner"
 quotes = [
