@@ -218,7 +218,7 @@ What it gives up is the criterion's second half: without a locked chain the boot
 
 A smaller number of them support re-locking the bootloader after installation [@grapheneos-install-locking], [@grapheneos-setup-wizard], and this is where the owner-inspectability criterion does its sharpest discriminating work, because the re-locked chain can be anchored to either of two very different keys. Anchored to the project's own key -- the default when an owner flashes official GrapheneOS release builds, which replace the vendor's verified-boot key in the device's secure element with GrapheneOS's own [@aosp-device-state], [@grapheneos-install-locking] -- re-locking restores verified boot but only substitutes one vendor's root of trust for another's: the signing key is now GrapheneOS's rather than Google's, and the owner still does not hold it. On the key-control half of the criterion this official-build configuration is the stock position with a different, more transparent vendor, not owner control of the boot chain; swapping an official Google image for an official GrapheneOS image changes the vendor, not the owner's standing. Even if Google allowlisted such a build so that it passed the hardware-backed integrity verdicts that banking and payment apps gate on, that would be the attestation ecosystem and its relying parties choosing to accept GrapheneOS as trusted, not the owner inspecting or verifying the device.
 
-GrapheneOS is nonetheless the furthest-developed case on which to test the thesis, because it adds what the stock platform withholds from the owner: owner-accessible attestation tooling -- the Auditor app, which verifies, from a second device or on a schedule against an attestation server the owner can run themselves [@grapheneos-auditor], [@grapheneos-attestation-server], that the system is the expected, untampered build running on a locked bootloader, built on the standard hardware attestation primitive but packaged as a verify-to-yourself capability rather than a relying-party one. The configuration that actually meets the key-control half is the other anchoring: an owner who builds GrapheneOS from source, signs it with keys they generate and keep, and re-locks to their own enrolled verified-boot key holds a root of trust that is genuinely theirs [@grapheneos-build] -- though GrapheneOS's own Auditor app, in its released form, does not recognize that owner key: its attestation accepts only official GrapheneOS keys in the self-signed verified-boot state -- an alternate OS re-locked under a non-stock key -- because an alternate system's verified-boot key must be compiled into the released app and server to be recognized [@grapheneos-auditor], [@grapheneos-auditor-source], so verifying an owner-signed build needs a verifier the owner configures with their own key -- an owner-built Auditor and, if remote checking is wanted, an owner-run attestation server. That owner-signed path is the configuration that actually satisfies the owner-inspectability criterion for the main system -- the owner both holds the root of trust and can verify the device against it, to themselves or to any verifier they provision -- and is the right case on which to test the thesis.
+GrapheneOS is nonetheless the furthest-developed case on which to test the thesis, because it adds what the stock platform withholds from the owner: owner-accessible attestation tooling -- the Auditor app, which verifies, from a second device or on a schedule against an attestation server the owner can run themselves [@grapheneos-auditor], [@grapheneos-attestation-server], that the system is the expected, untampered build running on a locked bootloader, built on the standard hardware attestation primitive but packaged as a verify-to-yourself capability rather than a relying-party one. The configuration that actually meets the key-control half is the other anchoring: an owner who builds GrapheneOS from source, signs it with keys they generate and keep, and re-locks to their own enrolled verified-boot key holds a root of trust that is genuinely theirs [@grapheneos-build] -- though GrapheneOS's own Auditor app, in its released form, does not recognize that owner key: its attestation accepts only official GrapheneOS keys in the self-signed verified-boot state -- an alternate OS re-locked under a non-stock key -- because an alternate system's verified-boot key must be compiled into the released app and server to be recognized [@grapheneos-auditor], [@grapheneos-auditor-source] (Appendix A), so verifying an owner-signed build needs a verifier the owner configures with their own key -- an owner-built Auditor and, if remote checking is wanted, an owner-run attestation server. That owner-signed path is the configuration that actually satisfies the owner-inspectability criterion for the main system -- the owner both holds the root of trust and can verify the device against it, to themselves or to any verifier they provision -- and is the right case on which to test the thesis.
 
 Even there one limitation is relocated rather than dissolved, and it is worth naming precisely. The owner-signed configuration delivers verified boot under the owner's own key and an attestation the owner can check -- to themselves, or to any verifier willing to adopt that key as a trust anchor -- so for the owner's own purposes, establishing and demonstrating what the device runs, both halves of the criterion are met. What it cannot do is prove itself to a verifier that refuses in advance to trust the owner's key: hardware attestation still demonstrates genuine hardware in a locked, self-signed boot state to anyone who checks, but a skeptic has no published, independent anchor for the owner's verified-boot key, so the gap is the absence of a trust anchor, not the unavailability of the key -- publishing the key would not close it. An official GrapheneOS key differs only in that a relying party can choose to trust GrapheneOS, a public project with a reproducible build, as that anchor; a self-generated key vouches for no one but its owner. Decisively for everyday use, neither the owner-signed build nor the official GrapheneOS build is a Google-certified configuration, so neither obtains the device-integrity or strong attestation verdicts that mainstream applications increasingly demand [@play-integrity-improvements], [@owasp-mastg-play-integrity]: the same owner-controlled posture that makes the device inspectable makes a growing set of applications refuse to run on it, and GrapheneOS's stated position is that it will not spoof or otherwise circumvent these checks to impersonate a stock device [@grapheneos-usage].
 
@@ -295,3 +295,47 @@ Vendor-locked devices systematically limit the owner's ability to inspect, contr
 
 ::: {#refs}
 :::
+
+## Appendix A. GrapheneOS Auditor verified-boot key allowlist
+
+Section 12's claim that the released GrapheneOS Auditor recognizes only keys compiled into it rests on the app's own source. Accepted verified-boot keys are fixed `ImmutableMap<String, DeviceInfo>` tables keyed by the hex SHA-256 of the verified-boot key: `fingerprintsNonStock` for the self-signed state and `fingerprintsStock` for the stock state, each with a StrongBox variant. The GrapheneOS release keys are hardcoded in the self-signed table [@grapheneos-auditor-source]:
+
+```
+private static final ImmutableMap<String, DeviceInfo> fingerprintsNonStock = ImmutableMap
+        .<String, DeviceInfo>builder()
+        // GrapheneOS
+        .put("F0A890375D1405E62EBFD87E8D3F475F948EF031BBF9DDD516D5F600A23677E8",
+                new DeviceInfo(R.string.device_pixel_6, 100, 100, false, R.string.os_graphene))
+        // ... further GrapheneOS device keys; parallel fingerprintsStock (stock) and StrongBox tables
+```
+
+Verification looks the attested key up in the table for the reported boot state and rejects any key that is absent, so a build signed with a key not compiled in -- including an owner's self-signed build of otherwise unmodified GrapheneOS -- is refused rather than attested:
+
+```
+final RootOfTrust.VerifiedBootState verifiedBootState = rootOfTrust.verifiedBootState;
+final String verifiedBootKey = BaseEncoding.base16().encode(rootOfTrust.verifiedBootKey);
+final DeviceInfo device;
+if (verifiedBootState == RootOfTrust.VerifiedBootState.SELF_SIGNED) {
+    if (attestationSecurityLevelEnum == ParsedAttestationRecord.SecurityLevel.STRONG_BOX) {
+        device = fingerprintsStrongBoxNonStock.get(verifiedBootKey);
+    } else {
+        device = fingerprintsNonStock.get(verifiedBootKey);
+    }
+} else if (verifiedBootState == RootOfTrust.VerifiedBootState.VERIFIED) {
+    if (attestationSecurityLevelEnum == ParsedAttestationRecord.SecurityLevel.STRONG_BOX) {
+        device = fingerprintsStrongBoxStock.get(verifiedBootKey);
+    } else {
+        device = fingerprintsStock.get(verifiedBootKey);
+    }
+} else {
+    throw new GeneralSecurityException("verified boot state is not verified or self signed");
+}
+
+if (device == null) {
+    throw new GeneralSecurityException("invalid verified boot key fingerprint: " + verifiedBootKey);
+}
+```
+
+GrapheneOS does not document a procedure for adding or replacing an accepted verified-boot key [@grapheneos-auditor]: the project states only that an alternative operating system's verified-boot key must be "included in the Auditor app and Attestation Server." Recognizing an owner-signed build therefore requires editing these hardcoded tables in the source of both components and rebuilding and redeploying them, including a self-hosted attestation server [@grapheneos-attestation-server].
+
+Source: GrapheneOS Auditor, `app/src/main/java/app/attestation/auditor/AttestationProtocol.java`, at commit d5d326453e6e3b328d7a11198d9f99174ac7f4f3 (https://github.com/GrapheneOS/Auditor). Copyright (c) 2018-2025 GrapheneOS, MIT License. These excerpts are reproduced for scholarly commentary; they remain under their original copyright and MIT license, not this paper's license.
