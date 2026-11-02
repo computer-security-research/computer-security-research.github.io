@@ -1373,14 +1373,15 @@ self-signed verified-boot state -\/- an alternate OS re-locked under a
 non-stock key -\/- because an alternate system\textquotesingle s
 verified-boot key must be compiled into the released app and server to
 be recognized \citep{grapheneos-auditor},
-\citep{grapheneos-auditor-source} (Appendix A), so verifying an
-owner-signed build needs a verifier the owner configures with their own
-key -\/- an owner-built Auditor and, if remote checking is wanted, an
-owner-run attestation server. That owner-signed path is the
-configuration that actually satisfies the owner-inspectability criterion
-for the main system -\/- the owner both holds the root of trust and can
-verify the device against it, to themselves or to any verifier they
-provision -\/- and is the right case on which to test the thesis.
+\citep{grapheneos-auditor-source}, \citep{grapheneos-auditor-usecase}
+(Appendix A), so verifying an owner-signed build needs a verifier the
+owner configures with their own key -\/- an owner-built Auditor and, if
+remote checking is wanted, an owner-run attestation server. That
+owner-signed path is the configuration that actually satisfies the
+owner-inspectability criterion for the main system -\/- the owner both
+holds the root of trust and can verify the device against it, to
+themselves or to any verifier they provision -\/- and is the right case
+on which to test the thesis.
 
 Even there one limitation is relocated rather than dissolved, and it is
 worth naming precisely. The owner-signed configuration delivers verified
@@ -2018,7 +2019,7 @@ attestation.app and rejects any other \citep{grapheneos-auditor-domain},
 correspondingly keyed attestation server
 \citep{grapheneos-attestation-server}.
 
-Two points from the wild bear this out. An owner who locks the
+Two observations from practice bear this out. An owner who locks the
 bootloader to their own AVB key and tries to enable remote verification
 against the official service is turned away with an HTTP 400
 \citep{grapheneos-attestation-400}. And where an owner-rooted key is
