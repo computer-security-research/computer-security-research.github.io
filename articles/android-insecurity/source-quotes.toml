@@ -160,6 +160,18 @@ quotes = [
   { text = "My bootloader is locked with my AVB key. When I try to enable remote attestation, I am greeted with a response code: 400 notification.", label = "Owner key -> HTTP 400 from attestation.app", note = "discuss.grapheneos.org discussion 24128 (2025-07-17), user cancername; the sole reply offers generic troubleshooting and the report is left unresolved. Verified via sandbox render of the forum page." },
 ]
 
+[resign-android-image]
+label = "resign-android-image -- owner re-signs GrapheneOS OTAs with own keys; cannot pass Play Integrity"
+quotes = [
+  { text = "Currently no bypass for Play Integrity is included, the best solution is to modify the specific applications to remove the Play Integrity-related checks (if they aren't fully server-side) or failing that to install Magisk and a module that spoofs the Play Integrity verdict.", label = "Owner-signed build cannot satisfy Play Integrity", note = "chriswoope/resign-android-image README (pinned aca8607e, MIT). The tool re-signs GrapheneOS OTA updates with the owner's own AVB + APK keys for a bootloader re-locked to the owner key, without a full source rebuild; tested only on Pixel 6 Pro and Pixel Tablet. Verified verbatim." },
+]
+
+[grapheneos-auditor-domain]
+label = "Auditor source -- the attestation server domain is hardcoded"
+quotes = [
+  { text = 'static final String DOMAIN = "attestation.app";', label = "Released Auditor pins attestation.app", note = "GrapheneOS/Auditor RemoteVerifyJob.java (pinned d5d3264); BASE_URL derives from it and AttestationActivity rejects a remote-verify QR whose domain is not DOMAIN, so remote verification against a self-hosted server needs the app rebuilt with a changed domain. Verified verbatim." },
+]
+
 [diamaneos-attestation]
 label = "DiamaneOS -- downstream fork accepting an owner-rooted (self-signed, no manufacturer root) key"
 quotes = [
