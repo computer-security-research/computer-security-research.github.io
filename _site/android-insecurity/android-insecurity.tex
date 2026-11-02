@@ -1337,20 +1337,20 @@ different keys. Anchored to the project\textquotesingle s own key -\/-
 the default when an owner flashes official GrapheneOS release builds,
 which replace the vendor\textquotesingle s verified-boot key in the
 device\textquotesingle s secure element with
-GrapheneOS\textquotesingle s own \citep{grapheneos-install-locking} -\/-
-re-locking restores verified boot but only substitutes one
-vendor\textquotesingle s root of trust for another\textquotesingle s:
-the signing key is now GrapheneOS\textquotesingle s rather than
-Google\textquotesingle s, and the owner still does not hold it. On the
-key-control half of the criterion this official-build configuration is
-the stock position with a different, more transparent vendor, not owner
-control of the boot chain; swapping an official Google image for an
-official GrapheneOS image changes the vendor, not the
-owner\textquotesingle s standing. Even if Google allowlisted such a
-build so that it passed the hardware-backed integrity verdicts, that
-would be the attestation ecosystem and its relying parties choosing to
-accept GrapheneOS as trusted, not the owner inspecting or verifying the
-device.
+GrapheneOS\textquotesingle s own \citep{aosp-device-state},
+\citep{grapheneos-install-locking} -\/- re-locking restores verified
+boot but only substitutes one vendor\textquotesingle s root of trust for
+another\textquotesingle s: the signing key is now
+GrapheneOS\textquotesingle s rather than Google\textquotesingle s, and
+the owner still does not hold it. On the key-control half of the
+criterion this official-build configuration is the stock position with a
+different, more transparent vendor, not owner control of the boot chain;
+swapping an official Google image for an official GrapheneOS image
+changes the vendor, not the owner\textquotesingle s standing. Even if
+Google allowlisted such a build so that it passed the hardware-backed
+integrity verdicts, that would be the attestation ecosystem and its
+relying parties choosing to accept GrapheneOS as trusted, not the owner
+inspecting or verifying the device.
 
 GrapheneOS is nonetheless the furthest-developed case on which to test
 the thesis, because it adds what the stock platform withholds from the
