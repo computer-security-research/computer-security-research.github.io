@@ -1445,6 +1445,33 @@ publicly shared keys being banned by Google as they surface
 \citep{playintegrityfork}, \citep{tricky-store}; it is the steadily
 losing arms race Section 13 describes \citep{nguyen-vu-android-rooting}.
 
+These workarounds also make explicit why none of these systems offers
+what would actually dissolve the squeeze -\/- a secure root, a superuser
+facility that restores administrative inspection without surrendering
+verified boot and attestation -\/- and the most security-focused among
+them reject root for precisely that reason. CalyxOS "does not support
+running in rooted mode, nor do we recommend this," on the ground that
+"Running any Android device with root permissions severely undermines
+the security of the device" \citep{calyxos-root-faq}; the discontinued
+DivestOS likewise "does not support or encourage the use of root or
+runtime modification frameworks," which "break the trust model that AOSP
+employs and reduce the integrity of the system"
+\citep{divestos-root-faq}. GrapheneOS, the furthest-developed case, has
+weighed even a deliberately minimal root: its lead developer describes
+"an on-device root terminal which requires a special boot mode and
+isn\textquotesingle t persistent" as nonetheless "totally ruining
+verified boot by trusting persistent state"
+\citep{grapheneos-root-statement}; the project\textquotesingle s own
+account, asked whether root could be added without breaking the model,
+replied that once an app is fully trusted "the security model for
+verified boot and attestation are not intact to detect" a resulting
+compromise \citep{grapheneos-root-forum}. The boundedness of root
+established in Section 3 is thus not merely a restriction the stock
+vendor imposes and an aftermarket system could lift at will; it is a
+trade-off that the projects best placed to offer owner-controlled root
+instead affirm, because a superuser able to rewrite the running system
+is exactly what verified boot and attestation are built to detect.
+
 Aftermarket operating systems thus confirm rather than refute the
 paper\textquotesingle s thesis: owner-inspectability is attainable, but
 only by leaving the as-sold, vendor-keyed configuration behind, after
