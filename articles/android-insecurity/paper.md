@@ -336,6 +336,6 @@ if (device == null) {
 }
 ```
 
-GrapheneOS does not document a procedure for adding or replacing an accepted verified-boot key [@grapheneos-auditor]: the project states only that an alternative operating system's verified-boot key must be "included in the Auditor app and Attestation Server." Recognizing an owner-signed build therefore requires editing these hardcoded tables in the source of both components and rebuilding and redeploying them, including a self-hosted attestation server [@grapheneos-attestation-server].
+At the time of writing, GrapheneOS documents no procedure for adding or replacing an accepted verified-boot key [@grapheneos-auditor]: the project states only that an alternative operating system's verified-boot key must be "included in the Auditor app and Attestation Server." Recognizing an owner-signed build therefore requires editing these hardcoded tables in the source of both components and rebuilding and redeploying them, including a self-hosted attestation server [@grapheneos-attestation-server].
 
 Source: GrapheneOS Auditor, `app/src/main/java/app/attestation/auditor/AttestationProtocol.java`, at commit d5d326453e6e3b328d7a11198d9f99174ac7f4f3 (https://github.com/GrapheneOS/Auditor). Copyright (c) 2018-2025 GrapheneOS, MIT License. These excerpts are reproduced for scholarly commentary; they remain under their original copyright and MIT license, not this paper's license.
