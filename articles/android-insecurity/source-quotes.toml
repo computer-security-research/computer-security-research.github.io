@@ -113,6 +113,7 @@ claims = [
 ]
 quotes = [
   { text = "\"Play Integrity API strong integrity level is directly based on the hardware key attestation API, but apps using it directly can support aftermarket operating systems...\" / \"This is a list of the apps banning GrapheneOS with the Play Integrity API...\"" },
+  { text = "The hardware attestation API also provides other useful information signed by the hardware including the OS patch level, in a way that even an attacker exploiting the OS after boot to gain root cannot trivially bypass.", label = "Attestation not forgeable by post-boot root", note = "Attestation Compatibility Guide; reused in the Sec. 12 root discussion. Verified verbatim via host curl." },
 ]
 
 [aosp-full-disk-encryption]
