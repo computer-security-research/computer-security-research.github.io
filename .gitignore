@@ -1,7 +1,9 @@
 # The built _site is committed as text (HTML, .tex, assets) and deployed as-is;
-# only the binary PDF (+ its checksum) is kept out of git and rendered at deploy
-# time (journal-maker --pdf-only).
+# the binary artifacts (PDF, Word .docx + their checksums) are kept out of git
+# and rendered at deploy time (journal-maker --pdf-only).
 _site/**/*.pdf
 _site/**/*.pdf.sha256
+_site/**/*.docx
+_site/**/*.docx.sha256
 __pycache__/
 *.pyc
