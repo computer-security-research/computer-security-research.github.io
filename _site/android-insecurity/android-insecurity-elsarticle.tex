@@ -2017,9 +2017,10 @@ Server." Recognizing an owner-signed build therefore means editing these
 hardcoded tables in the source and rebuilding the Auditor app: local
 second-device verification needs only that
 \citep{grapheneos-auditor-tutorial}, while scheduled remote verification
-additionally requires rebuilding the app to point at a different server
--\/- the released Auditor pins attestation.app and rejects any other
-\citep{grapheneos-auditor-domain} -\/- and self-hosting a
+\citep{grapheneos-auditor-tutorial} additionally requires rebuilding the
+app to point at a different server -\/- the released Auditor pins
+attestation.app and rejects any other \citep{grapheneos-auditor-domain},
+\citep{grapheneos-auditor-issue140} -\/- and self-hosting a
 correspondingly keyed attestation server
 \citep{grapheneos-attestation-server}.
 
@@ -2034,7 +2035,10 @@ that accepts a device reporting self-signed verified boot whose key
 chains to no manufacturer root -\/- generalized owner-key attestation,
 but gated by that project\textquotesingle s own release list and the
 account holder\textquotesingle s approval rather than offered as an
-end-user facility \citep{diamaneos-attestation}.
+end-user facility \citep{diamaneos-attestation}; the robotnix build
+system similarly patches the Auditor app and attestation server to use
+owner-created keys, automating the owner-signed OS together with a
+matching app and server \citep{robotnix-attestation}.
 
 Source: GrapheneOS Auditor,
 \texttt{app/src/main/java/app/attestation/auditor/AttestationProtocol.java},
