@@ -533,6 +533,7 @@ quotes = [
   { text = "\"With very few exceptions, the process boundary is where security decisions are made and enforced.\"", label = "Supporting, Sec. 4.3" },
   { text = "a non-compliant change which violates CDD", label = "Owner + malicious rooting are the same class (Rule 3)", note = "arXiv:1904.05572 Sec. 3: 'Such rooting, both intentional and malicious, is a specific example of a non-compliant change which violates CDD' -- 'intentional' = the owner. Fragments 'both intentional and malicious' and this phrase verified verbatim via self-extracted arXiv PDF." },
   { text = "a legal concept rather than a technical one and therefore outside the scope of an OS security model", label = "Ownership scoped out of the model", note = "arXiv:1904.05572 Sec. 3, of the word 'ownership' ('Control over data also does not imply ownership -- [which] is a legal concept ...'). Verified verbatim via self-extracted arXiv PDF." },
+  { text = "No action should be executed unless all main parties agree ... Any one party can veto the action.", label = "Multi-party authorization (Rule 1)", note = "arXiv:1904.05572 Sec. 3, Rule 1: 'No action should be executed unless all main parties agree -- in the standard case, these are user, platform, and developer ... Any one party can veto the action.' Fragments verified verbatim via self-extracted arXiv PDF; ellipsis marks the omitted 'in the standard case, these are user, platform, and developer' clause, also verified." },
 ]
 
 [magisk-install]
