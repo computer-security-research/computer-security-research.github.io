@@ -238,6 +238,18 @@ claims = [
   { section = "Sec. 4", text = "proposes attesting that a platform satisfies required security properties rather than that it runs one specific configuration -- a prior line toward reconciling attestation with configuration freedom; the paper's owner-signed attestation is a concrete instance, bounded by attestation roots the owner does not control." },
 ]
 
+[saltzer-schroeder]
+label = "Saltzer & Schroeder 1975 -- principle of least privilege"
+claims = [
+  { section = "Sec. 12", text = "canonical statement of least privilege and economy of mechanism; underpins keeping the owner's daily session unprivileged, with administrative capability off its reachable path." },
+]
+
+[clark-wilson]
+label = "Clark & Wilson 1987 -- separation of duty as an integrity control"
+claims = [
+  { section = "Sec. 12", text = "formalizes separation of duty; underpins the role boundary between an unprivileged daily user and a distinct administrative role." },
+]
+
 [poettering-developer-mode]
 label = "Poettering 'Developer Mode' -- proposed owner-code-on-immutable-signed-OS mode (unshipped)"
 claims = [
