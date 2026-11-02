@@ -228,63 +228,43 @@ quotes = [
 
 [zhang-root-providers]
 label = "Android root as deployed enlarges attack surface (CCS 2015)"
-claims = [
-  { section = "Sec. 4", text = "empirical study of the commercial one-click-root ecosystem: root providers distribute well-engineered kernel exploits abusable by malware, so root as shipped enlarges rather than narrows the device's attack surface." },
-]
+no_quote = "Cited for its empirical finding on the commercial one-click-root ecosystem, not for a quotation."
 
 [sadeghi-property-attestation]
 label = "Property-based attestation -- certify properties, not a specific binary (NSPW 2004)"
-claims = [
-  { section = "Sec. 4", text = "proposes attesting that a platform satisfies required security properties rather than that it runs one specific configuration -- a prior line toward reconciling attestation with configuration freedom; the paper's owner-signed attestation is a concrete instance, bounded by attestation roots the owner does not control." },
-]
+no_quote = "Cited for the property-based-attestation proposal it introduces, not for a quotation."
 
 [saltzer-schroeder]
 label = "Saltzer & Schroeder 1975 -- principle of least privilege"
-claims = [
-  { section = "Sec. 12", text = "canonical statement of least privilege and economy of mechanism; underpins keeping the owner's daily session unprivileged, with administrative capability off its reachable path." },
-]
+no_quote = "Cited for the principle of least privilege it formulates, not for a quotation."
 
 [clark-wilson]
 label = "Clark & Wilson 1987 -- separation of duty as an integrity control"
-claims = [
-  { section = "Sec. 12", text = "formalizes separation of duty; underpins the role boundary between an unprivileged daily user and a distinct administrative role." },
-]
+no_quote = "Cited for the separation-of-duty integrity model it formalizes, not for a quotation."
 
 [poettering-developer-mode]
 label = "Poettering 'Developer Mode' -- proposed owner-code-on-immutable-signed-OS mode (unshipped)"
-claims = [
-  { section = "Sec. 12", text = "design essay on image-based operating systems (posted 2022-05-03) whose 'Developer Mode' section sketches reconciling an owner running their own code with an immutable, cryptographically validated system; presented as a design direction, not a shipping feature." },
-]
+no_quote = "Cited for the developer-mode design direction it sketches, not for a quotation."
 
 [aosp-apex]
 label = "Android APEX -- signed, dm-verity-verified, read-only modular system component"
-claims = [
-  { section = "Sec. 12", text = "signed modular system component (apex_payload.img backed by dm-verity, signed with the APK v3 scheme and verified at install against a key anchored in the verified partition); delivers owner- or vendor-authored capability as part of the verified image, still SELinux-policed; owner-wieldable only where the owner controls the OS signing keys (a custom build relocked to the owner's key), not on a vendor-locked stock device." },
-]
+no_quote = "Cited for the APEX mechanism it documents, not for a quotation."
 
 [systemd-sysext]
 label = "systemd-sysext -- signed, verity-authenticated, read-only system-extension images (Linux)"
-claims = [
-  { section = "Sec. 12", text = "merges additional read-only files into /usr and /opt from dm-verity + PKCS#7-signed extension images verified against keys in the kernel keyring; the Linux instance of the signed/verified/immutable-extension principle -- it extends the verified image rather than handing out a mutable superuser." },
-]
+no_quote = "Cited for the sysext mechanism it documents, not for a quotation."
 
 [avbroot]
 label = "avbroot -- owner re-signs + relocks, with optional baked-in root"
-claims = [
-  { section = "Sec. 12", text = "re-signs Android OTA images with the owner's own keys and can bake in Magisk/KernelSU root, then relock the bootloader against a custom AVB key; keeps cryptographic verified boot (self-signed state) but not a relying-party attestation verdict." },
-]
+no_quote = "Cited for the tool's capability (owner re-sign, relock, optional root), not for a quotation."
 
 [kernelsu]
 label = "KernelSU -- kernel-level Android root with per-app (app-profile) scoping"
-claims = [
-  { section = "Sec. 12", text = "kernel-based Android root whose per-app profiles scope the su permissions in the kernel; baked into a signed image and relocked under an owner key it keeps cryptographic verified boot, but it remains a persistent kernel-level superuser and its own docs disclose escape paths (an app can re-invoke su; NO_NEW_PRIVS can be escaped via other Linux mechanisms), so the scoping narrows surface rather than preserving the verified-boot security model." },
-]
+no_quote = "Cited for the project's kernel-root and app-profile design, not for a quotation."
 
 [shizuku]
 label = "Shizuku/Sui -- ADB-shell privilege brokering, not root"
-claims = [
-  { section = "Sec. 12", text = "brokers system-API access at the ADB/shell permission tier via an app_process-launched helper; preserves the stock, unmodified image (verified boot and attestation intact) precisely because it is not root; Sui's true-root mode falls back to Magisk." },
-]
+no_quote = "Cited for the project's ADB-shell brokering design, not for a quotation."
 
 [aosp-cdd]
 label = "Android CDD -- the compatibility requirements a device must meet to be Android"
@@ -548,7 +528,7 @@ quotes = [
 label = "Bootloader locking -- locked refuses a foreign image; unlocking wipes user data"
 claims = [
   { section = "Sec. 2", text = "A locked bootloader prevents installing/booting a non-vendor system or boot image." },
-  { section = "Sec. 3, 13", text = "unlocking the bootloader triggers a mandatory wipe of user data." },
+  { section = "Sec. 3, 14", text = "unlocking the bootloader triggers a mandatory wipe of user data." },
 ]
 quotes = [
   { text = "Devices intended for retail should be shipped in the locked state ... to ensure that attackers can't compromise the device by installing a new system or boot image.", label = "Locked: no foreign image", note = "Android Open Source Project, Locking and unlocking the bootloader; ellipsis elides a get_unlock_ability parenthetical." },
@@ -569,7 +549,7 @@ label = "NIST SP 800-101r1 -- sound acquisition; chip-off is specialized/destruc
 claims = [
   { section = "Sec. 7", text = "inspect acquired data on a separate, known-clean computer; sound acquisition and evidence preservation." },
   { section = "Sec. 9", text = "encryption and file-based access controls pose challenges to data acquisition." },
-  { section = "Sec. 13", text = "a write blocker preserves source integrity during acquisition." },
+  { section = "Sec. 14", text = "a write blocker preserves source integrity during acquisition." },
   { section = "Sec. 7", text = "chip-level extraction (physical removal of flash memory) is specialized and destructive, beyond most owners." },
 ]
 quotes = [
@@ -751,7 +731,7 @@ quotes = [
 [guri-joker-jtag]
 label = "JoKER -- an in-device detector can itself be subverted"
 claims = [
-  { section = "Sec. 9, 13", text = "trustworthy rootkit detection needs a vantage point outside the running OS, because an in-device detector can be compromised." },
+  { section = "Sec. 9, 14", text = "trustworthy rootkit detection needs a vantage point outside the running OS, because an in-device detector can be compromised." },
 ]
 quotes = [
   { text = "\"any detection mechanism run on the same physical device as the monitored OS can be compromised via application, kernel or boot-loader vulnerabilities. Consequentially, trusted detection of kernel rootkits in mobile devices is a challenging task in practice.\"", label = "abstract" },
@@ -769,7 +749,7 @@ quotes = [
 [chen-anti-virtualization]
 label = "Chen et al. -- malware checks for and thwarts analysis environments"
 claims = [
-  { section = "Sec. 1, 13", text = "measurement studies show modern malware checks for virtualized or instrumented environments and withholds its behavior when it detects them." },
+  { section = "Sec. 1, 14", text = "measurement studies show modern malware checks for virtualized or instrumented environments and withholds its behavior when it detects them." },
 ]
 quotes = [
   { text = "\"Recently however, new malware instances have emerged with the capability to check and often thwart these defensive activities -- essentially leaving defenders blind to their activities.\"", label = "abstract" },
@@ -779,7 +759,7 @@ quotes = [
 [ruggia-evasive-malware]
 label = "Ruggia et al. -- evasive malware detects analysis environments"
 claims = [
-  { section = "Sec. 1, 13", text = "modern malware checks whether it is under analysis and the evasion techniques have grown sophisticated." },
+  { section = "Sec. 1, 14", text = "modern malware checks whether it is under analysis and the evasion techniques have grown sophisticated." },
 ]
 quotes = [
   { text = "\"attackers pay special attention to flying under the radar of analysis tools, and the techniques to understand whether their app is under analysis have become more and more sophisticated.\"", label = "abstract" },
@@ -788,7 +768,7 @@ quotes = [
 [garfinkel-anti-forensics]
 label = "Garfinkel -- anti-forensics taxonomy (wiping, chaff, planting)"
 claims = [
-  { section = "Sec. 1, 13", text = "the anti-forensics literature names artifact wiping, trail obfuscation, and self-removal." },
+  { section = "Sec. 1, 14", text = "the anti-forensics literature names artifact wiping, trail obfuscation, and self-removal." },
 ]
 quotes = [
   { text = "\"Anti-Forensics (AF) tools and techniques frustrate CFTs by erasing or altering information; creating \\\"chaff\\\" that wastes time and hides information; implicating innocent parties by planting fake evidence; exploiting implementation bugs in known tools...\"" },
@@ -879,7 +859,7 @@ quotes = [
 [mitre-attack-evasion]
 label = "MITRE ATT&CK -- Sandbox Evasion (T1497) and Indicator Removal (T1070)"
 claims = [
-  { section = "Sec. 13", text = "the matching evasion/anti-forensic capabilities (checking for analysis environments; removing indicators) are catalogued." },
+  { section = "Sec. 14", text = "the matching evasion/anti-forensic capabilities (checking for analysis environments; removing indicators) are catalogued." },
 ]
 quotes = [
   { text = "\"Adversaries may employ various means to detect and avoid virtualization and analysis environments. This may include changing behaviors based on the results of checks for the presence of artifacts indicative of a virtual machine environment...\"", label = "T1497" },
@@ -889,7 +869,7 @@ quotes = [
 [lookout-chrysaor]
 label = "Lookout -- Pegasus for Android self-removal"
 claims = [
-  { section = "Sec. 13", text = "Pegasus for Android shipped suicide functionality to remove itself." },
+  { section = "Sec. 14", text = "Pegasus for Android shipped suicide functionality to remove itself." },
 ]
 quotes = [
   { text = "\"As seen in the iOS version of Pegasus, the Android counterpart also includes suicide functionality to remove itself under a variety of different circumstances.\"" },
@@ -898,7 +878,7 @@ quotes = [
 [marczak-million-dollar-dissident]
 label = "Citizen Lab -- iOS Pegasus self-destructs to avoid exposure"
 claims = [
-  { section = "Sec. 13", text = "the iOS variant self-destructs when exposure is likely." },
+  { section = "Sec. 14", text = "the iOS variant self-destructs when exposure is likely." },
 ]
 quotes = [
   { text = "\"activated automatically \\\"in cases where a great probability of exposing the agent exists.\\\" However, the documentation claims that sometimes Pegasus removal can result in an infected device rebooting immediately after removal.\"" },
@@ -907,7 +887,7 @@ quotes = [
 [thompson-trusting-trust]
 label = "Thompson -- a system cannot be trusted to report on itself"
 claims = [
-  { section = "Sec. 13", text = "the long-established principle that a system cannot be trusted to report truthfully on its own state." },
+  { section = "Sec. 14", text = "the long-established principle that a system cannot be trusted to report truthfully on its own state." },
 ]
 quotes = [
   { text = "\"You can't trust code that you did not totally create yourself. (Especially code from companies that employ people like me.) No amount of source-level verification or scrutiny will protect you from using untrusted code.\"" },
@@ -916,7 +896,7 @@ quotes = [
 [garfinkel-vmi]
 label = "Garfinkel & Rosenblum VMI -- isolate the monitor, retain visibility"
 claims = [
-  { section = "Sec. 13", text = "subversion-resistant detection must observe the system from outside the running OS." },
+  { section = "Sec. 14", text = "subversion-resistant detection must observe the system from outside the running OS." },
 ]
 quotes = [
   { text = "\"Using this approach allows us to isolate the IDS from the monitored host but still retain excellent visibility into the host's state.\"" },
@@ -925,7 +905,7 @@ quotes = [
 [talos-rombertik]
 label = "Talos -- Rombertik destroys the host on detecting analysis"
 claims = [
-  { section = "Sec. 13", text = "the nearest realized detect-then-destroy case wrecks the host rather than quietly erasing the implant." },
+  { section = "Sec. 14", text = "the nearest realized detect-then-destroy case wrecks the host rather than quietly erasing the implant." },
 ]
 quotes = [
   { text = "\"If the sample detected it was being analyzed or debugged it would ultimately destroy the master boot record (MBR).\"" },
@@ -943,7 +923,7 @@ quotes = [
 [aosp-boot-flow]
 label = "Verified Boot flow -- UNLOCKED devices show a warning screen"
 claims = [
-  { section = "Sec. 13", text = "unlocking is gated behind an explicit warning (and wipe)." },
+  { section = "Sec. 14", text = "unlocking is gated behind an explicit warning (and wipe)." },
 ]
 quotes = [
   { text = "\"YELLOW: Warning screen for LOCKED devices with custom root of trust set\" / \"ORANGE: Warning screen for UNLOCKED devices\" / \"RED (eio): Warning screen for dm-verity corruption\" / \"RED (no os found): No valid OS found\"", note = "Four separate boot-state list items from the AOSP Verified Boot flow page; each quoted individually so the slashes are not part of any quotation." },
@@ -953,7 +933,7 @@ quotes = [
 label = "Fastboot protocol -- RAM-boots a supplied image, but a locked (secure) bootloader refuses an unsigned one"
 claims = [
   { section = "Sec. 10", text = "The bootloader can start a supplied boot image from memory without flashing it, but a locked (secure) bootloader requires a valid signature before it will boot or install any image, so an external, unsigned system cannot be started until the bootloader is unlocked." },
-  { section = "Sec. 13", text = "As sold, the locked device boots only signed images and an external system requires first unlocking the bootloader." },
+  { section = "Sec. 14", text = "As sold, the locked device boots only signed images and an external system requires first unlocking the bootloader." },
 ]
 quotes = [
   { text = "The previously downloaded data is a boot.img and should be booted according to the normal procedure for a boot.img", label = "RAM-boot: boot a supplied image staged in memory, not flashed", note = "Android Open Source Project, fastboot/README.md, Command Reference; download stages the image in memory and flash is the separate write-to-partition command, so boot starts the image without writing it to storage." },
@@ -963,7 +943,7 @@ quotes = [
 [bootloader-wall-of-shame]
 label = "Wall of Shame -- crowd-sourced list of non-unlockable devices"
 claims = [
-  { section = "Sec. 10, 13", text = "a large class of carrier/vendor-locked devices cannot be unlocked by their owners, so external boot is not a universal capability." },
+  { section = "Sec. 10, 14", text = "a large class of carrier/vendor-locked devices cannot be unlocked by their owners, so external boot is not a universal capability." },
 ]
 quotes = [
   { text = "\"Bootloader Unlock: Wall of Shame\" (banner title) -- a crowd-sourced tracker of vendors/devices that restrict bootloader unlocking; licensed CC BY-NC-SA. (README tagline carries a non-ASCII emoji, omitted here.)" },
@@ -972,7 +952,7 @@ quotes = [
 [magnuson-moss-act]
 label = "Magnuson-Moss Warranty Act -- anti-tying (no brand-conditioned warranty)"
 claims = [
-  { section = "Sec. 13", text = "U.S. consumer-protection law limits blanket warranty voiding." },
+  { section = "Sec. 14", text = "U.S. consumer-protection law limits blanket warranty voiding." },
 ]
 quotes = [
   { text = "\"any article or service (other than article or service provided without charge under the terms of the warranty) which is identified by brand, trade, or corporate name\" (contiguous span of the 2302(c) anti-tying prohibition; the LII page interleaves defined-term links)" },
@@ -981,7 +961,7 @@ quotes = [
 [eu-directive-2019-771]
 label = "EU Directive 2019/771 -- seller liability for lack of conformity"
 claims = [
-  { section = "Sec. 13", text = "EU consumer law limits blanket voiding and ties refusal to a defect causally linked to the modification." },
+  { section = "Sec. 14", text = "EU consumer law limits blanket voiding and ties refusal to a defect causally linked to the modification." },
 ]
 quotes = [
   { text = "\"The seller shall be liable to the consumer for any lack of conformity which exists at the time when the goods were delivered and which becomes apparent within two years...\" (NOTE: the \"causal link to the modification\" is the paper's synthesis of the conformity- liability framework, not a single verbatim clause)" },
@@ -990,7 +970,7 @@ quotes = [
 [samsung-knox-hw-security]
 label = "Samsung Knox -- one-time e-fuse (Warranty Bit) is irreversible"
 claims = [
-  { section = "Sec. 13", text = "unlocking permanently trips a one-time-programmable e-fuse disabling hardware-backed attestation, not resettable." },
+  { section = "Sec. 14", text = "unlocking permanently trips a one-time-programmable e-fuse disabling hardware-backed attestation, not resettable." },
 ]
 quotes = [
   { text = "\"This record is stored in a one-time hardware e-fuse, permanently marking the device as having a non approved configuration, regardless of any future actions.\"" },
@@ -999,7 +979,7 @@ quotes = [
 [sony-unlock-bootloader]
 label = "Sony -- unlocking removes DRM security keys"
 claims = [
-  { section = "Sec. 13", text = "unlocking irrevocably erases device-unique keys that relocking does not restore." },
+  { section = "Sec. 14", text = "unlocking irrevocably erases device-unique keys that relocking does not restore." },
 ]
 quotes = [
   { text = "\"content on your device may also be inaccessible due to the removal of DRM security keys. ... the removal of DRM security keys may affect advanced camera functionality.\" (NOTE: the \"relocking does not restore\" characterization is the paper's; this page documents that unlocking removes the DRM security keys)" },
@@ -1008,7 +988,7 @@ quotes = [
 [qualcomm-secure-boot]
 label = "Qualcomm -- secure boot enabled by blowing a one-time eFuse"
 claims = [
-  { section = "Sec. 13", text = "one-time-programmable eFuse hardware is the standard SoC primitive for secure-boot enablement and anti-rollback, a one-way operation." },
+  { section = "Sec. 14", text = "one-time-programmable eFuse hardware is the standard SoC primitive for secure-boot enablement and anti-rollback, a one-way operation." },
 ]
 quotes = [
   { text = "\"secure boot is guaranteed only after blowing a QFPROM, which is an eFuse. The eFuse configuration required to enable platform secure boot includes: Enabling image authentication and anti-rollback protection. Disabling debug and JTAG access.\"" },
@@ -1017,7 +997,7 @@ quotes = [
 [nguyen-vu-android-rooting]
 label = "Rooting arms race -- evasion vs. detection"
 claims = [
-  { section = "Sec. 13", text = "cloaking tools pass integrity checks only by impersonating a still-vulnerable stock device, in a losing arms race against detection." },
+  { section = "Sec. 14", text = "cloaking tools pass integrity checks only by impersonating a still-vulnerable stock device, in a losing arms race against detection." },
 ]
 quotes = [
   { text = "\"We present an arms race between rooting detection and rooting evasion.\" / \"We then analyze the evasion loopholes and in turn enhance our rooting detection tool.\"" },
@@ -1026,7 +1006,7 @@ quotes = [
 [zaddach-hdd-backdoor]
 label = "Stealth hard-drive firmware backdoor -- below the OS, root-installable"
 claims = [
-  { section = "Secs. 12, 13", text = "a drive's controller firmware can be compromised with only public information and reverse engineering, installed by ordinary malware after OS compromise, backdooring data as it is written; persistent implants have migrated to low-level firmware beneath the OS." },
+  { section = "Secs. 12, 14", text = "a drive's controller firmware can be compromised with only public information and reverse engineering, installed by ordinary malware after OS compromise, backdooring data as it is written; persistent implants have migrated to low-level firmware beneath the OS." },
 ]
 quotes = [
   { text = "\"we show that it is possible to compromise the firmware of a commercial off-the-shelf hard drive, by resorting only to public information and reverse engineering.\" / \"a firmware backdoor can be installed by, e.g., traditional malware after the operating system has been compromised.\" / \"the target of the infection has shifted from software components towards more low-level elements, such as bootloaders, virtual-machine hypervisors, computer BIOS, and recently even the hardware itself.\"" },
@@ -1035,7 +1015,7 @@ quotes = [
 [kaspersky-equation]
 label = "Equation nls_933w -- in-the-wild drive-firmware reprogramming"
 claims = [
-  { section = "Sec. 13", text = "in-the-wild drive-firmware implants (the Equation group) reprogram the drive's firmware." },
+  { section = "Sec. 14", text = "in-the-wild drive-firmware implants (the Equation group) reprogram the drive's firmware." },
 ]
 quotes = [
   { text = "\"It allows them to reprogram the hard drive firmware\"", label = "article body" },
@@ -1044,7 +1024,7 @@ quotes = [
 [kaspersky-equation-qa]
 label = "Equation Q and A -- firmware implant survives formatting and OS reinstall"
 claims = [
-  { section = "Sec. 13", text = "the drive-firmware implant persists across disk formatting and a full operating-system reinstall." },
+  { section = "Sec. 14", text = "the drive-firmware implant persists across disk formatting and a full operating-system reinstall." },
 ]
 quotes = [
   { text = "\"Extreme persistence that survives disk formatting and OS reinstall.\"" },
@@ -1053,7 +1033,7 @@ quotes = [
 [eset-lojax]
 label = "LoJax -- first in-the-wild UEFI rootkit, survives reinstall and disk swap"
 claims = [
-  { section = "Sec. 13", text = "a UEFI implant in the motherboard's SPI flash persists across a full OS reinstall and even a storage replacement, because it does not reside on the storage." },
+  { section = "Sec. 14", text = "a UEFI implant in the motherboard's SPI flash persists across a full OS reinstall and even a storage replacement, because it does not reside on the storage." },
 ]
 quotes = [
   { text = "\"This persistence method is particularly invasive as it will not only survive an OS reinstall, but also a hard disk replacement.\"" },
@@ -1062,7 +1042,7 @@ quotes = [
 [ermolov-intel-me]
 label = "Intel ME -- chipset co-processor with privileged platform access, owner cannot inspect"
 claims = [
-  { section = "Sec. 13, Table 4", text = "the Intel Management Engine is a co-processor embedded in the chipset, running Intel-signed firmware with privileged access to platform data, that the owner cannot inspect." },
+  { section = "Sec. 14, Table 4", text = "the Intel Management Engine is a co-processor embedded in the chipset, running Intel-signed firmware with privileged access to platform data, that the owner cannot inspect." },
 ]
 quotes = [
   { text = "\"Intel Management Engine (Intel ME) is a proprietary technology that consists of a microcontroller integrated into the Platform Controller Hub (PCH) chip ... Therefore, Intel ME has access to almost all data on the computer.\"", label = "Sec. 1" },
@@ -1073,7 +1053,7 @@ quotes = [
 [jacob-faultpm]
 label = "AMD-SP/PSP -- dedicated security co-processor, root of trust, boots before the x86 cores"
 claims = [
-  { section = "Sec. 13, Table 4", text = "the AMD Secure Processor (formerly PSP) is a dedicated security co-processor integrated into the SoC that acts as the root of trust and boots before the main cores, running vendor firmware the owner cannot inspect." },
+  { section = "Sec. 14, Table 4", text = "the AMD Secure Processor (formerly PSP) is a dedicated security co-processor integrated into the SoC that acts as the root of trust and boots before the main cores, running vendor firmware the owner cannot inspect." },
 ]
 quotes = [
   { text = "\"The AMD Secure Processor (AMD-SP) is a dedicated security co-processor part of all recent AMD Systems-on-a-chip (SoCs) ... the AMD-SP (formerly known as Platform Security Processor (PSP)) has acted as the Root of Trust (RoT) of the SoC.\"", label = "Sec. 2.4" },
@@ -1217,7 +1197,7 @@ quotes = [
 [nist-hwb-spec]
 label = "NIST hardware write blocker -- read-only acquisition does not modify evidence"
 claims = [
-  { section = "Sec. 13", text = "a write blocker passes read commands while blocking any that would alter the drive, so disk imaging does not modify the evidence." },
+  { section = "Sec. 14", text = "a write blocker passes read commands while blocking any that would alter the drive, so disk imaging does not modify the evidence." },
 ]
 quotes = [
   { text = "\"The central requirement for a sound forensic examination of digital evidence is that the original evidence must not be modified\". / \"HWB-RM-01 A HWB shall block modifying commands to a protected storage device.\"" },
@@ -1226,7 +1206,7 @@ quotes = [
 [halderman-coldboot]
 label = "Cold-boot attack -- DRAM retains contents after power loss"
 claims = [
-  { section = "Sec. 13", text = "RAM can be captured from outside the running OS by exploiting DRAM remanence after a cold reboot." },
+  { section = "Sec. 14", text = "RAM can be captured from outside the running OS by exploiting DRAM remanence after a cold reboot." },
 ]
 quotes = [
   { text = "\"DRAMs used in most modern computers retain their contents for several seconds after power is lost, even at room temperature and even if removed from a motherboard.\"" },
@@ -1235,7 +1215,7 @@ quotes = [
 [markettos-thunderclap]
 label = "Thunderclap -- DMA peripherals can read all memory; the IOMMU now resists"
 claims = [
-  { section = "Sec. 13", text = "a DMA-capable peripheral can read system memory from outside the OS, but modern platforms increasingly block it with an IOMMU." },
+  { section = "Sec. 14", text = "a DMA-capable peripheral can read system memory from outside the OS, but modern platforms increasingly block it with an IOMMU." },
 ]
 quotes = [
   { text = "\"DMA-enabled I/O peripherals have complete access to the state of a computer and can fully compromise it including reading and writing all of system memory.\" / \"vendors have incorporated support for Input-Output Memory Management Units (IOMMUs), which impose memory protection on DMA\"." },
@@ -1244,7 +1224,7 @@ quotes = [
 [frisk-pcileech]
 label = "PCILeech -- PCIe DMA reads target memory with no target driver"
 claims = [
-  { section = "Sec. 13", text = "DMA over an expansion bus can capture RAM with no software on the target." },
+  { section = "Sec. 14", text = "DMA over an expansion bus can capture RAM with no software on the target." },
 ]
 quotes = [
   { text = "\"PCILeech uses PCIe hardware devices to read and write target system memory. This is achieved by using DMA over PCIe. No drivers are needed on the target system.\" (Caveat, same source: \"Recent Windows and Linux versions block DMA by default.\")" },
@@ -1253,7 +1233,7 @@ quotes = [
 [muller-frost-coldboot]
 label = "FROST -- on Android, cold boot first needs unlock, which wipes user data"
 claims = [
-  { section = "Sec. 13", text = "the demonstrated on-device cold-boot variant on Android first required unlocking the bootloader, which wipes the user data it sought to recover." },
+  { section = "Sec. 14", text = "the demonstrated on-device cold-boot variant on Android first required unlocking the bootloader, which wipes the user data it sought to recover." },
 ]
 quotes = [
   { text = "\"the bootloader must be unlocked before the attack because scrambled user partitions are wiped during unlocking\". / \"Cooling the device down under 10 degree Celsius increases the success of cold boot attacks considerably\"." },
