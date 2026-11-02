@@ -222,7 +222,7 @@ quotes = [
 [divestos-root-faq]
 label = "DivestOS -- does not support root; it breaks the AOSP trust model"
 quotes = [
-  { text = "DivestOS does not support or encourage the use of root or runtime modification frameworks.", label = "Unsupported", note = "DivestOS FAQ (project discontinued), via Internet Archive snapshot 2024-06-01. Verified verbatim via sandbox render." },
+  { text = "DivestOS does not support or encourage the use of root or runtime modification frameworks.", label = "Unsupported", note = "DivestOS FAQ (project discontinued), via Internet Archive capture 2024-05-25. Verified verbatim via sandbox render." },
   { text = "break the trust model that AOSP employs and reduce the integrity of the system", label = "Breaks trust model", note = "Same FAQ; listed consequence of root/runtime-modification frameworks ('Will break the trust model ...'). Verified verbatim via sandbox render." },
 ]
 
