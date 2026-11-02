@@ -80,31 +80,31 @@ device rather than the platform\textquotesingle s ability to enforce
 policy. It introduces owner-inspectability -\/- the property that an
 owner can examine and verify the whole system from a clean, trusted
 vantage point and demonstrate what it is running to any verifier they
-choose -\/- and organizes the resulting limits: the owner cannot inspect
-the whole system from a clean environment, nor reach storage and memory
-without withheld privileges; application and update delivery is
-vendor-controlled, so compromise or coercion could push targeted
-malicious installs; and remote attestation ties the status a remote
-party relies on to the device staying unmodified, so enabling inspection
-forfeits the very status it validates. Obtaining root does not dissolve
-these limits: root is bounded by the platform\textquotesingle s own
-defenses and can be deceived by a kernel-space rootkit that falsifies
-what in-system tools observe. Many applications also refuse to run
-without a hardware-backed integrity verdict an owner-controlled
-configuration cannot produce, so the owner is squeezed from both sides
--\/- declining to modify forecloses inspection, while modifying is
-costly and forfeits the status everyday use depends on. Against a
-conventional computer the owner fully controls, most established
-malware-analysis techniques are unavailable on a stock phone without
-first breaking its own verified-boot and attestation guarantees;
-surveying the main objections, the paper concludes that limited
-observability leaves absence of findings as weak evidence of integrity.
-It then frames owner-controlled privileged inspection -\/- a secure root
-that would preserve verified boot and attestation -\/- as the capability
-that would dissolve this squeeze, systematizes the approaches proposed
-or shipped, and identifies the open gap none yet closes. It covers stock
-Android and extends to other vendor-locked devices only to varying
-degrees.
+choose to trust -\/- and organizes the resulting limits: the owner
+cannot inspect the whole system from a clean environment, nor reach
+storage and memory without withheld privileges; application and update
+delivery is vendor-controlled, so compromise or coercion could push
+targeted malicious installs; and remote attestation ties the status a
+remote party relies on to the device staying unmodified, so enabling
+inspection forfeits the very status it validates. Obtaining root does
+not dissolve these limits: root is bounded by the
+platform\textquotesingle s own defenses and can be deceived by a
+kernel-space rootkit that falsifies what in-system tools observe. Many
+applications also refuse to run without a hardware-backed integrity
+verdict an owner-controlled configuration cannot produce, so the owner
+is squeezed from both sides -\/- declining to modify forecloses
+inspection, while modifying is costly and forfeits the status everyday
+use depends on. Against a conventional computer the owner fully
+controls, most established malware-analysis techniques are unavailable
+on a stock phone without first breaking its own verified-boot and
+attestation guarantees; surveying the main objections, the paper
+concludes that limited observability leaves absence of findings as weak
+evidence of integrity. It then frames owner-controlled privileged
+inspection -\/- a secure root that would preserve verified boot and
+attestation -\/- as the capability that would dissolve this squeeze,
+systematizes the approaches proposed or shipped, and identifies the open
+gap none yet closes. It covers stock Android and extends to other
+vendor-locked devices only to varying degrees.
 \end{abstract}
 \begin{IEEEkeywords}
 Android security, independent verification, mobile forensics, remote attestation, rootkit detection, malware analysis, device integrity
@@ -1736,8 +1736,8 @@ kernel-level superuser; app-profile scoping narrows the surface but is
 not a security boundary \\
 Non-persistent root: a special-boot-mode terminal not retained across
 reboot \citep{grapheneos-root-statement} & Only transiently & Yes -\/-
-nothing persists, so a reboot restores the verified state (an active
-session\textquotesingle s root serves unverified content; see below) \\
+the root does not persist across reboot, which restores the verified
+boot chain and system \\
 Signed, verified extension shipped inside the image: Android APEX
 \citep{aosp-apex} (the Linux analogue, under a verity-and-signature
 image policy, is systemd-sysext \citep{systemd-sysext}) & No -\/-
