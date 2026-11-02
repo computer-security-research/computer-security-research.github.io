@@ -238,6 +238,12 @@ claims = [
   { section = "Sec. 4", text = "proposes attesting that a platform satisfies required security properties rather than that it runs one specific configuration -- a prior line toward reconciling attestation with configuration freedom; the paper's owner-signed attestation is a concrete instance, bounded by attestation roots the owner does not control." },
 ]
 
+[poettering-developer-mode]
+label = "Poettering 'Developer Mode' -- proposed owner-code-on-immutable-signed-OS mode (unshipped)"
+claims = [
+  { section = "Sec. 12", text = "design essay on image-based operating systems (posted 2022-05-03) whose 'Developer Mode' section sketches reconciling an owner running their own code with an immutable, cryptographically validated system; presented as a design direction, not a shipping feature." },
+]
+
 [aosp-apex]
 label = "Android APEX -- signed, dm-verity-verified, read-only modular system component"
 claims = [
