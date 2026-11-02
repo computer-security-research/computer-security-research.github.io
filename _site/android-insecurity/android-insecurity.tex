@@ -249,8 +249,8 @@ and a locked bootloader admit only vendor-signed code to the boot and
 system partitions, keeping unauthorized code out of the system image
 though not out of the application layer \citep{aosp-verified-boot},
 \citep{aosp-bootloader-locking} (a chain that has itself demonstrated
-sub-operating-system defeats; Sections 8 and 12); Google Play Protect
-screens apps and works to prevent the installation of harmful ones, with
+sub-operating-system defeats; Section 12); Google Play Protect screens
+apps and works to prevent the installation of harmful ones, with
 installation from unknown sources restricted by default
 \citep{google-play-protect}, \citep{nistSP800124r2}; and the Play
 Integrity API gates relying-party access when a device appears tampered
@@ -1869,29 +1869,26 @@ Inspectability and modifiability are distinct as ends -\/- the criterion
 asks that the owner establish and demonstrate what the device runs, not
 that the device be freely modifiable -\/- yet on locked stock devices
 they remain entangled in practice, in three ways. Mechanically, gaining
-the first inspection foothold on such a device generally requires the
-same unlock that also admits an arbitrary replacement system, so the
-capability the owner needs arrives bundled with one the platform is
-reluctant to grant; only a re-locked, owner-keyed configuration (Section
-12) begins to separate them again, restoring verified inspection of the
-main system without leaving the device open to arbitrary reflashing.
-Through the software-freedom ecosystem, the freedoms to study, rebuild,
-and redistribute sustain inspection from upstream: auditable source and
-reproducible builds give the owner a known-good reference to check an
-acquired image against -\/- they fix what a trusted build should
-contain, though confirming the device actually runs it still takes an
-acquired image or a trusted measurement -\/- and shared tools and
-findings are what make inspection practical at all. And since
-inspectability is only a proxy for the owner\textquotesingle s actual
-end -\/- security for the owner, not the platform -\/- modification can
-reach that end by another route: replacing an opaque firmware component
-with a more trustworthy build can improve security where inspecting it
-is impossible, though it substitutes a better-placed trust rather than
-delivering the verification the criterion measures, the same move as
-re-locking to a more transparent vendor\textquotesingle s key (Section
-12). That reaching inspection on a locked stock device usually routes
-through the broader modification the platform withholds is itself the
-case for decoupling the two by design.
+a first inspection foothold on such a device generally requires the same
+unlock that also admits an arbitrary replacement system, so the
+capability the owner needs tends to arrive bundled with one the platform
+withholds. Through the software-freedom ecosystem, the freedoms to
+study, rebuild, and redistribute sustain inspection from upstream:
+auditable source and reproducible builds give the owner a known-good
+reference to check an acquired image against -\/- they fix what a
+trusted build should contain, though confirming the device actually runs
+it still takes an acquired image or a trusted measurement -\/- and
+shared tools and findings are what make inspection practical at all. And
+since inspectability is only a proxy for the owner\textquotesingle s
+actual end -\/- security for the owner, not the platform -\/-
+modification can reach that end by another route: replacing an opaque
+firmware component with a more trustworthy build can improve security
+where inspecting it is impossible, though it substitutes a better-placed
+trust rather than delivering the verification the criterion measures,
+the same move as re-locking to a more transparent
+vendor\textquotesingle s key (Section 12). That reaching inspection on a
+locked stock device usually routes through the broader modification the
+platform withholds is itself the case for decoupling the two by design.
 
 A measured reading is that the platform optimizes for resistance to the
 ordinary running adversary at the cost of owner-side auditability, and
