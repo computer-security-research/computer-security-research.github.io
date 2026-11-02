@@ -1042,7 +1042,7 @@ quotes = [
 [ermolov-intel-me]
 label = "Intel ME -- chipset co-processor with privileged platform access, owner cannot inspect"
 claims = [
-  { section = "Sec. 14, Table 4", text = "the Intel Management Engine is a co-processor embedded in the chipset, running Intel-signed firmware with privileged access to platform data, that the owner cannot inspect." },
+  { section = "Sec. 14, Table 5", text = "the Intel Management Engine is a co-processor embedded in the chipset, running Intel-signed firmware with privileged access to platform data, that the owner cannot inspect." },
 ]
 quotes = [
   { text = "\"Intel Management Engine (Intel ME) is a proprietary technology that consists of a microcontroller integrated into the Platform Controller Hub (PCH) chip ... Therefore, Intel ME has access to almost all data on the computer.\"", label = "Sec. 1" },
@@ -1053,7 +1053,7 @@ quotes = [
 [jacob-faultpm]
 label = "AMD-SP/PSP -- dedicated security co-processor, root of trust, boots before the x86 cores"
 claims = [
-  { section = "Sec. 14, Table 4", text = "the AMD Secure Processor (formerly PSP) is a dedicated security co-processor integrated into the SoC that acts as the root of trust and boots before the main cores, running vendor firmware the owner cannot inspect." },
+  { section = "Sec. 14, Table 5", text = "the AMD Secure Processor (formerly PSP) is a dedicated security co-processor integrated into the SoC that acts as the root of trust and boots before the main cores, running vendor firmware the owner cannot inspect." },
 ]
 quotes = [
   { text = "\"The AMD Secure Processor (AMD-SP) is a dedicated security co-processor part of all recent AMD Systems-on-a-chip (SoCs) ... the AMD-SP (formerly known as Platform Security Processor (PSP)) has acted as the Root of Trust (RoT) of the SoC.\"", label = "Sec. 2.4" },
