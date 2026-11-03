@@ -262,6 +262,18 @@ no_quote = "Cited for the tool's capability (owner re-sign, relock, optional roo
 label = "KernelSU -- kernel-level Android root with per-app (app-profile) scoping"
 no_quote = "Cited for the project's kernel-root and app-profile design, not for a quotation."
 
+[kernelsu-modules]
+label = "KernelSU module -- store in /data/adb/modules, overlaid on /system each boot via OverlayFS (systemless)"
+claims = [
+  { section = "Sec. 12", text = "A KernelSU module's store lives in /data/adb/modules and is overlaid on /system each boot via OverlayFS, so the superuser's modifications sit above the verified layer in unverified /data -- the system partition is left byte-intact (systemless)." },
+]
+quotes = [
+  { text = "KernelSU provides a module mechanism that achieves the effect of modifying the system directory while maintaining the integrity of the system partition. This mechanism is commonly known as \"systemless\".", label = "Systemless -- /system left intact", note = "KernelSU Documentation, Module Guide (kernelsu.org/guide/module.html). Verified verbatim against the live page." },
+  { text = "A KernelSU module is a folder placed in /data/adb/modules with the structure below:", label = "Module store in /data/adb/modules" },
+  { text = "The contents of this directory will be overlaid on top of the system's /system partition after the system is booted.", label = "Overlaid on /system each boot" },
+  { text = "The official meta-overlayfs metamodule uses the kernel's OverlayFS for systemless modifications, while Magisk uses magic mount (bind mount) built directly into its core. Both achieve the same goal: modifying /system files without physically modifying the /system partition.", label = "Via OverlayFS, without changing the /system partition" },
+]
+
 [shizuku]
 label = "Shizuku/Sui -- ADB-shell privilege brokering, not root"
 no_quote = "Cited for the project's ADB-shell brokering design, not for a quotation."
