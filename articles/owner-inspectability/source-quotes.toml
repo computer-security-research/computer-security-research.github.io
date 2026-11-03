@@ -265,7 +265,7 @@ no_quote = "Cited for the project's kernel-root and app-profile design, not for 
 [kernelsu-modules]
 label = "KernelSU module -- store in /data/adb/modules, overlaid on /system each boot via OverlayFS (systemless)"
 claims = [
-  { section = "Sec. 12", text = "A KernelSU module's store lives in /data/adb/modules and is overlaid on /system each boot via OverlayFS, so the superuser's modifications sit above the verified layer in unverified /data -- the system partition is left byte-intact (systemless)." },
+  { section = "Sec. 13", text = "A KernelSU module's store lives in /data/adb/modules and is overlaid on /system each boot via OverlayFS, so the superuser's modifications sit above the verified layer in unverified /data -- the system partition is left byte-intact (systemless)." },
 ]
 quotes = [
   { text = "KernelSU provides a module mechanism that achieves the effect of modifying the system directory while maintaining the integrity of the system partition. This mechanism is commonly known as \"systemless\".", label = "Systemless -- /system left intact", note = "KernelSU Documentation, Module Guide (kernelsu.org/guide/module.html). Verified verbatim against the live page." },
