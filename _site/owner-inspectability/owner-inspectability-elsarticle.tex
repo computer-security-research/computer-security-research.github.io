@@ -1851,7 +1851,7 @@ because \texttt{/system} stays mounted read-only under verity -\/- even
 this full root cannot persistently write it (a \texttt{touch} there
 returns EROFS, because \texttt{/system} is mounted read-only
 \citep{aosp-dynamic-partitions}, and a read-write remount is refused on
-a production build \citep{bayton-disable-verity}) \\
+a production build \citep{aosp-set-verity-service}) \\
 Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
 No -\/- capped at the ADB shell permission set, via an app-broker API &
 Yes & No & Yes -\/- stock image unmodified \\
