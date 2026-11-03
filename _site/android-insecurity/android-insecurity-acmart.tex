@@ -92,7 +92,7 @@ inspection forfeits the very status it validates. Obtaining root does
 not dissolve these limits: root is bounded by the
 platform\textquotesingle s own defenses and can be deceived by a
 kernel-space rootkit that falsifies what in-system tools observe. Many
-applications also refuse to run without a hardware-backed integrity
+applications also refuse to run without a hardware-backed Play Integrity
 verdict an owner-controlled configuration cannot produce, so the owner
 is squeezed from both sides -\/- declining to modify forecloses
 inspection, while modifying is costly and forfeits the status everyday
@@ -1737,7 +1737,8 @@ not a security boundary \\
 Non-persistent root: a special-boot-mode terminal not retained across
 reboot \citep{grapheneos-root-statement} & Only transiently & Yes -\/-
 the root does not persist across reboot, which restores the verified
-boot chain and system \\
+boot chain and system image (writable user data, outside verified boot,
+is a separate matter) \\
 Signed, verified extension shipped inside the image: Android APEX
 \citep{aosp-apex} (the Linux analogue, under a verity-and-signature
 image policy, is systemd-sysext \citep{systemd-sysext}) & No -\/-
