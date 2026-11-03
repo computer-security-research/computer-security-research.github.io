@@ -263,40 +263,45 @@ apps and works to prevent the installation of harmful ones, with
 installation from unknown sources restricted by default
 \citep{google-play-protect}, \citep{nistSP800124r2}; and the Play
 Integrity API gates relying-party access when a device appears tampered
-\citep{play-integrity-verdicts}. How well the app-layer screen catches
-malware is assessed here using independent testing results: in
-AV-Comparatives\textquotesingle{} May 2024 testing Play Protect reached
-a 99.3 percent protection rate, clearing the 99 percent certification
-threshold that round but trailing the leading third-party scanners at
-99.9 percent and logging more false positives, an improvement over
-earlier independent rounds that had ranked it lowest, at well below 70
-percent detection \citep{avcomparatives-mobile-2024},
-\citep{avtest-android-endurance-2018}. But the signed-image and
-attestation machinery also enforces objectives the owner may neither
-share nor be able to remove or audit -\/- that only a vendor-approved
-configuration runs, with application and service access gated by relying
-parties (the remote apps and services that consume the attestation
-verdict) rather than by the owner \citep{play-integrity-verdicts} -\/-
-so the guarantee runs in part to the platform and those relying parties,
-not to the owner alone. Such functionality, which the owner may not
-want, cannot remove, and cannot audit, has been termed an anti-feature
-in the free-software literature \citep{hill2007antifeatures},
-\citep{fdroid-antifeatures}; preinstalled applications, advertising
-components, and tracking software that the owner cannot uninstall
-without root are a documented instance \citep{gamba2020preinstalled};
-Carrier IQ, preinstalled carrier diagnostic software that wrote dialer
-keypresses and SMS text to system logs on some devices, is an earlier
-one \citep{eckersley-carrieriq}. Content protection is the
-platform-control counterpart on the content side: on devices with the
-requisite hardware support, hardware-backed digital-rights-management
-can bind decryption and the decoded video frames to the same hardware
-chain of trust as verified boot, routing protected content through a
-trusted output path so that the owner may play licensed media but cannot
-directly extract the decoded stream, which is released only on terms the
-content provider sets \citep{aosp-drm}. This paper treats those
-platform-control and content-protection objectives as out of scope to
-analyze (Section 3) and returns to the question of which party the
-attestation guarantee serves (Section 8).
+\citep{play-integrity-verdicts}.
+
+How well the app-layer screen catches malware is assessed here using
+independent testing results: in AV-Comparatives\textquotesingle{} May
+2024 testing Play Protect reached a 99.3 percent protection rate,
+clearing the 99 percent certification threshold that round but trailing
+the leading third-party scanners at 99.9 percent and logging more false
+positives, an improvement over earlier independent rounds that had
+ranked it lowest, at well below 70 percent detection
+\citep{avcomparatives-mobile-2024},
+\citep{avtest-android-endurance-2018}.
+
+But the signed-image and attestation machinery also enforces objectives
+the owner may neither share nor be able to remove or audit -\/- that
+only a vendor-approved configuration runs, with application and service
+access gated by relying parties (the remote apps and services that
+consume the attestation verdict) rather than by the owner
+\citep{play-integrity-verdicts} -\/- so the guarantee runs in part to
+the platform and those relying parties, not to the owner alone. Such
+functionality, which the owner may not want, cannot remove, and cannot
+audit, has been termed an anti-feature in the free-software literature
+\citep{hill2007antifeatures}, \citep{fdroid-antifeatures}; preinstalled
+applications, advertising components, and tracking software that the
+owner cannot uninstall without root are a documented instance
+\citep{gamba2020preinstalled}; Carrier IQ, preinstalled carrier
+diagnostic software that wrote dialer keypresses and SMS text to system
+logs on some devices, is an earlier one \citep{eckersley-carrieriq}.
+
+Content protection is the platform-control counterpart on the content
+side: on devices with the requisite hardware support, hardware-backed
+digital-rights-management can bind decryption and the decoded video
+frames to the same hardware chain of trust as verified boot, routing
+protected content through a trusted output path so that the owner may
+play licensed media but cannot directly extract the decoded stream,
+which is released only on terms the content provider sets
+\citep{aosp-drm}. This paper treats those platform-control and
+content-protection objectives as out of scope to analyze (Section 3) and
+returns to the question of which party the attestation guarantee serves
+(Section 8).
 
 \subsection{3. Threat Model and Scope}\label{threat-model-and-scope}
 
@@ -408,15 +413,17 @@ already-booted system does not by itself grant unrestricted operations
 \citep{aosp-selinux}; the systemless root treated below escapes this
 confinement not by wielding more privilege within the booted system but
 by shaping the policy from beneath, as the boot image\textquotesingle s
-init is patched before the policy is loaded. The
-kernel\textquotesingle s lockdown facility, once engaged, withdraws a
-range of otherwise root-accessible interfaces that could be used to
+init is patched before the policy is loaded.
+
+The kernel\textquotesingle s lockdown facility, once engaged, withdraws
+a range of otherwise root-accessible interfaces that could be used to
 modify the running kernel \citep{kernel-lockdown}. Module-signature
 enforcement can require that any code loaded into the kernel carry a
 valid signature, so that root cannot insert an arbitrary kernel module
 \citep{kernel-module-signing}, and the kernel.modules\_disabled control,
 once set, blocks all further module loading until reboot in a one-way
 fashion that even root cannot reverse \citep{kernel-modules-disabled}.
+
 Beneath the operating system, Android Verified Boot and a locked
 bootloader anchor the boot chain to a hardware root of trust and refuse
 unsigned images, so that root -\/- an in-system privilege -\/- cannot by
@@ -1012,16 +1019,19 @@ not uniformly -\/- the Generic Kernel Image does not enforce per-module
 signatures (Section 3) -\/- and in any case this root observes the
 kernel only from within it, so a kernel-space rootkit beneath it
 falsifies what any in-system tool reports regardless of privilege
-(Sections 9 and 14). A clean, out-of-system vantage comes not from the
-ramdisk patch but from the same unlock\textquotesingle s further use
--\/- booting a separate kernel or recovery to inspect the partitions at
-rest -\/- and even that leaves the suspect kernel\textquotesingle s live
-memory beyond trusted reach (Section 14). The modification has thus
-moved down into the boot chain that verified boot protects, not out of
-its reach, and the device still forfeits the hardware-backed verdicts
-described above. The integrity-masking modules an owner adds alongside
-it spoof the software-visible signals read by app-side root checks and
-the basic verdict, and on devices launched before Android 13 -\/- whose
+(Sections 9 and 14).
+
+A clean, out-of-system vantage comes not from the ramdisk patch but from
+the same unlock\textquotesingle s further use -\/- booting a separate
+kernel or recovery to inspect the partitions at rest -\/- and even that
+leaves the suspect kernel\textquotesingle s live memory beyond trusted
+reach (Section 14). The modification has thus moved down into the boot
+chain that verified boot protects, not out of its reach, and the device
+still forfeits the hardware-backed verdicts described above.
+
+The integrity-masking modules an owner adds alongside it spoof the
+software-visible signals read by app-side root checks and the basic
+verdict, and on devices launched before Android 13 -\/- whose
 device-integrity verdict is the weaker successor to
 SafetyNet\textquotesingle s ctsProfileMatch -\/- they can pass that
 verdict too by rewriting android.os.Build fields and system properties,
@@ -1386,48 +1396,51 @@ boot but only substitutes one vendor\textquotesingle s root of trust for
 another\textquotesingle s: the signing key is now
 GrapheneOS\textquotesingle s rather than Google\textquotesingle s, and
 the owner still does not hold it. On the key-control half of the
-criterion this official-build configuration is the stock position with a
-different, more transparent vendor, not owner control of the boot chain;
-replacing an official Google image with an official GrapheneOS image
-changes the vendor, not the owner\textquotesingle s standing. Even if
-Google allowlisted such a build so that it passed the hardware-backed
+criterion this official-build configuration is the stock position under
+a different vendor\textquotesingle s key, not owner control of the boot
+chain; replacing an official Google image with an official GrapheneOS
+image changes the vendor, not the owner\textquotesingle s standing. Even
+if Google allowlisted such a build so that it passed the hardware-backed
 integrity verdicts that banking and payment apps gate on, that would be
 the attestation ecosystem and its relying parties choosing to accept
 GrapheneOS as trusted, not the owner inspecting or verifying the device.
 
-GrapheneOS is nonetheless a well-developed case on which to test the
-thesis, because it adds what the stock platform withholds from the
-owner: owner-accessible attestation tooling -\/- the Auditor app, which
-verifies, from a second device or on a schedule against an attestation
-server the owner can run themselves \citep{grapheneos-auditor},
+GrapheneOS is one case on which the thesis can be tested, because it
+adds what the stock platform withholds from the owner: owner-accessible
+attestation tooling -\/- the Auditor app, which verifies, from a second
+device or on a schedule against an attestation server the owner can run
+themselves \citep{grapheneos-auditor},
 \citep{grapheneos-attestation-server}, that the system is the expected,
 untampered build running on a locked bootloader, built on the standard
 hardware attestation primitive but packaged as a verify-to-yourself
-capability rather than a relying-party one. The configuration that
-actually meets the key-control half is the other anchoring: an owner who
-builds GrapheneOS from source, signs it with keys they generate and
-keep, and re-locks to their own enrolled verified-boot key holds a root
-of trust that is genuinely theirs \citep{grapheneos-build}; tooling
-exists to produce such owner-signed builds from signed over-the-air
-updates without a full source rebuild, though only on supported Pixel
-hardware, and it too documents that no owner-signed configuration can
-satisfy the hardware-backed Play Integrity verdict
-\citep{resign-android-image}. GrapheneOS\textquotesingle s own Auditor
-app, in its released form, nonetheless does not recognize that owner
-key: its attestation accepts only official GrapheneOS keys in the
-self-signed verified-boot state -\/- an alternate OS re-locked under a
-non-stock key -\/- because an alternate system\textquotesingle s
-verified-boot key must be compiled into the released app and server to
-be recognized \citep{grapheneos-auditor},
-\citep{grapheneos-auditor-source}, \citep{grapheneos-auditor-usecase}
-(Appendix A), so verifying an owner-signed build needs a verifier the
-owner configures with their own key -\/- an owner-built Auditor and, if
-remote checking is wanted, an owner-run attestation server. That
-owner-signed path is the configuration that actually satisfies the
-owner-inspectability criterion for the main system -\/- the owner both
-holds the root of trust and can verify the device against it, to
-themselves or to any verifier they provision -\/- and is the right case
-on which to test the thesis.
+capability rather than a relying-party one.
+
+The configuration that actually meets the key-control half is the other
+anchoring: an owner who builds GrapheneOS from source, signs it with
+keys they generate and keep, and re-locks to their own enrolled
+verified-boot key holds a root of trust they control
+\citep{grapheneos-build}; tooling exists to produce such owner-signed
+builds from signed over-the-air updates without a full source rebuild,
+though only on supported Pixel hardware, and it too documents that no
+owner-signed configuration can satisfy the hardware-backed Play
+Integrity verdict \citep{resign-android-image}.
+
+GrapheneOS\textquotesingle s own Auditor app, in its released form,
+nonetheless does not recognize that owner key: its attestation accepts
+only official GrapheneOS keys in the self-signed verified-boot state
+-\/- an alternate OS re-locked under a non-stock key -\/- because an
+alternate system\textquotesingle s verified-boot key must be compiled
+into the released app and server to be recognized
+\citep{grapheneos-auditor}, \citep{grapheneos-auditor-source},
+\citep{grapheneos-auditor-usecase} (Appendix A), so verifying an
+owner-signed build needs a verifier the owner configures with their own
+key -\/- an owner-built Auditor and, if remote checking is wanted, an
+owner-run attestation server. That owner-signed path is the
+configuration that actually satisfies the owner-inspectability criterion
+for the main system -\/- the owner both holds the root of trust and can
+verify the device against it, to themselves or to any verifier they
+provision -\/- and is the configuration this paper uses to test the
+thesis.
 
 Even there one limitation is relocated rather than dissolved, and it is
 worth naming precisely. The owner-signed configuration delivers verified
@@ -1669,21 +1682,23 @@ root permissions severely undermines the security of the device"
 \citep{calyxos-root-faq}; the discontinued DivestOS likewise "does not
 support or encourage the use of root or runtime modification
 frameworks," which "break the trust model that AOSP employs and reduce
-the integrity of the system" \citep{divestos-root-faq}. That trust model
-is itself platform-centric: the Android platform security model requires
-agreement among user, platform, and developer, and it classes rooting,
-"both intentional and malicious," as "a non-compliant change which
-violates CDD" -\/- the Compatibility Definition Document a device must
-satisfy to ship as Android \citep{aosp-cdd} -\/- holding that ownership
-is "a legal concept rather than a technical one and therefore outside
-the scope of an OS security model"
-\citep{mayrhofer-android-security-model}. GrapheneOS, a well-developed
-case, has weighed the question directly, and the answer from its lead
-developer is more precise than a flat refusal: a carefully constrained
-root -\/- "an on-device root terminal which requires a special boot mode
-and isn\textquotesingle t persistent," limited to the user and barred
-from hijacking by apps -\/- is "theoretically possible to do it in a way
-that doesn\textquotesingle t throw away a lot of security," but
+the integrity of the system" \citep{divestos-root-faq}.
+
+That trust model is itself platform-centric: the Android platform
+security model requires agreement among user, platform, and developer,
+and it classes rooting, "both intentional and malicious," as "a
+non-compliant change which violates CDD" -\/- the Compatibility
+Definition Document a device must satisfy to ship as Android
+\citep{aosp-cdd} -\/- holding that ownership is "a legal concept rather
+than a technical one and therefore outside the scope of an OS security
+model" \citep{mayrhofer-android-security-model}.
+
+GrapheneOS has weighed the question directly, and its lead developer has
+addressed it in more technical detail: a carefully constrained root -\/-
+"an on-device root terminal which requires a special boot mode and
+isn\textquotesingle t persistent," limited to the user and barred from
+hijacking by apps -\/- is "theoretically possible to do it in a way that
+doesn\textquotesingle t throw away a lot of security," but
 "isn\textquotesingle t being done by anyone right now"; the phrase
 "totally ruining verified boot by trusting persistent state" is directed
 instead at the persistent, fully-trusted way the root-enabled forks
@@ -1691,8 +1706,9 @@ integrate it \citep{grapheneos-root-statement}. The
 project\textquotesingle s own account put that cost plainly: once
 persistent state and the application layer are fully trusted, "the
 security model for verified boot and attestation are not intact to
-detect" a resulting compromise \citep{grapheneos-root-forum}. The
-boundedness of root established in Section 3 is thus not merely a
+detect" a resulting compromise \citep{grapheneos-root-forum}.
+
+The boundedness of root established in Section 3 is thus not merely a
 restriction the stock vendor imposes and an aftermarket system could
 lift for free: a persistent root exacts a cost, and that cost is borne
 by the owner who enables it. An owner can relock under a self-signed key
@@ -1840,11 +1856,32 @@ verifier, can still check afterward, which points to non-persistent or
 verified-extension privilege with an owner-held re-seal, subject to the
 off-device-key constraint above; and, for the relying-party half, an
 independent trust anchor for owner-enrolled keys that the attestation
-ecosystem does not presently provide. Each is individually plausible;
-none is assembled into a shipping system today. Treating that assembly
-as an open problem, rather than a settled impossibility, is what would
-let owner-inspectability -\/- and with it independent malware and
-backdoor investigation -\/- reach beyond the owners who can accept the
+ecosystem does not presently provide. These three requirements are not
+alike in who can satisfy them. The first two are device-level and within
+the owner\textquotesingle s reach: non-persistent or verified-extension
+privilege under an owner-held key already assembles privileged
+inspection with an integrity state the owner, and an independent
+verifier, can re-check, so the owner-side half is largely a matter of
+combining shipped mechanisms rather than inventing new ones. The third
+is not the owner\textquotesingle s to satisfy. A relying-party-accepted
+verdict is anchored, by construction, to the vendor\textquotesingle s
+root of trust, and the attestation ecosystem does not accept
+owner-enrolled keys (Appendix A); nor, on the available evidence, does
+it have reason to, since the same verified, vendor-keyed state is a
+precondition for hardware-backed content protection
+\citep{patat-widevine}, \citep{rafi-drm-mobile}, \citep{aosp-drm} and
+for the platform-policy objectives the model is built to enforce
+\citep{mayrhofer-android-security-model},
+\citep{doctorow-general-computation}. The open problem is therefore
+asymmetric. Owner-side verifiability is attainable today for owners who
+accept the loss of vendor-gated attestation; re-admitting an
+owner-controlled device to the relying-party ecosystem is not a missing
+device mechanism but a policy choice that rests with the platform, and
+the content-protection and platform-control interests give it a standing
+reason to withhold. Treating the owner-side half as an open engineering
+problem, rather than a settled impossibility, is what would let
+owner-inspectability -\/- and with it independent malware and backdoor
+investigation -\/- reach beyond the owners who can accept the
 attestation penalty.
 
 \subsection{14. Discussion}\label{discussion}
@@ -1914,9 +1951,10 @@ a storage replacement, because they do not reside on the storage at all
 \citep{eset-lojax}. That residual is real, but it is a different thing
 from the phone\textquotesingle s barrier: an advanced and partially
 mitigable attack vector layered beneath an acquisition path that
-otherwise works, not a categorical barrier for all owners. On a stock
-phone the same baseline workflow is foreclosed at its first step,
-because the storage is soldered, and at its last, because even a
+otherwise works, not a categorical barrier for all owners.
+
+On a stock phone the same baseline workflow is foreclosed at its first
+step, because the storage is soldered, and at its last, because even a
 successful chip-level read returns the user\textquotesingle s data as
 ciphertext under a hardware-bound key. The firmware-implant concern,
 common to both platforms and marking the floor of what either owner can
@@ -2068,8 +2106,9 @@ resident on the device. Preparing a device for inspection changes
 observable system state, and unlocking the bootloader triggers a
 mandatory wipe that destroys the user-data partition before any image of
 it can be taken -\/- so the inspection a high-threat owner attempts can
-itself alert, and then erase, a resident implant. That such
-environmental signals drive evasion is established rather than
+itself alert, and then erase, a resident implant.
+
+That such environmental signals drive evasion is established rather than
 speculative: measurement studies show modern malware checks for
 virtualized or instrumented environments and withholds its behavior when
 it detects them \citep{chen-anti-virtualization},
@@ -2085,12 +2124,13 @@ avoiding analysis and emulator environments -\/- while the iOS variant
 self-destructs when "a great probability of exposing the agent exists"
 \citep{marczak-million-dollar-dissident} (Section 3.5), and later
 versions were observed deleting their own process records to hide their
-traces \citep{amnesty-pegasus-methodology}. The specific loop -\/- an
-implant watching for unlock preparation and erasing itself before
-acquisition -\/- remains a reasoned extrapolation rather than a
-documented exploit; its constituent capabilities are each demonstrated,
-and the principle that a compromised system cannot be trusted to report
-truthfully on itself is long established
+traces \citep{amnesty-pegasus-methodology}.
+
+The specific loop -\/- an implant watching for unlock preparation and
+erasing itself before acquisition -\/- remains a reasoned extrapolation
+rather than a documented exploit; its constituent capabilities are each
+demonstrated, and the principle that a compromised system cannot be
+trusted to report truthfully on itself is long established
 \citep{thompson-trusting-trust}, \citep{garfinkel-vmi}. The nearest
 realized case, the Rombertik malware, destroys its host on detecting
 that its own code has been analyzed \citep{talos-rombertik}; this is a
@@ -2144,10 +2184,10 @@ modification can reach that end by another route: replacing an opaque
 firmware component with a more trustworthy build can improve security
 where inspecting it is impossible, though it substitutes a better-placed
 trust rather than delivering the verification the criterion measures,
-the same move as re-locking to a more transparent
-vendor\textquotesingle s key (Section 12). That reaching inspection on a
-locked stock device usually routes through the broader modification the
-platform withholds is itself the case for decoupling the two by design.
+the same move as re-locking to a different vendor\textquotesingle s key
+(Section 12). That reaching inspection on a locked stock device usually
+routes through the broader modification the platform withholds is itself
+the case for decoupling the two by design.
 
 A measured reading is that the platform optimizes for resistance to the
 ordinary running adversary at the cost of owner-side auditability, and
@@ -2181,26 +2221,29 @@ detection generally demands a trusted memory snapshot taken from outside
 the running system; and the established techniques of host-based malware
 analysis are, as a class, unavailable without first breaking the
 verified-boot and attestation guarantees the platform enforces.
+
 Obtaining root does not lift these limits, because root on a hardened
 device is a bounded in-system privilege -\/- not the full administrative
 control over the boot chain, kernel, and firmware that an owner would
 need -\/- and reaching it forfeits the attested status the owner is
 trying to preserve. Backing up the hardware-bound encryption key is
-likewise impractical for most owners. The existence of consensual
-forensic tooling, and of hardened aftermarket operating systems such as
-GrapheneOS, does not overturn these conclusions: such tooling is bounded
-by the limited diagnostic data the platform exposes, owner-inspectable
-configurations are reachable only by leaving the as-sold device behind
-and paying an attestation penalty -\/- the loss of device-integrity
-standing that leads an apparently growing set of applications to refuse
-to run -\/- to do so, and an absence of findings is accordingly weak
-evidence of integrity. These limits are not accidents of one
-vendor\textquotesingle s engineering but consequences of vendor-lock
-itself, and the owner\textquotesingle s structural position recurs, to
-varying degrees, on other vendor-locked devices. Treating security as
-owner-side verifiability, rather than as platform-side policy
-enforcement, makes these limitations visible as a coherent whole and
-identifies owner-inspectability as a property in need of improvement.
+likewise impractical for most owners.
+
+The existence of consensual forensic tooling, and of aftermarket
+operating systems such as GrapheneOS, does not overturn these
+conclusions: such tooling is bounded by the limited diagnostic data the
+platform exposes, owner-inspectable configurations are reachable only by
+leaving the as-sold device behind and paying an attestation penalty -\/-
+the loss of device-integrity standing that leads an apparently growing
+set of applications to refuse to run -\/- to do so, and an absence of
+findings is accordingly weak evidence of integrity. These limits are not
+accidents of one vendor\textquotesingle s engineering but consequences
+of vendor-lock itself, and the owner\textquotesingle s structural
+position recurs, to varying degrees, on other vendor-locked devices.
+Treating security as owner-side verifiability, rather than as
+platform-side policy enforcement, makes these limitations visible as a
+coherent whole and identifies owner-inspectability as a property in need
+of improvement.
 
 \subsection{Appendix A. GrapheneOS Auditor verified-boot key
 allowlist}\label{appendix-a.-grapheneos-auditor-verified-boot-key-allowlist}
