@@ -1730,26 +1730,35 @@ trivially bypass" \citep{grapheneos-attestation-compat}.
 
 Restricting attention to what an owner can do while keeping the
 bootloader locked and verified boot engaged, the approaches differ on
-what actually varies among them (Table 4): whether they grant a full
-superuser, and whether they preserve the verified-boot security model
-under which the owner can still detect tampering. The pattern is that a
-full root forfeits that security model even on a locked, owner-signed
-device -\/- a persistent, fully-trusted superuser is the compromise the
-model exists to catch -\/- while the configurations that keep it are
-either non-persistent or not a full superuser at all.
+three things (Table 4): the scope of the privilege they grant, whether
+it persists across reboot, and whether they preserve the verified-boot
+security model under which the owner can still detect tampering. The
+pattern is that the model is forfeited only in one case -\/- a
+persistent, fully-trusted superuser that modifies the running system
+through unverified state outside the verified image, a module store in
+/data re-applied at every boot. A configuration keeps the model when it
+breaks that chain at any link: by not granting a full superuser (a
+bounded verified extension, or shell-tier brokering), by not persisting
+(a non-persistent special-boot-mode root), or by keeping even a full,
+persistent superuser entirely inside the owner-signed, verity-covered
+image with no unverified persistent state (ADB-root baked into a
+re-signed image).
 
 Table 4. Owner root and privilege options that keep the bootloader
 locked and verified boot engaged.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Approach
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Full root?
+Privilege scope
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Persistent?
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Verified-boot security model preserved (owner can detect tampering)?
 \end{minipage} \\
@@ -1758,40 +1767,42 @@ Verified-boot security model preserved (owner can detect tampering)?
 \bottomrule\noalign{}
 \endlastfoot
 Root baked into a signed image and relocked under an owner key: a
-Magisk-style systemless patch (avbroot \citep{avbroot}) & Yes & No -\/-
-verified boot no longer certifies the running system: the persistent,
-fully-trusted superuser and its module store (in /data/adb/modules
-\citep{magisk-guides}) live above the verified layer, in unverified
-/data \citep{aosp-dm-verity}, \citep{aosp-file-based-encryption} \\
+Magisk-style systemless patch (avbroot \citep{avbroot}) & Full
+superuser, app-facing su & Yes & No -\/- verified boot no longer
+certifies the running system: the persistent, fully-trusted superuser
+and its module store (in /data/adb/modules \citep{magisk-guides}) live
+above the verified layer, in unverified /data \citep{aosp-dm-verity},
+\citep{aosp-file-based-encryption} \\
 Scoped kernel root baked in the same way: KernelSU, with per-app
-profiles \citep{kernelsu} & Yes, scoped per app & No -\/- the same
-violation as the row above, with the superuser in the kernel rather than
-in init: its module store (in /data/adb/modules, overlaid on /system
-each boot via OverlayFS \citep{kernelsu-modules}) sits above the
-verified layer, in unverified /data \citep{aosp-dm-verity},
-\citep{aosp-file-based-encryption}; app-profile scoping narrows the
-surface but is not a security boundary \\
+profiles \citep{kernelsu} & Full superuser in the kernel,
+per-app-profile gated -\/- narrows the surface but is not a security
+boundary & Yes & No -\/- the same violation as the row above, with the
+superuser in the kernel rather than in init: its module store (in
+/data/adb/modules, overlaid on /system each boot via OverlayFS
+\citep{kernelsu-modules}) sits above the verified layer, in unverified
+/data \citep{aosp-dm-verity}, \citep{aosp-file-based-encryption} \\
 Non-persistent root: a special-boot-mode terminal not retained across
-reboot \citep{grapheneos-root-statement} & Only transiently & Yes -\/-
-the root does not persist across reboot, which restores the verified
-boot chain and system image (writable user data, outside verified boot,
-is a separate matter) \\
+reboot \citep{grapheneos-root-statement} & Full superuser
+(special-boot-mode terminal) & No -\/- not retained across reboot & Yes
+-\/- the root does not persist across reboot, which restores the
+verified boot chain and system image (writable user data, outside
+verified boot, is a separate matter) \\
 Signed, verified extension shipped inside the image: Android APEX
 \citep{aosp-apex} (the Linux analogue, under a verity-and-signature
-image policy, is systemd-sysext \citep{systemd-sysext}) & No -\/-
-bounded, policy-confined verified capability & Yes -\/- a signed,
-verity-checked image, so its contents are verified rather than arbitrary
-mutable state \\
+image policy, is systemd-sysext \citep{systemd-sysext}) & Not a
+superuser -\/- bounded, policy-confined verified capability & Yes,
+shipped in the image & Yes -\/- a signed, verity-checked image, so its
+contents are verified rather than arbitrary mutable state \\
 ADB-root baked into an owner-signed, relocked image: adbd patched to run
 as root, with no on-device su (resign-android-image
-\citep{resign-android-image}) & No -\/- root is reachable only over the
-ADB interface; no app-facing superuser & Yes -\/- the root path ships
-inside the owner-signed, verity-covered image, so tampering remains
-detectable and a reboot restores the verified state; it trusts no
-unverified persistent state, unlike a /data module store \\
+\citep{resign-android-image}) & Full superuser, reachable only over ADB
+-\/- no app-facing su & Yes, baked in the image & Yes -\/- the root path
+ships inside the owner-signed, verity-covered image, so tampering
+remains detectable and a reboot restores the verified state; it trusts
+no unverified persistent state, unlike a /data module store \\
 Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
-No -\/- capped at the shell permission set & Yes -\/- stock image
-unmodified \\
+Not root -\/- capped at the ADB shell permission set, via an app-broker
+API & Yes & Yes -\/- stock image unmodified \\
 \end{longtable}
 
 Three qualifications attach to Table 4. The non-persistent row can be
@@ -1854,21 +1865,26 @@ attestation verdict, and no shipping system integrates it.
 No approach in this design space, then, delivers all three of persistent
 owner administrative control, the verified-boot security model, and a
 relying-party-accepted attestation at once. The configurations that keep
-the security model do so by giving up persistence -\/- the
-non-persistent root -\/- or full privilege -\/- a verified extension, or
-shell-tier brokering -\/- while the one that keeps full persistent
-privilege under the owner\textquotesingle s own key gives up the model
-and, with its non-vendor key, relying-party attestation. A capability
-that closed the gap would have to assemble three things the shipped
-approaches reach only in pairs: privileged inspection the owner can
-invoke; an integrity state the owner, and ideally an independent
-verifier, can still check afterward, which points to non-persistent or
-verified-extension privilege with an owner-held re-seal, subject to the
-off-device-key constraint above; and, for the relying-party half, an
-independent trust anchor for owner-enrolled keys that the attestation
-ecosystem does not presently provide. These three requirements are not
-alike in who can satisfy them. The first two are device-level and within
-the owner\textquotesingle s reach: non-persistent or verified-extension
+the security model do so by breaking the model-forfeiting chain at some
+link: not persisting (the non-persistent root), not granting a full
+superuser (a verified extension, or shell-tier brokering), or keeping
+even a full, persistent superuser entirely inside the owner-signed,
+verity-covered image with no unverified /data state (the ADB-root
+re-sign). What forfeits the model is the remaining case: a persistent,
+fully-trusted superuser backed by a mutable /data module store.
+Relying-party attestation is in any case given up by every one of these
+owner-keyed configurations, which no longer carry the
+vendor\textquotesingle s key. A capability that closed the gap would
+have to assemble three things the shipped approaches reach only in
+pairs: privileged inspection the owner can invoke; an integrity state
+the owner, and ideally an independent verifier, can still check
+afterward, which points to non-persistent or verified-extension
+privilege with an owner-held re-seal, subject to the off-device-key
+constraint above; and, for the relying-party half, an independent trust
+anchor for owner-enrolled keys that the attestation ecosystem does not
+presently provide. These three requirements are not alike in who can
+satisfy them. The first two are device-level and within the
+owner\textquotesingle s reach: non-persistent or verified-extension
 privilege under an owner-held key already assembles privileged
 inspection with an integrity state the owner, and an independent
 verifier, can re-check, so the owner-side half is largely a matter of
