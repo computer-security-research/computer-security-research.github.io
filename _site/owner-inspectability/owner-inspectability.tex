@@ -1786,8 +1786,9 @@ ADB-root baked into an owner-signed, relocked image: adbd patched to run
 as root, with no on-device su (resign-android-image
 \citep{resign-android-image}) & No -\/- root is reachable only over the
 ADB interface; no app-facing superuser & Yes -\/- the root path ships
-inside the owner-signed, verity-covered image and is gated behind ADB
-rather than exposed as an always-on superuser \\
+inside the owner-signed, verity-covered image, so tampering remains
+detectable and a reboot restores the verified state; it trusts no
+unverified persistent state, unlike a /data module store \\
 Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
 No -\/- capped at the shell permission set & Yes -\/- stock image
 unmodified \\

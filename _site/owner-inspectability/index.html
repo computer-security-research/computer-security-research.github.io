@@ -406,7 +406,7 @@ ER  - </pre></div>
 <tr class="odd">
 <td>ADB-root baked into an owner-signed, relocked image: adbd patched to run as root, with no on-device su (resign-android-image <span class="citation" data-cites="resign-android-image"><a href="#ref-resign-android-image" role="doc-biblioref">[104]</a></span>)</td>
 <td>No &ndash; root is reachable only over the ADB interface; no app-facing superuser</td>
-<td>Yes &ndash; the root path ships inside the owner-signed, verity-covered image and is gated behind ADB rather than exposed as an always-on superuser</td>
+<td>Yes &ndash; the root path ships inside the owner-signed, verity-covered image, so tampering remains detectable and a reboot restores the verified state; it trusts no unverified persistent state, unlike a /data module store</td>
 </tr>
 <tr class="even">
 <td>Privileged but not root: ADB-shell brokering (Shizuku) <span class="citation" data-cites="shizuku"><span class="citesec-anchor" id="citesec-shizuku-13"></span><a id="cite-shizuku" href="#ref-shizuku" role="doc-biblioref">[139]</a></span></td>
