@@ -1768,9 +1768,13 @@ fully-trusted superuser and its module store (in /data/adb/modules
 \citep{magisk-guides}) live above the verified layer, in unverified
 /data \citep{aosp-dm-verity}, \citep{aosp-file-based-encryption} \\
 Scoped kernel root baked in the same way: KernelSU, with per-app
-profiles \citep{kernelsu} & Yes, scoped per app & No -\/- a persistent
-kernel-level superuser; app-profile scoping narrows the surface but is
-not a security boundary \\
+profiles \citep{kernelsu} & Yes, scoped per app & No -\/- the same
+violation as the row above, with the superuser in the kernel rather than
+in init: its module store (in /data/adb/modules, overlaid on /system
+each boot via OverlayFS \citep{kernelsu-modules}) sits above the
+verified layer, in unverified /data \citep{aosp-dm-verity},
+\citep{aosp-file-based-encryption}; app-profile scoping narrows the
+surface but is not a security boundary \\
 Non-persistent root: a special-boot-mode terminal not retained across
 reboot \citep{grapheneos-root-statement} & Only transiently & Yes -\/-
 the root does not persist across reboot, which restores the verified
