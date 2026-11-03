@@ -1845,11 +1845,8 @@ only over ADB, no app-facing \texttt{su} & Yes & No & Yes -\/- the root
 path ships inside the owner-signed, verity-covered image, so tampering
 remains detectable and a reboot restores the verified state; it trusts
 no unverified persistent state, unlike a \texttt{/data} module store,
-because \texttt{/system} stays mounted read-only under verity -\/- even
-this full root cannot persistently write it (a \texttt{touch} there
-returns EROFS, because \texttt{/system} is mounted read-only
-\citep{aosp-dynamic-partitions}, and a read-write remount is refused on
-a production build \citep{aosp-set-verity-service}) \\
+because \texttt{/system} stays mounted read-only under verity and even
+this full root cannot persistently write it in place \\
 Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
 No -\/- capped at the ADB shell permission set, via an app-broker API &
 Yes & No & Yes -\/- stock image unmodified \\
@@ -1869,10 +1866,19 @@ proposal rather than a shipping feature
 \citep{poettering-developer-mode}. Third, the avbroot and
 resign-android-image rows assume the verity-preserving case: dm-verity
 stays enabled under the owner\textquotesingle s key, so cryptographic
-verified boot remains intact, but its security model is not. The
-persistent \texttt{/system} read-write row is the verity-disabling
-alternative: taking the hashtree off \texttt{/system} -\/- the
-\texttt{vbmeta} hashtree-disabled flag, or a \texttt{vbmeta} without
+verified boot remains intact, but its security model is not. While
+verity is preserved \texttt{/system} stays mounted read-only and cannot
+be written in place -\/- a \texttt{touch} there fails with a
+read-only-filesystem error \citep{aosp-dynamic-partitions} and a
+read-write remount is refused on a production build
+\citep{aosp-set-verity-service} -\/- so modifying the running system
+there takes either a \texttt{/data} overlay re-applied at boot (the
+Magisk and KernelSU rows) or disabling verity outright, and the ADB-root
+row\textquotesingle s full, persistent root, confined to this read-only
+image, can persist nothing to \texttt{/system}. The persistent
+\texttt{/system} read-write row is the verity-disabling alternative:
+taking the hashtree off \texttt{/system} -\/- the \texttt{vbmeta}
+hashtree-disabled flag, or a \texttt{vbmeta} without
 \texttt{/system}\textquotesingle s hashtree descriptor -\/- places
 \texttt{/system} outside the verified hashtree, so cryptographic
 verified boot still covers the boot chain but no longer
@@ -1944,6 +1950,19 @@ on the device to make it in-situ would reintroduce the persistent
 trusted secret the locked chain exists to avoid. Such a re-seal restores
 the owner\textquotesingle s own verified state, not the vendor-anchored
 attestation verdict, and no shipping system integrates it.
+
+Sound role separation also asks more of the maintenance role than mere
+separateness: the role should itself be userspace-hardened and
+purpose-narrowed, discouraging activities better performed unprivileged
+-\/- launching a general-purpose web browser from within the privileged
+session, say -\/- so the window in which full privilege is exposed
+carries the least attack surface it can. These are properties of the
+userspace design, not the verified-boot model: like the per-app-profile
+narrowing of the kernel-root row, they lower the risk of the privileged
+role being hijacked without changing whether the owner can
+cryptographically detect tampering, so they leave the Table 4
+classification untouched; the specific userspace, role-based design that
+would realize them is out of scope here.
 
 Set against the owner\textquotesingle s actual goals, these
 configurations are not equivalent, but for the goal this paper centers
@@ -2489,16 +2508,16 @@ a given one meets their own. The motivations documented in the rooting
 literature recur across sources: removing preinstalled applications,
 running applications that require root, and bypassing carrier and
 manufacturer restrictions \citep{zhang-root-providers},
-\citep{sun-android-rooting}, \citep{nguyen-vu-android-rooting}. No
-peer-reviewed study quantifies their relative prevalence with a sound
-methodology; the taxonomies agree on the categories rather than their
-shares. This appendix maps the common goals to the minimum capability
-each requires -\/- in the terms of Section 3 and Table 4 -\/- and to the
-configurations that supply it. Owner-inspection (reading logs, reading
-all files, imaging storage, snapshotting memory, and full device backup)
-is treated in the body (Sections 7, 9, 10, 11) and, as Section 13 notes,
-is met by every full-root configuration; the remaining goals map less
-uniformly.
+\citep{sun-android-rooting}, \citep{nguyen-vu-android-rooting}. To our
+knowledge, no peer-reviewed study quantifies their relative prevalence
+with a sound methodology; the taxonomies agree on the categories rather
+than their shares. This appendix maps the common goals to the minimum
+capability each requires -\/- in the terms of Section 3 and Table 4 -\/-
+and to the configurations that supply it. Owner-inspection (reading
+logs, reading all files, imaging storage, snapshotting memory, and full
+device backup) is treated in the body (Sections 7, 9, 10, 11) and, as
+Section 13 notes, is met by every full-root configuration; the remaining
+goals map less uniformly.
 
 Table 6. Owner goals, the capability each requires, and the Table 4
 configurations that supply it.
@@ -2554,16 +2573,21 @@ Pass application integrity checks while modified & App-facing
 Two qualifications sharpen the debloating rows. The removal owners most
 often perform is a per-user disable or uninstall -\/- the
 platform\textquotesingle s own \texttt{pm\ uninstall\ -\/-user\ 0} and
-\texttt{pm\ disable-user}, an ADB-shell-tier operation that needs
-neither root nor a system write and is automated by tools built on it
-\citep{universal-android-debloater}. Only true removal from the image
--\/- reclaiming the space, or removing the app for every user -\/-
-requires a persistent system write, and so one of the three
-write-capable configurations. Those three in turn split on injection:
-the verity-disabled \texttt{/system} configuration can place or replace
-files, but the pinning-bypass and framework-hooking goals additionally
-need an app-facing superuser and Zygote injection, which only the Magisk
-and KernelSU rows provide.
+\texttt{pm\ disable-user}, an operation at the ADB-shell permission tier
+that the shell user is allowed to run without root
+\citep{aosp-shell-manifest}: it records a per-user uninstalled or
+disabled mark in \texttt{/data} and leaves the \texttt{/system} APK in
+place \citep{aosp-packagemanager-flags}, so it needs no system write
+(the app is removed only for that user, reclaims no \texttt{/system}
+space, and returns for a new user or after a factory reset), and it is
+automated by tools built on it \citep{universal-android-debloater}. Only
+true removal from the image -\/- reclaiming the space, or removing the
+app for every user -\/- requires a persistent system write, and so one
+of the three write-capable configurations. Those three in turn split on
+injection: the verity-disabled \texttt{/system} configuration can place
+or replace files, but the pinning-bypass and framework-hooking goals
+additionally need an app-facing superuser and Zygote injection, which
+only the Magisk and KernelSU rows provide.
 
   \bibliography{refs}
 
