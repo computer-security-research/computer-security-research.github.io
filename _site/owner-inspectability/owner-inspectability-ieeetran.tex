@@ -84,21 +84,22 @@ cannot inspect the system from a clean environment or directly access
 its storage and memory. Application and update delivery is
 vendor-controlled, so compromise or coercion could enable targeted
 malicious installations. Hardware-backed attestation lets apps and
-services check that the device is unmodified. Modifying it for
-inspection therefore makes the device fail attestation, causing banking,
-payment, and similar apps that depend on it to refuse to run. Root
-access does not fully remove these limitations: it provides only an
-in-system vantage point, not control over the boot chain and underlying
-firmware, and can be deceived by a kernel-space rootkit. The owner is
-caught in a bind: inspecting the device requires the very modification
-that attestation rejects. Most established malware-analysis techniques
-are thus unavailable without first breaking the phone\textquotesingle s
-attestation guarantees, making the absence of findings weak evidence of
-integrity. The paper asks what capability would escape this bind:
-owner-controlled privileged inspection that preserves verified boot and
-attestation. It finds that no shipped or proposed approach provides this
-capability, leaving an open problem. The analysis focuses on stock
-Android but extends, to varying degrees, to other vendor-locked devices.
+services check that the device reports an unmodified, vendor-approved
+state. Modifying it for inspection therefore makes the device fail
+attestation, causing banking, payment, and similar apps that depend on
+it to refuse to run. Root access does not fully remove these
+limitations: it provides only an in-system vantage point, not control
+over the boot chain and underlying firmware, and can be deceived by a
+kernel-space rootkit. The owner is caught in a bind: inspecting the
+device requires the very modification that attestation rejects. Most
+established malware-analysis techniques are thus unavailable without
+first breaking the phone\textquotesingle s attestation guarantees,
+making the absence of findings weak evidence of integrity. The paper
+asks what capability would escape this bind: owner-controlled privileged
+inspection that preserves verified boot and attestation. It finds that
+no shipped or proposed approach provides this capability, leaving an
+open problem. The analysis focuses on stock Android but extends, to
+varying degrees, to other vendor-locked devices.
 \end{abstract}
 \begin{IEEEkeywords}
 Android security, independent verification, mobile forensics, remote attestation, rootkit detection, malware analysis, device integrity
@@ -177,18 +178,19 @@ contributions are:
   rootkit that falsifies what any in-system tool reports;
 \item
   it documents how remote attestation, and the applications that depend
-  on it, increasingly penalize owner-controlled configurations,
-  deepening the circular trust problem;
+  on it, penalize owner-controlled configurations by a mechanism that
+  has tightened over time, deepening the circular trust problem;
 \item
   it provides a structured capability comparison with a fully controlled
   host that makes the aggregate effect legible as a single design
   trade-off; and
 \item
-  it frames owner-controlled privileged inspection -\/- a secure root
-  that preserves verified boot and relying-party attestation -\/- as the
-  capability that would dissolve the inspection-versus-attestation bind,
-  systematizes the design space of approaches shipped or proposed, and
-  identifies the gap no current approach closes.
+  it frames owner-controlled privileged inspection -\/- a verified
+  owner-inspection mode that preserves verified boot and relying-party
+  attestation -\/- as the capability that would be needed to escape the
+  inspection-versus-attestation bind, systematizes the design space of
+  approaches shipped or proposed, and identifies the gap no current
+  approach closes.
 \end{itemize}
 
 The paper is organized as follows. Section 2 summarizes the platform
@@ -197,7 +199,7 @@ including the constrained meaning of root and the definition of
 owner-inspectability. Section 4 situates the work in prior literature.
 Sections 5 through 11 catalog the verification limits. Section 12
 addresses objections, including aftermarket operating systems. Section
-13 asks whether an owner-controlled secure root could dissolve the bind,
+13 asks whether a verified owner-inspection mode could escape the bind,
 and maps the design space of attempts. Section 14 discusses the findings
 and their limitations, and Section 15 concludes.
 
@@ -672,10 +674,23 @@ conceals the network (IP) address from which a request originates, and
 in that narrow sense remains functional; but the account-based
 authentication required by the operating system still presents the
 user\textquotesingle s Google identity to Google on every request. The
-network layer is thus anonymized while the identity layer is not: the
-device still presents the signed-in Google account to Google on each
-request, which is not the same as the user\textquotesingle s legal
-identity.
+network layer is thus anonymized while the identity layer is not. An
+account identifier is not, by definition, the user\textquotesingle s
+legal identity, but on a stock Android device it is in practice strongly
+linkable to one: account creation commonly requires phone verification,
+which Google documents as a check that the holder is a real person
+\citep{google-verify-account}, and a phone number is itself bound to a
+registered identity under the near-ubiquitous mandatory SIM-registration
+regimes \citep{donovan-sim-registration}. The account also accumulates
+an extensive, identity-linked record of activity and device identifiers
+over time \citep{schmidt-google-data-collection}, and the network origin
+from which it is used remains recoverable from provider-side logs, whose
+retention many jurisdictions have mandated
+\citep{eu-data-retention-directive}. Presenting the signed-in Google
+account on each request therefore discloses an identifier strongly
+linkable to the user, so routing the device\textquotesingle s traffic
+through Tor conceals the network origin without conferring requester
+anonymity.
 
 \subsection{7. Limitations of Internal Storage Access on Non-Rooted
 Devices}\label{limitations-of-internal-storage-access-on-non-rooted-devices}
@@ -1436,10 +1451,10 @@ build is a Google-certified configuration, so neither obtains the
 device-integrity or strong attestation verdicts that mainstream
 applications increasingly demand \citep{play-integrity-improvements},
 \citep{owasp-mastg-play-integrity}: the same owner-controlled posture
-that makes the device inspectable makes a growing set of applications
-refuse to run on it, and GrapheneOS\textquotesingle s stated position is
-that it will not spoof or otherwise circumvent these checks to
-impersonate a stock device \citep{grapheneos-usage}.
+that makes the device inspectable makes an apparently growing set of
+applications refuse to run on it, and GrapheneOS\textquotesingle s
+stated position is that it will not spoof or otherwise circumvent these
+checks to impersonate a stock device \citep{grapheneos-usage}.
 
 Other owner-controlled systems take the opposite tack: the microG-based
 distributions CalyxOS and /e/OS bundle a reimplementation of Google Play
@@ -1472,10 +1487,10 @@ Section 14 describes, in which the spoofing side has been progressively
 constrained \citep{nguyen-vu-android-rooting}.
 
 That bind raises a further question -\/- whether any owner-controlled
-privilege could dissolve it rather than merely confirm it, a secure root
-that preserves both verified boot and attestation -\/- which Section 13
-takes up, systematizing the design space and the gap none of its
-approaches closes.
+privilege could escape it rather than merely confirm it, a verified
+owner-inspection mode that preserves both verified boot and attestation
+-\/- which Section 13 takes up, systematizing the design space and the
+gap none of its approaches closes.
 
 Aftermarket operating systems are thus consistent with the
 paper\textquotesingle s analysis: owner-inspectability is attainable,
@@ -1628,8 +1643,8 @@ trusted vantage point verification requires -\/- narrowing the gap for
 commodity malware without closing it for the targeted, low-level
 compromise, and so consistent with the analysis above.
 
-\subsection{13. Owner-Controlled Inspection and the Secure-Root
-Gap}\label{owner-controlled-inspection-and-the-secure-root-gap}
+\subsection{13. Owner-Controlled Inspection and the Verified-Inspection
+Gap}\label{owner-controlled-inspection-and-the-verified-inspection-gap}
 
 The objections above return repeatedly to a single missing capability.
 Owner-inspectability is foreclosed because the privileged access an
@@ -1637,8 +1652,8 @@ owner needs in order to inspect the system -\/- to examine it from a
 clean vantage, to detect a kernel-level rootkit or vendor-supplied code
 the owner cannot audit, and to let independent researchers work on
 hardware they own -\/- is exactly the access that forfeits the
-device\textquotesingle s attested standing. The capability that would
-dissolve this bind is what this paper calls a secure root:
+device\textquotesingle s attested standing. The capability this bind
+calls for is what this paper calls a verified owner-inspection mode:
 owner-controlled privileged inspection that surrenders neither verified
 boot nor the attestation a relying party accepts. This section asks
 whether such a capability exists. It proposes and evaluates no system;
@@ -1732,7 +1747,8 @@ Magisk-style systemless patch (avbroot \citep{avbroot},
 resign-android-image \citep{resign-android-image}) & Yes & No -\/-
 verified boot no longer certifies the running system: the persistent,
 fully-trusted superuser and its module store live above the verified
-layer, in unverified /data \\
+layer, in unverified /data \citep{aosp-dm-verity},
+\citep{aosp-file-based-encryption} \\
 Scoped kernel root baked in the same way: KernelSU, with per-app
 profiles \citep{kernelsu} & Yes, scoped per app & No -\/- a persistent
 kernel-level superuser; app-profile scoping narrows the surface but is
@@ -2154,16 +2170,16 @@ might be advanced together rather than traded off.
 
 Vendor-locked devices systematically limit the owner\textquotesingle s
 ability to inspect, control, and independently verify the software they
-run. Stock Android, the most openly specified such platform and this
-paper\textquotesingle s worked example, is the case developed here: the
-owner cannot practically examine the whole system from a clean, trusted
-environment; application and update delivery is mediated by centralized
-providers whose abuse could enable targeted malicious installation;
-internal storage and live memory are inaccessible without withheld
-privileges; attestation couples a device\textquotesingle s attested
-standing to the device remaining unmodified; low-level rootkit detection
-generally demands a trusted memory snapshot taken from outside the
-running system; and the established techniques of host-based malware
+run. Stock Android, among the most openly specified such platforms and
+this paper\textquotesingle s worked example, is the case developed here:
+the owner cannot practically examine the whole system from a clean,
+trusted environment; application and update delivery is mediated by
+centralized providers whose abuse could enable targeted malicious
+installation; internal storage and live memory are inaccessible without
+withheld privileges; attestation couples a device\textquotesingle s
+attested standing to the device remaining unmodified; low-level rootkit
+detection generally demands a trusted memory snapshot taken from outside
+the running system; and the established techniques of host-based malware
 analysis are, as a class, unavailable without first breaking the
 verified-boot and attestation guarantees the platform enforces.
 Obtaining root does not lift these limits, because root on a hardened
@@ -2177,9 +2193,9 @@ GrapheneOS, does not overturn these conclusions: such tooling is bounded
 by the limited diagnostic data the platform exposes, owner-inspectable
 configurations are reachable only by leaving the as-sold device behind
 and paying an attestation penalty -\/- the loss of device-integrity
-standing that leads a growing set of applications to refuse to run -\/-
-to do so, and an absence of findings is accordingly weak evidence of
-integrity. These limits are not accidents of one
+standing that leads an apparently growing set of applications to refuse
+to run -\/- to do so, and an absence of findings is accordingly weak
+evidence of integrity. These limits are not accidents of one
 vendor\textquotesingle s engineering but consequences of vendor-lock
 itself, and the owner\textquotesingle s structural position recurs, to
 varying degrees, on other vendor-locked devices. Treating security as
