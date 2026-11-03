@@ -1895,6 +1895,24 @@ trusted secret the locked chain exists to avoid. Such a re-seal restores
 the owner\textquotesingle s own verified state, not the vendor-anchored
 attestation verdict, and no shipping system integrates it.
 
+Set against the owner\textquotesingle s actual goals, these
+configurations are not equivalent, but for the goal this paper centers
+they converge. Owner-inspection -\/- reading the system logs, reading
+every file on disk, imaging a partition, or snapshotting memory -\/- is
+a read-only, one-time act that needs neither persistence, nor an
+app-facing superuser, nor any write to the system, so every full-root
+configuration in Table 4 satisfies it: the Magisk and KernelSU rows, the
+verity-disabled /system row, the non-persistent special-boot-mode root,
+and even the ADB-only root. The two that are not a full superuser do not
+-\/- the bounded verified extension reaches none of it, and the
+shell-tier broker reaches the log buffer but not another
+application\textquotesingle s private storage, a raw block device, or
+kernel memory. Inspection is thus the easy half of the capability; what
+binds the owner is not reaching it but the attestation penalty that
+reaching it exacts. The other goals owners pursue -\/- debloating,
+system-wide ad-blocking, firewall control, and more -\/- divide across
+these configurations less uniformly, as Appendix B maps.
+
 No approach in this design space, then, delivers all three of persistent
 owner administrative control, the verified-boot security model, and a
 relying-party-accepted attestation at once. The configurations that keep
@@ -2405,6 +2423,90 @@ at commit d5d326453e6e3b328d7a11198d9f99174ac7f4f3
 GrapheneOS, MIT License. These excerpts are reproduced for scholarly
 commentary; they remain under their original copyright and MIT license,
 not this paper\textquotesingle s license.
+
+\subsection{Appendix B. Rooting use cases and the capability each
+requires}\label{appendix-b.-rooting-use-cases-and-the-capability-each-requires}
+
+Owners root for goals beyond the inspection this paper centers on, and a
+reader weighing the configurations of Table 4 will want to know whether
+a given one meets their own. The motivations documented in the rooting
+literature recur across sources: removing preinstalled applications,
+running applications that require root, and bypassing carrier and
+manufacturer restrictions \citep{zhang-root-providers},
+\citep{sun-android-rooting}, \citep{nguyen-vu-android-rooting}. No
+peer-reviewed study quantifies their relative prevalence with a sound
+methodology; the taxonomies agree on the categories rather than their
+shares. This appendix maps the common goals to the minimum capability
+each requires -\/- in the terms of Section 3 and Table 4 -\/- and to the
+configurations that supply it. Owner-inspection (reading logs, reading
+all files, imaging storage, snapshotting memory, and full device backup)
+is treated in the body (Sections 7, 9, 10, 11) and, as Section 13 notes,
+is met by every full-root configuration; the remaining goals map less
+uniformly.
+
+Table 6. Owner goals, the capability each requires, and the Table 4
+configurations that supply it.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Owner goal
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Minimum capability
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Satisfied by
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Read system logs; read all files on disk; image a partition; snapshot
+memory; full device backup & Full-root read, one-shot (no persistence or
+write) & Any full-root configuration: Magisk, KernelSU, verity-disabled
+/system, non-persistent root, ADB-root. Not the bounded verified
+extension or the shell-tier broker (which reaches the log buffer but not
+another application\textquotesingle s private storage, a raw block
+device, or kernel memory) \\
+Disable or uninstall a preinstalled app for the current user & ADB-shell
+tier & Any of the above, plus the shell-tier broker and plain stock ADB
+-\/- no root required \\
+Remove a preinstalled app from the image (reclaim space; remove for all
+users) & Persistent /system write & Magisk and KernelSU (via the /data
+overlay), or the verity-disabled /system configuration (direct write) \\
+System-wide ad and tracker blocking via the hosts file; install a custom
+CA into the system trust store & Persistent /system write (a /data
+overlay suffices) & Magisk, KernelSU, verity-disabled /system
+\citep{adaway} \\
+Firewall or DNS control without consuming the single VPN slot & Full
+root running netfilter, persistent & Magisk, KernelSU, verity-disabled
+/system \citep{afwall} \\
+Persistent kernel tuning & Full root write to kernel controls,
+persistent & Magisk, KernelSU, verity-disabled /system \\
+Disable certificate pinning, or theme the system by code injection &
+App-facing su with framework (Zygote) injection & Magisk, KernelSU
+\citep{lsposed} \\
+Privileged automation; run applications that require root & App-facing
+su at runtime & Magisk, KernelSU \\
+Pass application integrity checks while modified & App-facing su plus a
+module store & Magisk, KernelSU \\
+\end{longtable}
+
+Two qualifications sharpen the debloating rows. The removal owners most
+often perform is a per-user disable or uninstall -\/- the
+platform\textquotesingle s own \texttt{pm\ uninstall\ -\/-user\ 0} and
+\texttt{pm\ disable-user}, an ADB-shell-tier operation that needs
+neither root nor a system write and is automated by tools built on it
+\citep{universal-android-debloater}. Only true removal from the image
+-\/- reclaiming the space, or removing the app for every user -\/-
+requires a persistent system write, and so one of the three
+write-capable configurations. Those three in turn split on injection:
+the verity-disabled /system configuration can place or replace files,
+but the pinning-bypass and framework-hooking goals additionally need an
+app-facing superuser and Zygote injection, which only the Magisk and
+KernelSU rows provide.
 
   \bibliography{refs}
 
