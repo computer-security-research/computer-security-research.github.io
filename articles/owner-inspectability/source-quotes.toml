@@ -1545,3 +1545,16 @@ quotes = [
   { text = "EROFS is a read-only file system introduced in Linux 4.19.", label = "Read-only filesystem", note = "Android Open Source Project, Enable EROFS (source.android.com/docs/core/architecture/kernel/erofs). Verified verbatim via WebFetch." },
   { text = "BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs", label = "Build-time selection of EROFS (BoardConfig.mk)" },
 ]
+
+[aosp-shell-manifest]
+label = "com.android.shell manifest -- the shell UID holds DELETE_PACKAGES / CHANGE_COMPONENT_ENABLED_STATE (no root)"
+quotes = [
+  { text = '<uses-permission android:name="android.permission.DELETE_PACKAGES" />', label = "Shell UID may delete packages, no root", note = "AOSP com.android.shell AndroidManifest.xml (frameworks/base, branch main); the adb shell package runs as android.uid.shell (uid 2000) and holds the platform permissions that gate pm uninstall/disable. Cited in Appendix B (unnumbered heading -> no section pill). Verified verbatim against the AOSP source tree." },
+  { text = '<uses-permission android:name="android.permission.CHANGE_COMPONENT_ENABLED_STATE" />', label = "Shell UID may change component enabled state" },
+]
+
+[aosp-packagemanager-flags]
+label = "PackageManager.DELETE_SYSTEM_APP -- mark a system app uninstalled for the current user, not removed from /system"
+quotes = [
+  { text = "just mark the app as uninstalled for the current user", label = "Per-user uninstall mark; /system APK untouched", note = "AOSP PackageManager.java DELETE_SYSTEM_APP javadoc (frameworks/base, branch main): uninstalling a system app for a single user sets this flag so the app is marked uninstalled for that user rather than removing or reverting the /system APK. Cited in Appendix B (unnumbered heading -> no section pill). Verified verbatim against the AOSP source tree." },
+]
