@@ -2,8 +2,8 @@
 # the binary artifacts (PDF, Word .docx + their checksums) are kept out of git
 # and rendered at deploy time (journal-maker --pdf-only).
 _site/**/*.pdf
-_site/**/*.pdf.sha256
+_site/**/*.pdf.sha512
 _site/**/*.docx
-_site/**/*.docx.sha256
+_site/**/*.docx.sha512
 __pycache__/
 *.pyc
