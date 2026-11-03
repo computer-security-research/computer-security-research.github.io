@@ -1344,3 +1344,204 @@ quotes = [
   { text = "the baseband firmware runs on a dedicated Cellular Processor (CP) with a real-time operating system (RTOS), rendering it entirely separated from the mobile device's main processor, commonly referred to as the Application Processor (AP)", label = "Baseband is a separate processor", note = "Li, Wen, Lin, BaseMirror, CCS 2024; verified verbatim from author PDF." },
   { text = "We identified 8 zero-day vulnerabilities that exploit baseband commands to trigger denial-of-service attacks on the CP and arbitrary file accesses on the AP.", label = "Vendor-confirmed zero-days; AP file access" },
 ]
+
+[google-verify-account]
+label = "Google account creation can require phone verification to confirm a real person"
+claims = [
+  { section = "Sec. 6", text = "account creation commonly requires phone verification, which Google documents as a check that the holder is a real person." },
+]
+quotes = [
+  { text = "before you create an account or sign in, sometimes phone verification is required to confirm you're a real person.", label = "Phone verification confirms a real person", note = "Google Account Help, Verify your account (support.google.com/accounts/answer/114129). Straight apostrophe; page body loads via JS, retrieved with WebFetch." },
+]
+
+[donovan-sim-registration]
+label = "Mandatory SIM registration binds a phone number to a registered identity"
+claims = [
+  { section = "Sec. 6", text = "a phone number is bound to a registered identity under near-ubiquitous mandatory SIM-registration regimes." },
+]
+quotes = [
+  { text = "require the registration of identity information to activate a mobile SIM card", label = "Identity required to activate a SIM", note = "Donovan & Martin, The rise of African SIM registration, First Monday 19(2), 2014; contiguous span of the abstract sentence 'These mandates, which require the registration of identity information to activate a mobile SIM card, ...'. Verified via WebFetch." },
+]
+
+[schmidt-google-data-collection]
+label = "Google account is the identity gateway accumulating an identity-linked activity record"
+claims = [
+  { section = "Sec. 6", text = "the Google account accumulates an extensive, identity-linked record of activity and device identifiers over time." },
+]
+quotes = [
+  { text = "To download and use apps from Google Play Store on an Android device, a user must have (or create) a Google Account, which becomes a key gateway through which Google collects personal information, including user name, email, and phone number.", label = "Account is the identity gateway", note = "Schmidt, Google Data Collection, Digital Content Next (Vanderbilt), Aug 2018; verified verbatim from the report PDF." },
+  { text = "Overall, our findings indicate that Google has the ability to connect the anonymous data collected through passive means with the personal information of the user.", label = "Passive data linked to identity" },
+]
+
+[eu-data-retention-directive]
+label = "EU Data Retention Directive -- mandated retention of communications data"
+no_quote = "Cited as an example of jurisdictions mandating retention of provider-side communications logs; EUR-Lex bot-walls automated fetch (CELEX query returns HTTP 202/empty), so the verbatim Art. 1(1) text was not re-verified this pass. Directive 2006/24/EC was later invalidated by the CJEU (Digital Rights Ireland, 2014); cited only as an example of mandated retention."
+
+[thalium-rkchk]
+label = "rkchk -- in-system Linux kernel module for LKM-rootkit detection"
+claims = [
+  { section = "Sec. 9", text = "anti-malware kernel modules designed to detect loadable-kernel-module rootkits can run on a non-Android Linux system." },
+]
+quotes = [
+  { text = "This is a Linux Kernel Module designed for LKM rootkit detection.", label = "In-system LKM rootkit detector", note = "thalium/rkchk README (GitHub); verified verbatim via host curl." },
+]
+
+[openwall-lkrg]
+label = "LKRG -- runtime kernel integrity guard (Linux)"
+claims = [
+  { section = "Sec. 9", text = "runtime integrity guards can run on a non-Android Linux system." },
+]
+quotes = [
+  { text = "LKRG performs runtime integrity checking of the Linux kernel and detection of security vulnerability exploits against the kernel.", label = "Runtime kernel integrity guard", note = "Openwall, LKRG: Linux Kernel Runtime Guard (lkrg.org); verified verbatim via WebFetch." },
+]
+
+[elstel-debcheckroot]
+label = "debcheckroot -- offline boot-media integrity check of installed files vs package content"
+claims = [
+  { section = "Sec. 9", text = "a system can be booted from external media and subjected to an offline integrity check that verifies installed files against a trusted manifest." },
+]
+quotes = [
+  { text = "debcheckroot is a tool that can use exisiting file cheksum lists, create such lists from packages or do a trusted verification of your root file system by directly comparing the package content with the files on disk.", label = "Trusted root-fs verification vs package content", note = "elstel.org, debcheckroot. Source typos ('exisiting', 'cheksum') preserved verbatim. Verified via host curl." },
+  { text = "You should be able to run this program from a clean Tails, Debian live data carrier or from a live CD of any other distribution.", label = "Run from external/live boot media" },
+]
+
+[socialtic-log-forensics]
+label = "SocialTIC -- absence of log traces is not proof of a clean device; combine methods"
+claims = [
+  { section = "Sec. 10", text = "absence of traces after thorough manual analysis does not establish that a device was not compromised, and log-based methods may need to be combined with other forensic techniques where compromise is strongly suspected." },
+]
+quotes = [
+  { text = "not having a match with known IOCs is not necessarily a confirmation of a \"clean device\".", label = "No IOC match is not proof of a clean device", note = "SocialTIC, Introduction to log-based forensics on Android (forensics.socialtic.org). Curly quotes/apostrophes normalized to ASCII. Verified via WebFetch." },
+  { text = "While this is a positive signal, it doesn't definitively mean the device hasn't been compromised.", label = "Absence of traces is not conclusive" },
+  { text = "it is advisable to consider combining log-based methods with other forensic techniques mentioned earlier.", label = "Combine with other techniques" },
+]
+
+[grapheneos-auditor-source]
+label = "Auditor source -- an unlisted verified-boot key is rejected, not attested"
+claims = [
+  { section = "Sec. 12", text = "the released GrapheneOS Auditor accepts only verified-boot keys compiled into it; an attested key absent from its fixed tables -- including an owner self-signed build of otherwise unmodified GrapheneOS -- is refused rather than attested." },
+]
+quotes = [
+  { text = 'throw new GeneralSecurityException("invalid verified boot key fingerprint: " + verifiedBootKey);', label = "Unlisted verified-boot key rejected", note = "GrapheneOS/Auditor AttestationProtocol.java (pinned d5d326453e6e3b328d7a11198d9f99174ac7f4f3, MIT). The attested key is looked up in the fixed fingerprintsNonStock/fingerprintsStock ImmutableMap tables; a null (absent) result throws. Also reproduced in Appendix A. Verified verbatim against the pinned source." },
+  { text = 'private static final ImmutableMap<String, DeviceInfo> fingerprintsNonStock = ImmutableMap', label = "Compiled-in self-signed key allowlist (GrapheneOS keys hardcoded)" },
+]
+
+[aosp-avb-readme]
+label = "Android Verified Boot 2.0 -- vbmeta-signature check, hashtree-disabled flag, owner-key YELLOW"
+claims = [
+  { section = "Sec. 13", text = "a vbmeta hashtree-disabled flag turns off dm-verity while the vbmeta still verifies under the owner's key, so the device boots locked (YELLOW state); the bootloader verifies the vbmeta signature, not the verity policy the signed vbmeta declares." },
+]
+quotes = [
+  { text = "it starts by loading the vbmeta partition, checks the signature, and then goes on to load the boot partition for verification.", label = "Bootloader verifies the vbmeta signature", note = "Android Verified Boot 2.0 README (platform/external/avb). Markdown backticks/emphasis removed. Verified verbatim from the raw README." },
+  { text = "The only exception to this table is that if the AVB_VBMETA_IMAGE_FLAGS_HASHTREE_DISABLED flag is set in the top-level vbmeta, then androidboot.veritymode is set to disabled", label = "vbmeta hashtree-disabled flag turns off verity" },
+  { text = "yellow: If in LOCKED state and the key used for verification was set by the end user.", label = "Owner-set key, locked -> YELLOW" },
+  { text = "If the device is LOCKED, only an OS signed by an embedded verification key (see the previous section) shall be accepted.", label = "Locked device boots only a key-verified OS" },
+]
+
+[aosp-dynamic-partitions]
+label = "AOSP dynamic partitions -- /system mounted read-only"
+claims = [
+  { section = "Sec. 13", text = "/system is mounted read-only, so even a full in-image root cannot persistently write it (a write returns a read-only-filesystem error)." },
+]
+quotes = [
+  { text = "system /system ext4 ro,barrier=1 wait,slotselect,avb=vbmeta,logical,first_stage_mount", label = "/system mounted read-only (ro)", note = "Implement dynamic partitions (source.android.com); the retrofit fstab example -- the 'ro' mount option documents /system mounted read-only (a configuration line, not prose). Verified via WebFetch." },
+]
+
+[aosp-set-verity-service]
+label = "adb verity service -- disabling dm-verity is compiled out and refused on user (production) builds"
+claims = [
+  { section = "Sec. 13", text = "a read-write remount of /system is refused on a production (user) build, because clearing dm-verity (which a read-write remount requires) is compiled out via ALLOW_ADBD_DISABLE_VERITY and runtime-refused on user builds." },
+]
+quotes = [
+  { text = "Should never be possible to disable dm-verity on a USER build regardless of using AVB or VB1.0", label = "dm-verity cannot be disabled on a USER build", note = "AOSP adb set_verity_enable_state_service.cpp (platform/packages/modules/adb, commit ca205c96); source comment above the runtime guard. Verified verbatim against the AOSP source tree. Primary-source replacement for the former third-party FAQ citation." },
+  { text = "verity cannot be disabled/enabled - USER build", label = "Runtime refusal message on a user build" },
+]
+
+[kernel-dm-verity]
+label = "Linux dm-verity -- transparent, read-only block integrity via a cryptographic hash tree"
+claims = [
+  { section = "Sec. 13", text = "dm-verity provides read-only, transparent block-level integrity over the verified partitions via a cryptographic hash tree, so any data outside that tree (a /data overlay, or /system with verity disabled) is unverified." },
+]
+quotes = [
+  { text = "Device-Mapper's \"verity\" target provides transparent integrity checking of block devices using a cryptographic digest", label = "Transparent block integrity via cryptographic digest", note = "The Linux Kernel documentation, dm-verity (docs.kernel.org/admin-guide/device-mapper/verity.html). Verified via WebFetch." },
+  { text = "This target is read-only.", label = "Read-only" },
+  { text = "This should detect tampering with any data on the device and the hash data.", label = "Detects tampering with the covered data" },
+]
+
+[magisk-guides]
+label = "Magisk -- module store lives in /data/adb/modules, merged onto /system"
+claims = [
+  { section = "Sec. 13", text = "a Magisk-style module store lives in /data/adb/modules and is merged onto /system at boot." },
+]
+quotes = [
+  { text = "A Magisk module is a folder placed in /data/adb/modules with the structure below:", label = "Module store in /data/adb/modules", note = "Magisk Documentation, Developer Guides (topjohnwu.github.io/Magisk/guides.html). Markdown backticks removed. Verified via WebFetch." },
+  { text = "This folder will be recursively merged into the real /system", label = "Merged onto /system" },
+]
+
+[patat-widevine]
+label = "Widevine for Fun and Profit -- L1 (HD/UHD) content protection depends on the hardware TEE"
+claims = [
+  { section = "Sec. 13", text = "hardware-backed content protection (Widevine's top security level) depends on the device's trusted execution environment, a precondition that rests on the verified, vendor-keyed device state." },
+]
+quotes = [
+  { text = "Widevine relies on ARM TrustZone based Trusted Execution Environment (TEE) when available for strong security guarantee in many Android devices.", label = "Strong protection relies on the TEE", note = "Patat, Sabt & Fouque, Exploring Widevine for Fun and Profit, IEEE SPW/WOOT 2022; verified verbatim from the arXiv HTML (2204.09298)." },
+  { text = "Widevine depends on the TEE to implement L1 security. At L1, both cryptography and video processing take place inside the TEE.", label = "L1 crypto and video inside the TEE" },
+  { text = "Widevine supports HD and ultra-HD content only for L1.", label = "HD/UHD content only at the hardware level" },
+]
+
+[rafi-drm-mobile]
+label = "A First Look at Mobile DRM -- every Widevine level requires a signed image via a secure bootloader; L1/L2 need TEE in the chain of trust"
+claims = [
+  { section = "Sec. 13", text = "the same verified, vendor-keyed device state is a precondition for hardware-backed content protection: all Widevine levels require a signed system image loaded by a secure bootloader, and the hardware levels require the TEE components in the bootloader chain of trust." },
+]
+quotes = [
+  { text = "All Widevine security levels require signed system images to be loaded on devices by a secure bootloader.", label = "Signed image + secure bootloader is a precondition", note = "Rafi, Shepherd & Markantonakis, A First Look at Digital Rights Management Systems for Secure Mobile Content Delivery, IEEE TrustCom 2023; verified verbatim from the arXiv HTML (2308.00437)." },
+  { text = "The L1 and L2 security levels require the Widevine components implemented in the TEE to be included in the bootloader chain of trust; L1 also requires the components used for the secure video path to be included", label = "Hardware levels need the TEE in the chain of trust" },
+  { text = "The Keybox is encrypted with a unique factory-provisioned and device-specific key", label = "Device-specific factory-provisioned keybox" },
+]
+
+[grapheneos-auditor-tutorial]
+label = "GrapheneOS Auditor Tutorial -- local second-device check; new (stock) device support via submitted sample"
+quotes = [
+  { text = "The device performing verification (Auditor) just needs to be any Android 13 or higher device with a camera.", label = "Local verification from a second device", note = "GrapheneOS Auditor Tutorial (attestation.app/tutorial). Cited only in Appendix A (unnumbered heading -> no section pill). Verified via WebFetch." },
+  { text = "To submit a sample, open the menu from the action bar and select 'Submit sample data'.", label = "New stock-device support via a submitted sample" },
+]
+
+[adaway]
+label = "AdAway -- hosts-file ad/tracker blocker (systemless via Magisk)"
+no_quote = "Cited in Appendix B to name the hosts-file ad/tracker-blocking tool, not for a quotation."
+
+[afwall]
+label = "AFWall+ -- root-requiring iptables firewall for Android"
+no_quote = "Cited in Appendix B to name the root-requiring netfilter firewall app, not for a quotation."
+
+[lsposed]
+label = "LSPosed -- Zygisk/Xposed framework-injection module"
+no_quote = "Cited in Appendix B to name the Zygote/framework code-injection tool, not for a quotation."
+
+[universal-android-debloater]
+label = "Universal Android Debloater NG -- ADB-based system-app removal (pm uninstall --user 0)"
+no_quote = "Cited in Appendix B to name the ADB-shell-tier debloat tool, not for a quotation."
+
+[sun-android-rooting]
+label = "Sun et al. -- Android rooting: methods, detection, and evasion (CCS/SPSM 2015)"
+no_quote = "Cited in Appendix B for its rooting-motivations/methods taxonomy, not for a quotation."
+
+[kernel-erofs]
+label = "EROFS -- Enhanced Read-Only File System, read-only by design"
+claims = [
+  { section = "Sec. 13", text = "/system on modern Android ships as EROFS, a read-only filesystem, so it cannot be remounted read-write in place." },
+]
+quotes = [
+  { text = "EROFS (Enhanced Read-Only File System) is a modern, efficient, and secure read-only kernel filesystem", label = "Read-only kernel filesystem", note = "The Linux Kernel documentation, EROFS (docs.kernel.org/filesystems/erofs.html). Verified verbatim via WebFetch." },
+]
+
+[aosp-erofs]
+label = "AOSP -- EROFS selected as the system-image filesystem at build time"
+claims = [
+  { section = "Sec. 13", text = "Android selects EROFS for the read-only system image at build time via BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs; a persistently writable /system therefore requires rebuilding the image with a writable filesystem (ext4 or f2fs)." },
+]
+quotes = [
+  { text = "EROFS is a read-only file system introduced in Linux 4.19.", label = "Read-only filesystem", note = "Android Open Source Project, Enable EROFS (source.android.com/docs/core/architecture/kernel/erofs). Verified verbatim via WebFetch." },
+  { text = "BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs", label = "Build-time selection of EROFS (BoardConfig.mk)" },
+]
