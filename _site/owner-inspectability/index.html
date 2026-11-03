@@ -380,7 +380,7 @@ ER  - </pre></div>
 <tr class="header">
 <th>Approach</th>
 <th>Privilege scope</th>
-<th>Persistent?</th>
+<th>Persists across reboot?</th>
 <th>Verified-boot security model preserved (owner can detect tampering)?</th>
 </tr>
 </thead>
@@ -400,19 +400,19 @@ ER  - </pre></div>
 <tr class="odd">
 <td>Non-persistent root: a special-boot-mode terminal not retained across reboot <span class="citation" data-cites="grapheneos-root-statement"><a href="#ref-grapheneos-root-statement" role="doc-biblioref">[132]</a></span></td>
 <td>Full superuser (special-boot-mode terminal)</td>
-<td>No &ndash; not retained across reboot</td>
+<td>No</td>
 <td>Yes &ndash; the root does not persist across reboot, which restores the verified boot chain and system image (writable user data, outside verified boot, is a separate matter)</td>
 </tr>
 <tr class="even">
 <td>Signed, verified extension shipped inside the image: Android APEX <span class="citation" data-cites="aosp-apex"><span class="citesec-anchor" id="citesec-aosp-apex-13"></span><a id="cite-aosp-apex" href="#ref-aosp-apex" role="doc-biblioref">[138]</a></span> (the Linux analogue, under a verity-and-signature image policy, is systemd-sysext <span class="citation" data-cites="systemd-sysext"><span class="citesec-anchor" id="citesec-systemd-sysext-13"></span><a id="cite-systemd-sysext" href="#ref-systemd-sysext" role="doc-biblioref">[139]</a></span>)</td>
 <td>Not a superuser &ndash; bounded, policy-confined verified capability</td>
-<td>Yes, shipped in the image</td>
+<td>Yes</td>
 <td>Yes &ndash; a signed, verity-checked image, so its contents are verified rather than arbitrary mutable state</td>
 </tr>
 <tr class="odd">
 <td>ADB-root baked into an owner-signed, relocked image: adbd patched to run as root, with no on-device su (resign-android-image <span class="citation" data-cites="resign-android-image"><a href="#ref-resign-android-image" role="doc-biblioref">[104]</a></span>)</td>
 <td>Full superuser, reachable only over ADB &ndash; no app-facing su</td>
-<td>Yes, baked in the image</td>
+<td>Yes</td>
 <td>Yes &ndash; the root path ships inside the owner-signed, verity-covered image, so tampering remains detectable and a reboot restores the verified state; it trusts no unverified persistent state, unlike a /data module store</td>
 </tr>
 <tr class="even">
@@ -937,7 +937,7 @@ ER  - </pre></div>
 <div class="csl-left-margin"><a class="csl-backref" href="#cite-kernelsu" aria-label="Reference 136, back to text">[136] </a></div><div class="csl-right-inline">KernelSU project, <span>&#x201c;<span>KernelSU: kernel-based root for Android with app-profile scoping</span>.&#x201d;</span> <span>Software project</span>. Accessed: Nov. 02, 2026. [Online]. Available: <a href="https://github.com/tiann/KernelSU">https://github.com/tiann/KernelSU</a><div class="csl-refmeta"><a class="csl-citekey" href="#cite-kernelsu">[@kernelsu]</a></div></div>
 </div>
 <div id="ref-kernelsu-modules" class="csl-entry" role="listitem">
-<div class="csl-left-margin"><a class="csl-backref" href="#cite-kernelsu-modules" aria-label="Reference 137, back to text">[137] </a></div><div class="csl-right-inline">KernelSU project, <span>&#x201c;<span>KernelSU Documentation: Module Guide</span>.&#x201d;</span> <span>KernelSU Documentation</span>. Accessed: Nov. 03, 2026. [Online]. Available: <a href="https://kernelsu.org/guide/module.html">https://kernelsu.org/guide/module.html</a><div class="csl-refmeta"><a class="csl-citekey" href="#cite-kernelsu-modules">[@kernelsu-modules]</a></div></div>
+<div class="csl-left-margin"><a class="csl-backref" href="#cite-kernelsu-modules" aria-label="Reference 137, back to text">[137] </a></div><div class="csl-right-inline">KernelSU project, <span>&#x201c;<span>KernelSU Documentation: Module Guide</span>.&#x201d;</span> <span>KernelSU Documentation</span>. Accessed: Nov. 03, 2026. [Online]. Available: <a href="https://kernelsu.org/guide/module.html">https://kernelsu.org/guide/module.html</a><div class="csl-refmeta"><a class="csl-citekey" href="#cite-kernelsu-modules">[@kernelsu-modules]</a> <a class="csl-source" href="sources/#kernelsu-modules" aria-label="full card for reference 137">full card</a></div><div class="csl-quote"><blockquote class="quotation"><p><span class="qlabel-tag">Systemless &ndash; /system left intact</span> KernelSU provides a module mechanism that achieves the effect of modifying the system directory while maintaining the integrity of the system partition. This mechanism is commonly known as &quot;systemless&quot;.</p><div class="qnote">KernelSU Documentation, Module Guide (kernelsu.org/guide/module.html). Verified verbatim against the live page.</div><p><span class="qlabel-tag">Module store in /data/adb/modules</span> A KernelSU module is a folder placed in /data/adb/modules with the structure below:</p><p><span class="qlabel-tag">Overlaid on /system each boot</span> The contents of this directory will be overlaid on top of the system&#x27;s /system partition after the system is booted.</p><p><span class="qlabel-tag">Via OverlayFS, without changing the /system partition</span> The official meta-overlayfs metamodule uses the kernel&#x27;s OverlayFS for systemless modifications, while Magisk uses magic mount (bind mount) built directly into its core. Both achieve the same goal: modifying /system files without physically modifying the /system partition.</p><span class="blockquote-context"><span class="nm">KernelSU project</span><span class="rl">KernelSU Documentation</span><span class="src"><a href="https://kernelsu.org/guide/module.html" aria-label="KernelSU Documentation: Module Guide, KernelSU project, KernelSU Documentation">KernelSU Documentation: Module Guide</a> <span class="ret">&middot; retrieved 2026-11-03</span></span></span></blockquote></div></div>
 </div>
 <div id="ref-aosp-apex" class="csl-entry" role="listitem">
 <div class="csl-left-margin"><a class="csl-backref" href="#cite-aosp-apex" aria-label="Reference 138, back to text">[138] </a></div><div class="csl-right-inline">Google, <span>&#x201c;<span>Android Pony EXpress (APEX) container format</span>.&#x201d;</span> <span>Android Open Source Project documentation</span>. Accessed: Nov. 02, 2026. [Online]. Available: <a href="https://source.android.com/docs/core/ota/apex">https://source.android.com/docs/core/ota/apex</a><div class="csl-refmeta"><a class="csl-citekey" href="#cite-aosp-apex">[@aosp-apex]</a></div></div>

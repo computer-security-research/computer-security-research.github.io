@@ -1758,7 +1758,7 @@ Approach
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Privilege scope
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Persistent?
+Persists across reboot?
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Verified-boot security model preserved (owner can detect tampering)?
 \end{minipage} \\
@@ -1783,23 +1783,22 @@ superuser in the kernel rather than in init: its module store (in
 /data \citep{aosp-dm-verity}, \citep{aosp-file-based-encryption} \\
 Non-persistent root: a special-boot-mode terminal not retained across
 reboot \citep{grapheneos-root-statement} & Full superuser
-(special-boot-mode terminal) & No -\/- not retained across reboot & Yes
--\/- the root does not persist across reboot, which restores the
-verified boot chain and system image (writable user data, outside
-verified boot, is a separate matter) \\
+(special-boot-mode terminal) & No & Yes -\/- the root does not persist
+across reboot, which restores the verified boot chain and system image
+(writable user data, outside verified boot, is a separate matter) \\
 Signed, verified extension shipped inside the image: Android APEX
 \citep{aosp-apex} (the Linux analogue, under a verity-and-signature
 image policy, is systemd-sysext \citep{systemd-sysext}) & Not a
-superuser -\/- bounded, policy-confined verified capability & Yes,
-shipped in the image & Yes -\/- a signed, verity-checked image, so its
-contents are verified rather than arbitrary mutable state \\
+superuser -\/- bounded, policy-confined verified capability & Yes & Yes
+-\/- a signed, verity-checked image, so its contents are verified rather
+than arbitrary mutable state \\
 ADB-root baked into an owner-signed, relocked image: adbd patched to run
 as root, with no on-device su (resign-android-image
 \citep{resign-android-image}) & Full superuser, reachable only over ADB
--\/- no app-facing su & Yes, baked in the image & Yes -\/- the root path
-ships inside the owner-signed, verity-covered image, so tampering
-remains detectable and a reboot restores the verified state; it trusts
-no unverified persistent state, unlike a /data module store \\
+-\/- no app-facing su & Yes & Yes -\/- the root path ships inside the
+owner-signed, verity-covered image, so tampering remains detectable and
+a reboot restores the verified state; it trusts no unverified persistent
+state, unlike a /data module store \\
 Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
 Not root -\/- capped at the ADB shell permission set, via an app-broker
 API & Yes & Yes -\/- stock image unmodified \\
