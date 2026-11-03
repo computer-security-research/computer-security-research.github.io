@@ -1917,15 +1917,30 @@ session, while the owner\textquotesingle s daily session runs
 unprivileged with no reachable escalation path, applies the principle of
 least privilege \citep{saltzer-schroeder} and separation of duty
 \citep{clark-wilson} and keeps the everyday attack surface off the
-privileged path. But the account boundary alone does not preserve the
-verified-boot model: a persistent, writable administrative role is
-offline persistent root, so the model survives only if that maintenance
-context is itself ephemeral or re-sealed -\/- its integrity re-measured
-against the owner\textquotesingle s own key -\/- on exit. In the
-owner-signed configuration the owner does hold that key and can re-seal
-\citep{avbroot}; the constraint is operational: secure practice keeps
-the private half off the device (only the public key is enrolled), so
-re-sealing is an off-device re-sign and reflash from a trusted
+privileged path. This arrangement is also richer than the single-axis
+non-persistent root of Table 4, where privilege is simply transient and
+lost on reboot: a role-separated design can offer, as a boot-time
+choice, either an administrative session or an ordinary unprivileged
+one, and can make each independently persistent -\/- changes retained
+across reboot -\/- or non-persistent -\/- changes discarded on reboot
+-\/- a matrix of role against persistence rather than a single transient
+mode. But the added options do not change the verified-persistence crux,
+and most of the matrix reduces to cases already analysed. Persistence of
+the unprivileged session is unremarkable, since its writes land in
+\texttt{/data}, the user-data partition already outside verified boot (a
+separate matter, as above). A non-persistent administrative session
+collapses onto the non-persistent row: its mutations are discarded on
+reboot, which restores the verified system. The one cell that is
+genuinely distinct is a persistent administrative session, and it fares
+no better than any other persistent root. The account boundary alone
+does not preserve the verified-boot model: a persistent, writable
+administrative role is offline persistent root, so the model survives
+only if that maintenance context is itself re-sealed on exit -\/- its
+integrity re-measured against the owner\textquotesingle s own key. In
+the owner-signed configuration the owner does hold that key and can
+re-seal \citep{avbroot}; the constraint is operational: secure practice
+keeps the private half off the device (only the public key is enrolled),
+so re-sealing is an off-device re-sign and reflash from a trusted
 workstation rather than an in-situ maintenance step, and keeping the key
 on the device to make it in-situ would reintroduce the persistent
 trusted secret the locked chain exists to avoid. Such a re-seal restores
@@ -1968,26 +1983,31 @@ vendor\textquotesingle s key. A capability that closed the gap would
 have to assemble three things the shipped approaches reach only in
 pairs: privileged inspection the owner can invoke; an integrity state
 the owner, and ideally an independent verifier, can still check
-afterward, which points to non-persistent or verified-extension
-privilege with an owner-held re-seal, subject to the off-device-key
-constraint above; and, for the relying-party half, an independent trust
-anchor for owner-enrolled keys that the attestation ecosystem does not
-presently provide. These three requirements are not alike in who can
-satisfy them. The first two are device-level and within the
-owner\textquotesingle s reach: non-persistent or verified-extension
-privilege under an owner-held key already assembles privileged
-inspection with an integrity state the owner, and an independent
-verifier, can re-check, so the owner-side half is largely a matter of
-combining shipped mechanisms rather than inventing new ones. The third
-is not the owner\textquotesingle s to satisfy. A relying-party-accepted
-verdict is anchored, by construction, to the vendor\textquotesingle s
-root of trust, and the attestation ecosystem does not accept
-owner-enrolled keys (Appendix A); nor, on the available evidence, does
-it have reason to, since the same verified, vendor-keyed state is a
-precondition for hardware-backed content protection
-\citep{patat-widevine}, \citep{rafi-drm-mobile}, \citep{aosp-drm} and
-for the platform-policy objectives the model is built to enforce
-\citep{mayrhofer-android-security-model},
+afterward -\/- which means privilege that either does not survive a
+reboot or arrives as a signed, verity-covered extension, and, where a
+change is meant to persist, a system re-signed under the
+owner\textquotesingle s own key to restore the locked, verified state, a
+re-seal that (the owner\textquotesingle s private key being kept off the
+device) is an off-device re-sign and reflash from a trusted workstation
+rather than an on-device step; and, for the relying-party half, an
+independent trust anchor for owner-enrolled keys that the attestation
+ecosystem does not presently provide. These three requirements are not
+alike in who can satisfy them. The first two are device-level and within
+the owner\textquotesingle s reach: privilege that is discarded on
+reboot, or delivered as a signed, verity-covered extension -\/-
+re-signed where a change is kept, under the owner\textquotesingle s own
+key -\/- already assembles privileged inspection with an integrity state
+the owner, and an independent verifier, can re-check, so the owner-side
+half is largely a matter of combining shipped mechanisms rather than
+inventing new ones. The third is not the owner\textquotesingle s to
+satisfy. A relying-party-accepted verdict is anchored, by construction,
+to the vendor\textquotesingle s root of trust, and the attestation
+ecosystem does not accept owner-enrolled keys (Appendix A); nor, on the
+available evidence, does it have reason to, since the same verified,
+vendor-keyed state is a precondition for hardware-backed content
+protection \citep{patat-widevine}, \citep{rafi-drm-mobile},
+\citep{aosp-drm} and for the platform-policy objectives the model is
+built to enforce \citep{mayrhofer-android-security-model},
 \citep{doctorow-general-computation}. The open problem is therefore
 asymmetric. Owner-side verifiability is attainable today for owners who
 accept the loss of vendor-gated attestation; re-admitting an
