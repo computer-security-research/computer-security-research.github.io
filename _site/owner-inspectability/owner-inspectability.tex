@@ -1733,14 +1733,24 @@ trivially bypass" \citep{grapheneos-attestation-compat}.
 
 Restricting attention to what an owner can do while keeping the
 bootloader locked and verified boot engaged, the approaches differ on
-four things (Table 4): the scope of the privilege they grant, whether it
+four things (Table 4): whether it grants a full superuser, whether it
 persists across reboot, whether it modifies the system through a
 persistent overlay in unverified /data, and whether they preserve the
 verified-boot security model under which the owner can still detect
-tampering. The pattern is that the model is forfeited in two cases, both
-leaving unverified persistent state the owner cannot detect tampering
-in: a persistent, fully-trusted superuser that modifies the running
-system through a module store in /data re-applied at every boot, and a
+tampering. A full superuser here is unrestricted uid-0 over the running
+system -\/- reading and writing any file, inspecting or altering any
+process, and reaching a raw block device or kernel memory, unbounded by
+the SELinux domains that confine exploit-gained root (Section 3) -\/- as
+distinct from a privilege capped below it (the ADB-shell permission
+tier) or confined to a signed, policy-bounded capability (a verified
+extension); it is in every case an in-system privilege short of the
+administrative control defined in Section 3, which none of these
+approaches confer, and the configurations that hold it are equal in
+privilege, differing only in how it is reached and whether it persists.
+The pattern is that the model is forfeited in two cases, both leaving
+unverified persistent state the owner cannot detect tampering in: a
+persistent, fully-trusted superuser that modifies the running system
+through a module store in /data re-applied at every boot, and a
 persistently writable /system reached by disabling its dm-verity
 hashtree in the owner-signed image. A configuration keeps the model when
 it breaks that chain at any link: by not granting a full superuser (a
@@ -1763,7 +1773,7 @@ locked and verified boot engaged.
 \begin{minipage}[b]{\linewidth}\raggedright
 Approach
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Privilege scope
+Full superuser?
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Persists across reboot?
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -1776,68 +1786,73 @@ Verified-boot security model preserved (owner can detect tampering)?
 \bottomrule\noalign{}
 \endlastfoot
 Root baked into a signed image and relocked under an owner key: a
-Magisk-style systemless patch (avbroot \citep{avbroot}) & Full
-superuser, app-facing su & Yes & Yes -\/- module store in
-/data/adb/modules \citep{magisk-guides} & No -\/- verified boot no
-longer certifies the running system: the persistent, fully-trusted
-superuser and its module store live above the verified layer, in
-unverified /data \citep{aosp-dm-verity},
-\citep{aosp-file-based-encryption} \\
+Magisk-style systemless patch (avbroot \citep{avbroot}) & Yes -\/-
+app-facing su & Yes & Yes -\/- module store in /data/adb/modules
+\citep{magisk-guides} & No -\/- verified boot no longer certifies the
+running system: the module store is magic-mounted onto /system at every
+boot \citep{magisk-details}, so the running system depends on it, yet it
+lives in /data, the writable user-data partition
+\citep{aosp-file-based-encryption}, outside the read-only verity
+hashtree that covers /system \citep{aosp-dm-verity},
+\citep{kernel-dm-verity} \\
 Scoped kernel root baked in the same way: KernelSU, with per-app
-profiles \citep{kernelsu} & Full superuser in the kernel,
-per-app-profile gated -\/- narrows the surface but is not a security
-boundary & Yes & Yes -\/- /data/adb/modules, overlaid on /system via
-OverlayFS \citep{kernelsu-modules} & No -\/- the same violation as the
-row above, with the superuser in the kernel rather than in init; the
-module store sits above the verified layer, in unverified /data
-\citep{aosp-dm-verity}, \citep{aosp-file-based-encryption} \\
+profiles \citep{kernelsu} & Yes -\/- in the kernel; per-app-profile
+gated (narrows the surface, not a security boundary) & Yes & Yes -\/-
+/data/adb/modules, overlaid on /system via OverlayFS
+\citep{kernelsu-modules} & No -\/- the same violation as the row above,
+with the superuser in the kernel rather than in init: the module store
+is overlaid onto /system at every boot \citep{kernelsu-modules}, so the
+running system depends on it, yet it sits in /data
+\citep{aosp-file-based-encryption}, outside the read-only verity
+hashtree covering /system \citep{aosp-dm-verity},
+\citep{kernel-dm-verity} \\
 Persistent /system read-write: dm-verity for /system disabled in the
 owner-signed image (vbmeta hashtree-disabled flag, or vbmeta without
 /system\textquotesingle s hashtree descriptor), relocked under the
 owner\textquotesingle s key (avbroot \citep{avbroot},
-\citep{aosp-avb-readme}) & Full -\/- unrestricted persistent writes to
-the /system partition itself & Yes & No -\/- direct writes to the
-/system partition, not an overlay & No -\/- the vbmeta still verifies
-under the owner\textquotesingle s key, so the device boots locked, in
-the YELLOW state \citep{aosp-avb-readme}; but with dm-verity disabled
-/system falls outside the hashtree \citep{aosp-dm-verity}, so tampering
-of /system is undetectable and the writable /system is unverified
-persistent state \\
+\citep{aosp-avb-readme}) & Yes -\/- /system itself persistently writable
+(direct, not an overlay) & Yes & No -\/- direct writes to the /system
+partition, not an overlay & No -\/- the vbmeta still verifies under the
+owner\textquotesingle s key, so the device boots locked, in the YELLOW
+state \citep{aosp-avb-readme}; but with dm-verity disabled /system falls
+outside the hashtree \citep{aosp-dm-verity}, so tampering of /system is
+undetectable and the writable /system is unverified persistent state \\
 Non-persistent root: a special-boot-mode terminal not retained across
-reboot \citep{grapheneos-root-statement} & Full superuser
-(special-boot-mode terminal) & No & No & Yes -\/- the root does not
+reboot \citep{grapheneos-root-statement} & Yes -\/- special-boot-mode
+terminal, no app-facing su & No & No & Yes -\/- the root does not
 persist across reboot, which restores the verified boot chain and system
 image (writable user data, outside verified boot, is a separate
 matter) \\
 Signed, verified extension shipped inside the image: Android APEX
 \citep{aosp-apex} (the Linux analogue, under a verity-and-signature
-image policy, is systemd-sysext \citep{systemd-sysext}) & Not a
-superuser -\/- bounded, policy-confined verified capability & Yes & No
--\/- shipped as a signed, verity-checked image & Yes -\/- a signed,
-verity-checked image, so its contents are verified rather than arbitrary
-mutable state \\
+image policy, is systemd-sysext \citep{systemd-sysext}) & No -\/-
+bounded, policy-confined verified capability & Yes & No -\/- shipped as
+a signed, verity-checked image & Yes -\/- a signed, verity-checked
+image, so its contents are verified rather than arbitrary mutable
+state \\
 ADB-root baked into an owner-signed, relocked image: adbd patched to run
 as root, with no on-device su (resign-android-image
-\citep{resign-android-image}) & Full superuser, reachable only over ADB
--\/- no app-facing su & Yes & No & Yes -\/- the root path ships inside
-the owner-signed, verity-covered image, so tampering remains detectable
-and a reboot restores the verified state; it trusts no unverified
-persistent state, unlike a /data module store \\
+\citep{resign-android-image}) & Yes -\/- reachable only over ADB, no
+app-facing su & Yes & No & Yes -\/- the root path ships inside the
+owner-signed, verity-covered image, so tampering remains detectable and
+a reboot restores the verified state; it trusts no unverified persistent
+state, unlike a /data module store \\
 Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
-Not root -\/- capped at the ADB shell permission set, via an app-broker
-API & Yes & No & Yes -\/- stock image unmodified \\
+No -\/- capped at the ADB shell permission set, via an app-broker API &
+Yes & No & Yes -\/- stock image unmodified \\
 \end{longtable}
 
 Three qualifications attach to Table 4. The non-persistent row can be
 realized by a RAM-backed overlay, but an overlay\textquotesingle s upper
-layer lies outside the verified-boot hashtree \citep{aosp-dm-verity}, so
-the content it serves is unverified whatever backs it; ephemerality
-bounds the window of unverified operation rather than keeping the
-running system verified. And the design space is not closed in
-principle: image-based operating systems have prompted proposals for an
-owner-facing "developer mode" that would reconcile locally built or
-signed code with an immutable, cryptographically validated system, but
-such a mode remains a design proposal rather than a shipping feature
+layer lies outside the verified-boot hashtree \citep{aosp-dm-verity},
+\citep{kernel-dm-verity}, so the content it serves is unverified
+whatever backs it; ephemerality bounds the window of unverified
+operation rather than keeping the running system verified. And the
+design space is not closed in principle: image-based operating systems
+have prompted proposals for an owner-facing "developer mode" that would
+reconcile locally built or signed code with an immutable,
+cryptographically validated system, but such a mode remains a design
+proposal rather than a shipping feature
 \citep{poettering-developer-mode}. Third, the avbroot and
 resign-android-image rows assume the verity-preserving case: dm-verity
 stays enabled under the owner\textquotesingle s key, so cryptographic
