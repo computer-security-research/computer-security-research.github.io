@@ -1558,3 +1558,47 @@ label = "PackageManager.DELETE_SYSTEM_APP -- mark a system app uninstalled for t
 quotes = [
   { text = "just mark the app as uninstalled for the current user", label = "Per-user uninstall mark; /system APK untouched", note = "AOSP PackageManager.java DELETE_SYSTEM_APP javadoc (frameworks/base, branch main): uninstalling a system app for a single user sets this flag so the app is marked uninstalled for that user rather than removing or reverting the /system APK. Cited in Appendix B (unnumbered heading -> no section pill). Verified verbatim against the AOSP source tree." },
 ]
+
+[aosp-vpnservice]
+label = "VpnService -- only one VPN connection at a time (the single VPN slot)"
+quotes = [
+  { text = "There can be only one VPN connection running at the same time. The existing interface is deactivated when a new one is created.", label = "One VPN connection at a time", note = "Android Developers, VpnService reference (developer.android.com/reference/android/net/VpnService). Cited in Appendix B. Verified verbatim via WebFetch." },
+]
+
+[aosp-vpn-guide]
+label = "Create a VPN client -- one active VPN service; a non-root capture app must occupy it"
+quotes = [
+  { text = "There's only one active service per user or profile. Starting a new service, automatically stops an existing service.", label = "One active VPN service", note = "Android Developers, Create a VPN client (developer.android.com/develop/connectivity/vpn). Source comma retained verbatim. Cited in Appendix B and the Section 7 comparison table. Verified via WebFetch." },
+  { text = "Only one app can be the current prepared VPN service.", label = "Only one prepared VPN app" },
+]
+
+[netfilter]
+label = "netfilter -- the in-kernel packet-filter framework"
+quotes = [
+  { text = "The netfilter hooks are a framework inside the Linux kernel that allows kernel modules to register callback functions", label = "In-kernel packet-filter framework", note = "The netfilter.org project homepage (netfilter.org). Cited in Appendix B. Verified verbatim via WebFetch." },
+]
+
+[aosp-kernel]
+label = "Android kernel is a Linux kernel (so the Linux capability and netfilter model applies)"
+quotes = [
+  { text = "The Android kernel is based on an upstream Linux Long Term Supported (LTS) kernel.", label = "Android kernel is upstream Linux LTS", note = "Android Open Source Project, Android kernel overview (source.android.com/docs/core/architecture/kernel). Cited in Appendix B and the Section 7 comparison table. Verified verbatim via WebFetch." },
+]
+
+[aosp-zygote]
+label = "Zygote -- root of all app processes (framework injection forks from it)"
+quotes = [
+  { text = "The Zygote is a process in the Android operating system that acts as the root of all system and app processes", label = "Root of all app processes", note = "Android Open Source Project, About the Zygote processes (source.android.com/docs/core/runtime/zygote). Cited in Appendix B. Verified verbatim via WebFetch." },
+]
+
+[frida]
+label = "Frida -- runtime hooking works by injecting into the target process"
+quotes = [
+  { text = "It lets you inject snippets of JavaScript or your own library into native apps", label = "Injects into the target app", note = "Frida documentation (frida.re/docs/home). Cited in Appendix B as the mechanism: defeating in-process certificate pinning requires in-process injection. Verified verbatim via WebFetch." },
+  { text = "injects QuickJS into the target processes, where your JS gets executed with full access to memory", label = "In-process code execution" },
+]
+
+[linux-capabilities]
+label = "CAP_NET_RAW -- raw/packet sockets need a capability app UIDs lack (so full capture needs root)"
+quotes = [
+  { text = "Use RAW and PACKET sockets;", label = "CAP_NET_RAW governs raw/packet sockets", note = "Linux man-pages, capabilities(7) (man7.org/linux/man-pages/man7/capabilities.7.html); the CAP_NET_RAW capability, held by root and not by app UIDs, gates raw packet capture. Cited in the Section 7 comparison table. Verified verbatim via WebFetch." },
+]
