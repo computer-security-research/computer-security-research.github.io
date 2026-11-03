@@ -279,7 +279,7 @@ Restricting attention to what an owner can do while keeping the bootloader locke
 
 Table 4. Owner root and privilege options that keep the bootloader locked and verified boot engaged.
 
-| Approach | Privilege scope | Persistent? | Verified-boot security model preserved (owner can detect tampering)? |
+| Approach | Privilege scope | Persists across reboot? | Verified-boot security model preserved (owner can detect tampering)? |
 | --- | --- | --- | --- |
 | Root baked into a signed image and relocked under an owner key: a Magisk-style systemless patch (avbroot [@avbroot]) | Full superuser, app-facing su | Yes | No -- verified boot no longer certifies the running system: the persistent, fully-trusted superuser and its module store (in /data/adb/modules [@magisk-guides]) live above the verified layer, in unverified /data [@aosp-dm-verity], [@aosp-file-based-encryption] |
 | Scoped kernel root baked in the same way: KernelSU, with per-app profiles [@kernelsu] | Full superuser in the kernel, per-app-profile gated -- narrows the surface but is not a security boundary | Yes | No -- the same violation as the row above, with the superuser in the kernel rather than in init: its module store (in /data/adb/modules, overlaid on /system each boot via OverlayFS [@kernelsu-modules]) sits above the verified layer, in unverified /data [@aosp-dm-verity], [@aosp-file-based-encryption] |
