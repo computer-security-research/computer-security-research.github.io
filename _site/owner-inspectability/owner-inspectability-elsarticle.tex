@@ -173,11 +173,12 @@ contributions are:
 \item
   it shows that root access -\/- as distinct from the full
   administrative control withheld from the owner -\/- does not restore
-  owner-inspectability on a modern hardened device, because root is
-  itself bounded by mandatory access control, kernel lockdown,
-  module-signature enforcement, and a hardware-rooted verified-boot
-  chain, and because root can in any case be deceived by a kernel-space
-  rootkit that falsifies what any in-system tool reports;
+  owner-inspectability on a modern hardened device, because root is only
+  an in-system vantage point: it does not reach the kernel, firmware,
+  and boot chain beneath it, it can be deceived by a kernel-space
+  rootkit that falsifies what any in-system tool reports regardless of
+  privilege, and reaching it forfeits the attestation standing the owner
+  seeks to preserve;
 \item
   it documents how remote attestation, and the applications that depend
   on it, penalize owner-controlled configurations by a mechanism that
@@ -457,9 +458,10 @@ constituted. On a traditional personal computer this authority over the
 operating-system and boot stack is the owner\textquotesingle s by
 default; on stock Android it is withheld from the owner and conferred
 only on the vendor. Root, when an owner obtains it at all, is a fragment
-of this authority -\/- superuser standing inside the
-vendor\textquotesingle s already-booted operating system, without
-command of the kernel and boot chain beneath it -\/- which is why, as
+of this authority -\/- superuser standing that observes the system only
+from within it, without command of the kernel and boot chain beneath it,
+and in its prevalent systemless form obtained by patching init rather
+than held as an account inside the booted system -\/- which is why, as
 Sections 8, 10, and 14 develop, obtaining root does not amount to
 administrative control and does not by itself deliver
 owner-inspectability. Section 14 contrasts the two stacks directly,
@@ -978,13 +980,14 @@ platform\textquotesingle s own refusal to trust a modified device but by
 the third-party software the owner must run on it.
 
 This also sharpens what "gaining root" can and cannot achieve, a point
-developed in Sections 10 and 14. Because root is a bounded in-system
-privilege (Section 3) and because reaching it generally forfeits the
-attestation standing just described, obtaining root does not hand the
-owner the clean, external, trusted vantage point that independent
-verification requires; it trades the device\textquotesingle s attested
-status for privileges that are themselves confined by mandatory access
-control, kernel lockdown, and the verified-boot chain.
+developed in Sections 10 and 14. Because root is an in-system privilege
+(Section 3) and because reaching it generally forfeits the attestation
+standing just described, obtaining root does not hand the owner the
+clean, external, trusted vantage point that independent verification
+requires; it trades the device\textquotesingle s attested status for an
+in-system foothold that still observes the kernel only from within it
+-\/- and, where lockdown or module-signature enforcement is engaged,
+cannot even load code into that kernel.
 
 Modern rooting fits this bound rather than breaking it. The prevalent
 method is systemless: it gains root without writing to /system. Verified
@@ -1182,8 +1185,8 @@ applications, including banking, enterprise, and content-protected
 applications, to refuse to run. The net effect is that the tools needed
 to verify the system require breaking those same guarantees before they
 can be applied -\/- and, as Section 8 showed, the privileges so gained
-are themselves bounded and do not amount to the external trusted vantage
-point that verification needs.
+are in-system, not the external, trusted vantage point that verification
+needs, and no amount of in-system privilege supplies one.
 
 Table 3 compares specific analysis capabilities. The values "Yes" and
 "No" indicate that a capability is, respectively, generally available or
@@ -1761,10 +1764,10 @@ Verified-boot security model preserved (owner can detect tampering)?
 \bottomrule\noalign{}
 \endlastfoot
 Root baked into a signed image and relocked under an owner key: a
-Magisk-style systemless patch (avbroot \citep{avbroot},
-resign-android-image \citep{resign-android-image}) & Yes & No -\/-
+Magisk-style systemless patch (avbroot \citep{avbroot}) & Yes & No -\/-
 verified boot no longer certifies the running system: the persistent,
-fully-trusted superuser and its module store live above the verified
+fully-trusted superuser and its module store (in /data/adb/modules
+\citep{magisk-guides}, \citep{magisk-details}) live above the verified
 layer, in unverified /data \citep{aosp-dm-verity},
 \citep{aosp-file-based-encryption} \\
 Scoped kernel root baked in the same way: KernelSU, with per-app
@@ -1782,6 +1785,12 @@ image policy, is systemd-sysext \citep{systemd-sysext}) & No -\/-
 bounded, policy-confined verified capability & Yes -\/- a signed,
 verity-checked image, so its contents are verified rather than arbitrary
 mutable state \\
+ADB-root baked into an owner-signed, relocked image: adbd patched to run
+as root, with no on-device su (resign-android-image
+\citep{resign-android-image}) & No -\/- root is reachable only over the
+ADB interface; no app-facing superuser & Yes -\/- the root path ships
+inside the owner-signed, verity-covered image and is gated behind ADB
+rather than exposed as an always-on superuser \\
 Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
 No -\/- capped at the shell permission set & Yes -\/- stock image
 unmodified \\
@@ -2027,8 +2036,10 @@ stock \\
 Operating system & Owner installs any operating system & A custom
 operating system requires unlocking and incurs an attestation penalty \\
 In-system superuser (root) & Available to the owner by default &
-Withheld as sold; reachable only by exploit or unlocking, and then
-bounded by SELinux and kernel lockdown \\
+Withheld as sold; reachable only by exploit or unlocking -\/-
+exploit-gained root is SELinux-confined, while systemless root sidesteps
+SELinux but remains below the kernel\textquotesingle s lockdown and
+module-signature enforcement \\
 Boot an external trusted system & Yes, from external media & Not
 supported while locked: the bootloader boots only signed images and an
 external system requires first unlocking \citep{aosp-fastboot-protocol},
@@ -2225,12 +2236,15 @@ the running system; and the established techniques of host-based malware
 analysis are, as a class, unavailable without first breaking the
 verified-boot and attestation guarantees the platform enforces.
 
-Obtaining root does not lift these limits, because root on a hardened
-device is a bounded in-system privilege -\/- not the full administrative
-control over the boot chain, kernel, and firmware that an owner would
-need -\/- and reaching it forfeits the attested status the owner is
-trying to preserve. Backing up the hardware-bound encryption key is
-likewise impractical for most owners.
+Obtaining root narrows these limits without lifting them. It lets an
+owner inspect at-rest storage, installed packages, and process memory
+-\/- enough to find commodity, application-level, and at-rest malware
+-\/- but not the targeted low-level class: root remains an in-system
+vantage point that a kernel-space rootkit can deceive, it does not reach
+the kernel, boot chain, or firmware beneath it, and -\/- whether gained
+by exploit or by unlocking -\/- it forfeits the attested status the
+owner is trying to preserve. Backing up the hardware-bound encryption
+key is likewise impractical for most owners.
 
 The existence of consensual forensic tooling, and of aftermarket
 operating systems such as GrapheneOS, does not overturn these
