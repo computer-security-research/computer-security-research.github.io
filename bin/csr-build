@@ -58,10 +58,11 @@ fi
 ## drift, and on a shared tree a sibling's uncommitted edit would be published
 ## too. The author commits sources themselves, with their own message; this
 ## guard makes that the REQUIRED path, not one to remember. Preview uncommitted
-## work with --no-commit. Scope: tracked modifications outside _site, checked
+## work with --no-commit. Scope: any uncommitted change outside _site, tracked
+## or untracked (the build renders from the working tree, not from git), checked
 ## BEFORE the build so a dirty tree fails in a second, not after a long render.
 if [ "${do_commit}" -eq 1 ]; then
-   dirty_sources="$(git -C "${content_dir}" status --porcelain --untracked-files=no -- . ':(exclude)_site')"
+   dirty_sources="$(git -C "${content_dir}" status --porcelain -- . ':(exclude)_site')"
    if [ -n "${dirty_sources}" ]; then
       printf '%s\n' "csr-build: refusing to build+publish -- uncommitted source changes outside _site:" >&2
       printf '%s\n' "${dirty_sources}" >&2

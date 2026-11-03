@@ -9,6 +9,7 @@
 ##
 ## When committing (do_commit=1) the guard must:
 ##   A. REFUSE a dirty tracked source outside _site.
+##   E. REFUSE an untracked (never-added) source file outside _site.
 ##   D. IGNORE a dirty _site (this tool's own generated output).
 ## and must:
 ##   B. PASS on a clean tree.
@@ -36,6 +37,7 @@ test_dir="$(dirname -- "$(readlink --canonicalize -- "$0")")"
 repo_root="$(dirname -- "${test_dir}")"
 csr_build="${repo_root}/bin/csr-build"
 guard_msg="uncommitted source changes"
+tool_check_msg="journal-maker not found"
 fails=0
 build_out=""
 build_rc=0
@@ -92,6 +94,13 @@ expect_guard_passed() {
       printf '%s\n' "FAIL: ${label} -- guard fired but should have passed, got: ${build_out}" >&2
       fails=$((fails + 1))
    fi
+   ## A pass must FALL THROUGH to the (stubbed-absent) tool check, not an
+   ## unrelated early exit -- otherwise a missing guard message is not evidence
+   ## the guard allowed execution to continue.
+   if [ "${build_rc}" -ne 1 ] || ! contains "${build_out}" "${tool_check_msg}"; then
+      printf '%s\n' "FAIL: ${label} -- expected to reach the tool check (rc 1 + '${tool_check_msg}'), got rc ${build_rc}: ${build_out}" >&2
+      fails=$((fails + 1))
+   fi
 }
 
 ## A. dirty tracked source, committing -> guard FIRES
@@ -121,8 +130,15 @@ run_build "${fixture_d}"
 expect_guard_passed "D: a dirty _site does not trip the guard"
 safe-rm --recursive --force -- "${fixture_d}"
 
+## E. untracked (never-added) source file, committing -> guard FIRES
+fixture_e="$(make_fixture)"
+printf '%s\n' '# brand new article' > "${fixture_e}/articles/newpaper.md"
+run_build "${fixture_e}"
+expect_guard_fired "E: an untracked new source file is refused"
+safe-rm --recursive --force -- "${fixture_e}"
+
 if [ "${fails}" -eq 0 ]; then
-   printf '%s\n' "csr-build-source-guard: all 4 cases passed"
+   printf '%s\n' "csr-build-source-guard: all 5 cases passed"
 else
    printf '%s\n' "csr-build-source-guard: ${fails} case(s) failed" >&2
    exit 1
