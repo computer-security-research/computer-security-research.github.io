@@ -49,6 +49,26 @@ if [ ! -f "${content_dir}/site.toml" ]; then
    printf '%s\n' "csr-build: ${content_dir} is not a CSR content repo (no site.toml)" >&2
    exit 1
 fi
+
+## Refuse to build+publish when article SOURCES are uncommitted. csr-build
+## deploys the _site it renders from the WORKING TREE but commits only _site
+## (below), so an uncommitted source edit (paper.md, refs.bib,
+## source-quotes.toml, meta.toml, site.toml, this script, ...) would ship in the
+## deployed tree yet be absent from git: committed source and committed _site
+## drift, and on a shared tree a sibling's uncommitted edit would be published
+## too. The author commits sources themselves, with their own message; this
+## guard makes that the REQUIRED path, not one to remember. Preview uncommitted
+## work with --no-commit. Scope: tracked modifications outside _site, checked
+## BEFORE the build so a dirty tree fails in a second, not after a long render.
+if [ "${do_commit}" -eq 1 ]; then
+   dirty_sources="$(git -C "${content_dir}" status --porcelain --untracked-files=no -- . ':(exclude)_site')"
+   if [ -n "${dirty_sources}" ]; then
+      printf '%s\n' "csr-build: refusing to build+publish -- uncommitted source changes outside _site:" >&2
+      printf '%s\n' "${dirty_sources}" >&2
+      printf '%s\n' "csr-build: commit the source(s) first (their own commit), or re-run with --no-commit to preview without publishing." >&2
+      exit 1
+   fi
+fi
 if [ ! -x "${journal_maker}/usr/bin/journal-maker" ]; then
    printf '%s\n' "csr-build: journal-maker not found at ${journal_maker} (set CSR_JOURNAL_MAKER)" >&2
    exit 1
