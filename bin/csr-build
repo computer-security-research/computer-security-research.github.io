@@ -71,6 +71,11 @@ fi
 ## run exposes for the --sync/--pull trees.
 staging="${HOME}/.cache/csr-build-site"
 
+## Start staging empty so a renamed or removed article leaves no stale output:
+## the sandbox --pull is an overlay (additive), so a dropped slug would linger
+## here and be mirrored into _site by the rsync --delete below -- and deployed.
+safe-rm --recursive --force -- "${staging}"
+
 printf '%s\n' "csr-build: building _site in sandbox ${target} ..."
 
 # shellcheck disable=SC2016
