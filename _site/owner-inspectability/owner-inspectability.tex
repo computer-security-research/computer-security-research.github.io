@@ -1264,7 +1264,8 @@ access to other applications\textquotesingle{} data; root or a forensic
 image is required for a full view \\
 Network monitoring and command-and-control analysis & Yes -\/-
 packet-capture and filtering tools usable without restriction & Partial
--\/- requires root or VPN-based monitoring \\
+-\/- requires root \citep{linux-capabilities}, \citep{aosp-kernel} or
+VPN-based monitoring \citep{aosp-vpn-guide} \\
 External monitoring & Yes -\/- broad options, including out-of-band
 approaches and host-controlled capture and analysis & No -\/- limited on
 the device as sold; out-of-band monitoring is generally unavailable
@@ -2554,19 +2555,23 @@ configuration (direct write) \\
 System-wide ad and tracker blocking via the hosts file; install a custom
 CA into the system trust store & Persistent \texttt{/system} write (a
 \texttt{/data} overlay suffices) & Magisk, KernelSU, verity-disabled
-\texttt{/system} \citep{adaway} \\
-Firewall or DNS control without consuming the single VPN slot & Full
-root running netfilter, persistent & Magisk, KernelSU, verity-disabled
+\texttt{/system}, or baked into the owner-signed, verity-covered image
+(the avbroot or resign-android-image row) \citep{adaway} \\
+Firewall or DNS control without consuming the single VPN slot
+\citep{aosp-vpnservice} & Full root running netfilter \citep{netfilter},
+\citep{aosp-kernel}, persistent & Magisk, KernelSU, verity-disabled
 \texttt{/system} \citep{afwall} \\
 Persistent kernel tuning & Full root write to kernel controls,
 persistent & Magisk, KernelSU, verity-disabled \texttt{/system} \\
 Disable certificate pinning, or theme the system by code injection &
-App-facing \texttt{su} with framework (Zygote) injection & Magisk,
-KernelSU \citep{lsposed} \\
+App-facing \texttt{su} with framework (Zygote) injection
+\citep{aosp-zygote}, \citep{frida} & Magisk, KernelSU \citep{lsposed} \\
 Privileged automation; run applications that require root & App-facing
 \texttt{su} at runtime & Magisk, KernelSU \\
-Pass application integrity checks while modified & App-facing
-\texttt{su} plus a module store & Magisk, KernelSU \\
+Pass software-tier application-integrity checks while modified (not
+hardware-backed attestation) & App-facing \texttt{su} plus an
+integrity-masking module in the \texttt{/data/adb/modules} store &
+Magisk, KernelSU \\
 \end{longtable}
 
 Two qualifications sharpen the debloating rows. The removal owners most
@@ -2585,8 +2590,34 @@ app for every user -\/- requires a persistent system write, and so one
 of the three write-capable configurations. Those three in turn split on
 injection: the verity-disabled \texttt{/system} configuration can place
 or replace files, but the pinning-bypass and framework-hooking goals
-additionally need an app-facing superuser and Zygote injection, which
-only the Magisk and KernelSU rows provide.
+additionally need an app-facing superuser and Zygote injection
+\citep{aosp-zygote}, which only the Magisk and KernelSU rows provide.
+
+Two further points sharpen the remaining rows. The last
+row\textquotesingle s "module store" is the systemless userspace module
+store at \texttt{/data/adb/modules} \citep{magisk-guides},
+\citep{kernelsu-modules} -\/- the integrity-masking modules of Section
+8, overlaid on \texttt{/system} at runtime -\/- not Linux kernel module
+loading. What such modules pass is the software tier only: app-side root
+detection and the basic verdict, a signal a locked or unlocked device
+can satisfy \citep{play-integrity-verdicts}, and, on devices launched
+before Android 13, the legacy device verdict \citep{playintegrityfork};
+they do not pass the hardware-backed device or strong verdict, which
+demands a certified, vendor-keyed, locked image (Section 8, Appendix A)
+\citep{play-integrity-verdicts}. Installing either tool first requires
+unlocking the bootloader to flash the patched image
+\citep{magisk-install}; the owner may then re-lock to their own enrolled
+key -\/- the locked, owner-keyed yellow state Table 4 assumes
+\citep{aosp-boot-flow}, not the stock vendor-keyed one -\/- which still
+forfeits the hardware-backed verdict \citep{resign-android-image}.
+Finally, the ad-blocking and custom-CA goals are not met by a bounded
+verified extension: an APEX activates only its own signed namespace and
+does not overlay arbitrary \texttt{/system} paths \citep{aosp-apex}, and
+the updatable system trust store introduced in recent Android is a
+vendor-signed module an owner cannot inject into -\/- so these goals
+need a persistent \texttt{/system} write, which keeps the verified-boot
+model only when it is an owner-signed image rebuild rather than a
+\texttt{/data} overlay or a verity-disabled \texttt{/system}.
 
   \bibliography{refs}
 
