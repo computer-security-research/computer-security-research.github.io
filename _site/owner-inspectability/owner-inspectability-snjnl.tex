@@ -1761,9 +1761,8 @@ Root baked into a signed image and relocked under an owner key: a
 Magisk-style systemless patch (avbroot \citep{avbroot}) & Yes & No -\/-
 verified boot no longer certifies the running system: the persistent,
 fully-trusted superuser and its module store (in /data/adb/modules
-\citep{magisk-guides}, \citep{magisk-details}) live above the verified
-layer, in unverified /data \citep{aosp-dm-verity},
-\citep{aosp-file-based-encryption} \\
+\citep{magisk-guides}) live above the verified layer, in unverified
+/data \citep{aosp-dm-verity}, \citep{aosp-file-based-encryption} \\
 Scoped kernel root baked in the same way: KernelSU, with per-app
 profiles \citep{kernelsu} & Yes, scoped per app & No -\/- a persistent
 kernel-level superuser; app-profile scoping narrows the surface but is
