@@ -1669,3 +1669,43 @@
   url = {https://man7.org/linux/man-pages/man7/capabilities.7.html},
   urldate = {2026-11-03},
 }
+
+@misc{aosp-build-variants,
+  author = {{Android Open Source Project}},
+  title = {{Build Android}},
+  howpublished = {{Android Open Source Project documentation}},
+  url = {https://source.android.com/docs/setup/build/building},
+  urldate = {2026-11-03},
+}
+
+@misc{aosp-sysprop-config,
+  author = {{Android Open Source Project}},
+  title = {{core/sysprop\_config.mk: ro.secure and ro.debuggable set per build variant}},
+  howpublished = {{AOSP source tree, platform/build, commit 2867f02a3a}},
+  url = {https://android.googlesource.com/platform/build/+/2867f02a3a/core/sysprop_config.mk},
+  urldate = {2026-11-03},
+}
+
+@misc{aosp-adbd-main,
+  author = {{Android Open Source Project}},
+  title = {{adbd daemon main: should\_drop\_privileges, adb root gated on ro.debuggable}},
+  howpublished = {{AOSP source tree, platform/packages/modules/adb, main branch}},
+  url = {https://android.googlesource.com/platform/packages/modules/adb/+/refs/heads/main/daemon/main.cpp},
+  urldate = {2026-11-03},
+}
+
+@misc{aosp-su,
+  author = {{Android Open Source Project}},
+  title = {{system/extras su: callable only by the root and shell UIDs}},
+  howpublished = {{AOSP source tree, platform/system/extras, main branch}},
+  url = {https://android.googlesource.com/platform/system/extras/+/refs/heads/main/su/su.cpp},
+  urldate = {2026-11-03},
+}
+
+@misc{aosp-sepolicy-su-te,
+  author = {{Android Open Source Project}},
+  title = {{SELinux policy su.te: permissive su domain compiled in only under userdebug\_or\_eng}},
+  howpublished = {{AOSP source tree, platform/system/sepolicy, main branch}},
+  url = {https://android.googlesource.com/platform/system/sepolicy/+/refs/heads/main/private/su.te},
+  urldate = {2026-11-03},
+}

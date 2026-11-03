@@ -1965,6 +1965,37 @@ cryptographically detect tampering, so they leave the Table 4
 classification untouched; the specific userspace, role-based design that
 would realize them is out of scope here.
 
+A distinct configuration should be set aside rather than placed among
+these rows. Android is built in three variants selected by
+\texttt{TARGET\_BUILD\_VARIANT} -\/- the production \texttt{user} build,
+and the \texttt{userdebug} and \texttt{eng} developer builds
+\citep{aosp-build-variants} -\/- and the two developer variants lower
+assurance by construction. They set \texttt{ro.debuggable=1}, where the
+\texttt{user} build sets \texttt{ro.secure=1} and
+\texttt{ro.debuggable=0} \citep{aosp-sysprop-config}; that debuggable
+flag is the precondition under which \texttt{adbd} keeps uid-0, since
+\texttt{adb\ root} restarts the daemon unconfined only on a debuggable
+build \citep{aosp-adbd-main}. The developer variants also ship
+AOSP\textquotesingle s own trivial \texttt{su}, callable only from the
+\texttt{root} and \texttt{shell} UIDs \citep{aosp-su}, and permit the
+\texttt{adb\ disable-verity} and \texttt{adb\ remount} path that a
+\texttt{user} build compiles out and refuses
+\citep{aosp-set-verity-service}. SELinux is not thereby turned off: the
+developer builds merely add a \texttt{su} domain, itself compiled in
+only under a \texttt{userdebug\_or\_eng} guard and marked
+\texttt{permissive}, while the remaining domains -\/- the HALs and
+system services -\/- stay enforcing \citep{aosp-sepolicy-su-te}. The
+result is a lowered-assurance engineering image -\/- root over ADB, a
+factory \texttt{su}, verity defeatable -\/- not the locked, owner-keyed,
+AVB-verified production state the rest of this section analyzes, and
+typically signed with public test keys rather than production release
+keys. Root on a developer build is therefore not a route to
+owner-inspectable production security but a separate configuration that
+trades assurance away up front; it sits outside Table
+4\textquotesingle s framing, which presumes a production image with the
+bootloader locked and verified boot engaged, and must not be conflated
+with it.
+
 Set against the owner\textquotesingle s actual goals, these
 configurations are not equivalent, but for the goal this paper centers
 they converge. Owner-inspection -\/- reading the system logs, reading
