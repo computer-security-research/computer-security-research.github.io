@@ -1872,14 +1872,22 @@ verified boot remains intact, but its security model is not. The
 persistent \texttt{/system} read-write row is the verity-disabling
 alternative: taking the hashtree off \texttt{/system} -\/- the
 \texttt{vbmeta} hashtree-disabled flag, or a \texttt{vbmeta} without
-\texttt{/system}\textquotesingle s hashtree descriptor -\/- makes
-\texttt{/system} persistently writable and places it outside the
-verified hashtree, so cryptographic verified boot still covers the boot
-chain but no longer \texttt{/system}. The bootloader stays locked,
-because it verifies the \texttt{vbmeta} signature, not the verity policy
-the signed \texttt{vbmeta} declares \citep{aosp-avb-readme} (the AVB
-reference behavior; a specific vendor\textquotesingle s firmware may
-differ).
+\texttt{/system}\textquotesingle s hashtree descriptor -\/- places
+\texttt{/system} outside the verified hashtree, so cryptographic
+verified boot still covers the boot chain but no longer
+\texttt{/system}. Disabling the hashtree only removes the integrity
+check, though: where \texttt{/system} ships as EROFS -\/- the Enhanced
+Read-Only File System \citep{kernel-erofs} that modern Android selects
+for read-only partitions at build time
+(\texttt{BOARD\_SYSTEMIMAGE\_FILE\_SYSTEM\_TYPE\ :=\ erofs})
+\citep{aosp-erofs} -\/- it is read-only by design and cannot be
+remounted read-write at all, so a persistently writable \texttt{/system}
+additionally requires rebuilding the owner-signed image with a writable
+filesystem (ext4 or f2fs) in place of EROFS \citep{aosp-erofs}. The
+bootloader stays locked, because it verifies the \texttt{vbmeta}
+signature, not the verity policy the signed \texttt{vbmeta} declares
+\citep{aosp-avb-readme} (the AVB reference behavior; a specific
+vendor\textquotesingle s firmware may differ).
 
 A concrete form illustrates the persistent-root row. An owner could bake
 a root-accessible SSH daemon into the owner-signed image and authorize
