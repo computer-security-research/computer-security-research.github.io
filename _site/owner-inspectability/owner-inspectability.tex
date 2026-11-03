@@ -245,28 +245,28 @@ owner\textquotesingle s single avenue -\/- and that of the security
 researcher who would audit the device on the owner\textquotesingle s
 behalf -\/- while leaving the adversary\textquotesingle s open.
 
-It is natural to read these mechanisms as existing primarily for the
-owner\textquotesingle s protection; that is only half the picture. The
-platform does work to keep unauthorized and malicious software off the
-device, through a layered apparatus that is effective only to a degree
-and reaches no further than the surface each layer covers: verified boot
-and a locked bootloader admit only vendor-signed code to the boot and
-system partitions, keeping unauthorized code out of the system image
-though not out of the application layer \citep{aosp-verified-boot},
-\citep{aosp-bootloader-locking} (a chain that has itself demonstrated
-sub-operating-system defeats; Section 12); Google Play Protect screens
-apps and works to prevent the installation of harmful ones, with
-installation from unknown sources restricted by default
-\citep{google-play-protect}, \citep{nistSP800124r2}; and the Play
-Integrity API gates relying-party access when a device appears tampered
-\citep{play-integrity-verdicts}. How well the app-layer screen actually
-catches malware is settled by independent testing rather than by vendor
-claim: in AV-Comparatives\textquotesingle{} May 2024 testing Play
-Protect reached a 99.3 percent protection rate, clearing the 99 percent
-certification threshold that round but trailing the leading third-party
-scanners at 99.9 percent and logging more false positives, an
-improvement over earlier independent rounds that had rated it dead last
-at well below 70 percent detection \citep{avcomparatives-mobile-2024},
+These mechanisms serve the owner\textquotesingle s protection, but they
+also serve platform-control and relying-party objectives that the owner
+may not share. The platform works to keep unauthorized and malicious
+software off the device, through a layered apparatus that is effective
+only to a degree and reaches no further than the surface each layer
+covers: verified boot and a locked bootloader admit only vendor-signed
+code to the boot and system partitions, keeping unauthorized code out of
+the system image though not out of the application layer
+\citep{aosp-verified-boot}, \citep{aosp-bootloader-locking} (a chain
+that has itself demonstrated sub-operating-system defeats; Section 12);
+Google Play Protect screens apps and works to prevent the installation
+of harmful ones, with installation from unknown sources restricted by
+default \citep{google-play-protect}, \citep{nistSP800124r2}; and the
+Play Integrity API gates relying-party access when a device appears
+tampered \citep{play-integrity-verdicts}. How well the app-layer screen
+catches malware is assessed here using independent testing results: in
+AV-Comparatives\textquotesingle{} May 2024 testing Play Protect reached
+a 99.3 percent protection rate, clearing the 99 percent certification
+threshold that round but trailing the leading third-party scanners at
+99.9 percent and logging more false positives, an improvement over
+earlier independent rounds that had ranked it lowest, at well below 70
+percent detection \citep{avcomparatives-mobile-2024},
 \citep{avtest-android-endurance-2018}. But the signed-image and
 attestation machinery also enforces objectives the owner may neither
 share nor be able to remove or audit -\/- that only a vendor-approved
@@ -275,23 +275,24 @@ parties (the remote apps and services that consume the attestation
 verdict) rather than by the owner \citep{play-integrity-verdicts} -\/-
 so the guarantee runs in part to the platform and those relying parties,
 not to the owner alone. Such owner-adverse, non-removable functionality
-is what the free-software community terms an anti-feature
+has been termed an anti-feature in the free-software literature
 \citep{hill2007antifeatures}, \citep{fdroid-antifeatures}; preinstalled
-bloatware, adware, and tracking software that the owner cannot uninstall
-without root is a documented instance \citep{gamba2020preinstalled};
-Carrier IQ, preinstalled carrier diagnostic software that wrote dialer
-keypresses and SMS text to system logs on some devices, is an earlier
-one \citep{eckersley-carrieriq}. Content protection is the
-platform-control counterpart on the content side: on devices with the
-requisite hardware support, hardware-backed digital-rights-management
-can bind decryption and the decoded video frames to the same hardware
-chain of trust as verified boot, routing protected content through a
-trusted output path so that the owner may play licensed media but cannot
-directly extract the decoded stream, which is released only on terms the
-content provider sets \citep{aosp-drm}. This paper treats those
-platform-control and content-protection objectives as out of scope to
-analyze (Section 3) and returns to the question of whom the attestation
-guarantee actually serves (Section 8).
+applications, advertising components, and tracking software that the
+owner cannot uninstall without root are a documented instance
+\citep{gamba2020preinstalled}; Carrier IQ, preinstalled carrier
+diagnostic software that wrote dialer keypresses and SMS text to system
+logs on some devices, is an earlier one \citep{eckersley-carrieriq}.
+Content protection is the platform-control counterpart on the content
+side: on devices with the requisite hardware support, hardware-backed
+digital-rights-management can bind decryption and the decoded video
+frames to the same hardware chain of trust as verified boot, routing
+protected content through a trusted output path so that the owner may
+play licensed media but cannot directly extract the decoded stream,
+which is released only on terms the content provider sets
+\citep{aosp-drm}. This paper treats those platform-control and
+content-protection objectives as out of scope to analyze (Section 3) and
+returns to the question of whom the attestation guarantee actually
+serves (Section 8).
 
 \subsection{3. Threat Model and Scope}\label{threat-model-and-scope}
 
@@ -548,9 +549,9 @@ assembled into a single, criterion-driven account.
 Two further strands bear directly on the objections in Section 12. The
 security cost of rooting as actually deployed has been measured: a study
 of the commercial one-click-root ecosystem found that root providers
-distribute well-engineered kernel exploits which malware can equally
-abuse, so root as shipped tends to enlarge the device\textquotesingle s
-attack surface rather than hand the owner safe control of it
+distribute kernel exploits that malware can equally abuse, so root as
+shipped tends to enlarge the device\textquotesingle s attack surface
+rather than give the owner controlled privileged access
 \citep{zhang-root-providers}. And the tension between owner control and
 remote attestation has a prior line of remedy: property-based
 attestation proposes certifying that a platform satisfies required
@@ -794,8 +795,8 @@ extend trust to the owner, and a passing verdict certifies the device to
 that party rather than giving the owner any means to audit or halt what
 an application does. That inversion -\/- software operating on the
 owner\textquotesingle s own device while it is the owner who is kept
-from inspecting or stopping it -\/- is the loss of owner control named
-as the coming war on general-purpose computing
+from inspecting or stopping it -\/- has been characterized as a broader
+loss of owner control over general-purpose computing
 \citep{doctorow-general-computation}. Accordingly, both "trusted status"
 and "attested status" in this paper denote this attested,
 vendor-approved standing that a remote party relies on, not any trust
@@ -879,10 +880,10 @@ From the platform\textquotesingle s standpoint this is a security
 feature: it raises assurance that a device presenting itself to a
 service is in a known, unmodified state \citep{play-integrity-verdicts}.
 From the standpoint of an owner facing a high-threat situation, the same
-mechanism is a verification dead-end, because the only configurations in
-which the device is considered trustworthy by the applications and
-services that demand it are precisely those in which the owner cannot
-examine it.
+mechanism forecloses independent verification, because the only
+configurations in which the device is considered trustworthy by the
+applications and services that demand it are precisely those in which
+the owner cannot examine it.
 
 The dependency has, moreover, tightened over time, and now reaches
 beyond the owner\textquotesingle s own verification into everyday use of
@@ -933,17 +934,17 @@ catalog a long and growing set of banking and payment applications that
 refuse to run or install on them \citep{privsecdev-banking-grapheneos},
 \citep{grapheneos-attestation-compat}.
 
-The honest summary is therefore a floor-and-direction one: the
-first-party Play Integrity figure is a lower bound, the delegation of
-enforcement to RASP SDKs and non-attestation checks is why real-world
-refusal is substantially more common than that bound, and no single
-measurement yet fixes a precise lock-out rate. The owner, meanwhile, has
-no way to appeal a verdict except by returning the device to the
-vendor-approved state. The consequence for this paper\textquotesingle s
-argument is structural: even where an owner is technically able to reach
-an owner-inspectable configuration, the attestation-and-hardening
-ecosystem imposes a rising functional cost for remaining there, so that
-the circular trust dependency is enforced not only by the
+The summary is therefore a floor-and-direction one: the first-party Play
+Integrity figure is a lower bound, the delegation of enforcement to RASP
+SDKs and non-attestation checks is why real-world refusal is
+substantially more common than that bound, and no single measurement yet
+fixes a precise lock-out rate. The owner, meanwhile, has no way to
+appeal a verdict except by returning the device to the vendor-approved
+state. The consequence for this paper\textquotesingle s argument is
+structural: even where an owner is technically able to reach an
+owner-inspectable configuration, the attestation-and-hardening ecosystem
+imposes a rising functional cost for remaining there, so that the
+circular trust dependency is enforced not only by the
 platform\textquotesingle s own refusal to trust a modified device but by
 the third-party software the owner must run on it.
 
@@ -1460,8 +1461,9 @@ has been unmaintained since 2023 \citep{safetynet-fix} -\/- while the
 hardware-backed verdict on devices launched with Android 13 or later
 yields only to a leaked attestation keybox, and those are not durable,
 publicly shared keys being banned by Google as they surface
-\citep{playintegrityfork}, \citep{tricky-store}; it is the steadily
-losing arms race Section 14 describes \citep{nguyen-vu-android-rooting}.
+\citep{playintegrityfork}, \citep{tricky-store}; it is the arms race
+Section 14 describes, in which the spoofing side has been progressively
+constrained \citep{nguyen-vu-android-rooting}.
 
 That squeeze raises a further question -\/- whether any owner-controlled
 privilege could dissolve it rather than merely confirm it, a secure root
@@ -1755,7 +1757,7 @@ signed code with an immutable, cryptographically validated system, but
 such a mode remains a design proposal rather than a shipping feature
 \citep{poettering-developer-mode}.
 
-A concrete form makes the persistent-root row vivid. An owner could bake
+A concrete form illustrates the persistent-root row. An owner could bake
 a root-accessible SSH daemon into the owner-signed image and authorize
 it with the very key that signs that image -\/- the
 owner\textquotesingle s verified-boot public key placed in the
@@ -1832,35 +1834,35 @@ an owner would need in order to verify the device are exactly those the
 platform refuses to attest as trusted.
 
 The owner is consequently placed in a position analogous to that of an
-attacker with respect to introspection -\/- indeed a worse one: these
-controls foreclose the owner\textquotesingle s sole avenue -\/-
-modifying the device to inspect it -\/- while leaving open the runtime
-and sub-operating-system routes the capable adversary of Sections 8 and
-12 uses, and the owner brings none of an attacker\textquotesingle s
-willingness to damage the device. The practical recourses -\/-
-JTAG-based memory acquisition, chip-level storage extraction, and
-exploit-driven temporary root -\/- are, respectively, rarely available,
-destructive or specialized, and dependent on the existence of
-exploitable vulnerabilities that the platform is otherwise trying to
-eliminate. The physical-acquisition path is further foreclosed where
-unlocking the bootloader triggers a mandatory wipe of user data, so that
-gaining access to the storage also erases its contents
-\citep{aosp-bootloader-locking}. None of these recourses offers the
-routine, non-destructive, owner-driven verification that the threat
-model of Section 3 calls for, and, as Sections 3 and 8 established, even
-a successful temporary root yields only a bounded in-system privilege on
-a device that has already forfeited its attested standing -\/- not the
-external, trusted vantage point that verification requires. Nor would
-more privilege close the gap: a kernel-space rootkit manipulates the
-very kernel structures that any in-system observer, root included, must
-query, so it can neutralize a privileged security tool and falsify its
-results regardless of the privilege level at which that tool runs
-\citep{guri-joker-jtag}, \citep{bickford-rootkits-smartphones}.
-Subversion-resistant detection must therefore observe the system from
-outside the running operating system \citep{guri-joker-jtag},
-\citep{garfinkel-vmi}, echoing the long-established principle that a
-system cannot be trusted to report truthfully on its own state
-\citep{thompson-trusting-trust}.
+attacker with respect to introspection, and in one respect a more
+constrained one: these controls foreclose the owner\textquotesingle s
+sole avenue -\/- modifying the device to inspect it -\/- while leaving
+open the runtime and sub-operating-system routes the capable adversary
+of Sections 8 and 12 uses, and the owner brings none of an
+attacker\textquotesingle s willingness to damage the device. The
+practical recourses -\/- JTAG-based memory acquisition, chip-level
+storage extraction, and exploit-driven temporary root -\/- are,
+respectively, rarely available, destructive or specialized, and
+dependent on the existence of exploitable vulnerabilities that the
+platform is otherwise trying to eliminate. The physical-acquisition path
+is further foreclosed where unlocking the bootloader triggers a
+mandatory wipe of user data, so that gaining access to the storage also
+erases its contents \citep{aosp-bootloader-locking}. None of these
+recourses offers the routine, non-destructive, owner-driven verification
+that the threat model of Section 3 calls for, and, as Sections 3 and 8
+established, even a successful temporary root yields only a bounded
+in-system privilege on a device that has already forfeited its attested
+standing -\/- not the external, trusted vantage point that verification
+requires. Nor would more privilege close the gap: a kernel-space rootkit
+manipulates the very kernel structures that any in-system observer, root
+included, must query, so it can neutralize a privileged security tool
+and falsify its results regardless of the privilege level at which that
+tool runs \citep{guri-joker-jtag},
+\citep{bickford-rootkits-smartphones}. Subversion-resistant detection
+must therefore observe the system from outside the running operating
+system \citep{guri-joker-jtag}, \citep{garfinkel-vmi}, echoing the
+long-established principle that a system cannot be trusted to report
+truthfully on its own state \citep{thompson-trusting-trust}.
 
 The contrast with a fully controlled host is one of category, not merely
 degree. On a desktop or server the baseline acquisition workflow -\/-
@@ -1992,32 +1994,31 @@ what the left column has and the right column lacks; root, where a phone
 owner reaches it, adds only the single "in-system superuser" row and
 leaves every other row unchanged.
 
-The ease of this recourse is routinely overstated. The casual
-prescription to "just root it" presumes an act that retail devices are
-configured to resist: they ship with the bootloader locked, and
-unlocking it -\/- where the vendor permits it at all -\/- is gated
-behind an explicit warning and a mandatory wipe of user data
-\citep{aosp-bootloader-locking}, \citep{aosp-boot-flow}. A large and
-well-documented class of carrier- and vendor-locked devices cannot be
-unlocked by their owners at all, or only by means of an exploit
-\citep{bootloader-wall-of-shame}. Unlocking is widely said to void the
-device warranty, although consumer-protection law in the United States
-and the European Union limits blanket voiding and requires a defect to
-be causally linked to the modification before coverage may be refused
-\citep{magnuson-moss-act}, \citep{eu-directive-2019-771}. Several
-mainstream vendors attach irreversible hardware-level consequences to
-unlocking, by distinct mechanisms rather than a single universal one:
-one permanently trips a one-time-programmable e-fuse that disables
-hardware-backed attestation and the protected features that depend on it
-and cannot be reset \citep{samsung-knox-hw-security}; another
-irrevocably erases device-unique keys that relocking does not restore
-\citep{sony-unlock-bootloader}; and one-time-programmable (eFuse)
-hardware is, more generally, the standard system-on-chip primitive for
-secure-boot enablement and anti-rollback enforcement, whose blowing is a
-one-way operation \citep{qualcomm-secure-boot}.
+The ease of this recourse is often overstated. Rooting presumes an act
+that retail devices are configured to resist: they ship with the
+bootloader locked, and unlocking it -\/- where the vendor permits it at
+all -\/- is gated behind an explicit warning and a mandatory wipe of
+user data \citep{aosp-bootloader-locking}, \citep{aosp-boot-flow}. A
+large and well-documented class of carrier- and vendor-locked devices
+cannot be unlocked by their owners at all, or only by means of an
+exploit \citep{bootloader-wall-of-shame}. Unlocking is widely said to
+void the device warranty, although consumer-protection law in the United
+States and the European Union limits blanket voiding and requires a
+defect to be causally linked to the modification before coverage may be
+refused \citep{magnuson-moss-act}, \citep{eu-directive-2019-771}.
+Several mainstream vendors attach irreversible hardware-level
+consequences to unlocking, by distinct mechanisms rather than a single
+universal one: one permanently trips a one-time-programmable e-fuse that
+disables hardware-backed attestation and the protected features that
+depend on it and cannot be reset \citep{samsung-knox-hw-security};
+another irrevocably erases device-unique keys that relocking does not
+restore \citep{sony-unlock-bootloader}; and one-time-programmable
+(eFuse) hardware is, more generally, the standard system-on-chip
+primitive for secure-boot enablement and anti-rollback enforcement,
+whose blowing is a one-way operation \citep{qualcomm-secure-boot}.
 
-The honest counter-example is that not every platform is irreversible:
-on some devices unlocking can be reversed and the verified-boot and
+A countervailing point is that not every platform is irreversible: on
+some devices unlocking can be reversed and the verified-boot and
 attestation state is restored on relocking -\/- to the full state under
 the vendor\textquotesingle s stock key, or to a reduced state under an
 owner-enrolled key \citep{aosp-verified-boot},
@@ -2030,9 +2031,9 @@ Taken together, these frictions make unlocking a high-barrier step
 rather than a routine one. The privileged state an owner does reach is,
 as Section 8 established, self-defeating for verification; and the
 cloaking tools owners deploy to pass integrity checks work only by
-impersonating a still-vulnerable stock device, leaving them locked in a
-steadily losing arms race against detection
-\citep{nguyen-vu-android-rooting}.
+impersonating a still-vulnerable stock device, leaving them in an arms
+race against detection in which the spoofing side has been progressively
+constrained \citep{nguyen-vu-android-rooting}.
 
 The unlock procedure is, moreover, not silent to software already
 resident on the device. Preparing a device for inspection changes
