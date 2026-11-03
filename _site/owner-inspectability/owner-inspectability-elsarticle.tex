@@ -1871,7 +1871,7 @@ proposal rather than a shipping feature
 \citep{poettering-developer-mode}. Third, the avbroot and
 resign-android-image rows assume the verity-preserving case: dm-verity
 stays enabled under the owner\textquotesingle s key, so cryptographic
-verified boot remains intact and only its security model is lost. The
+verified boot remains intact, but its security model is not. The
 persistent \texttt{/system} read-write row is the verity-disabling
 alternative: taking the hashtree off \texttt{/system} -\/- the
 \texttt{vbmeta} hashtree-disabled flag, or a \texttt{vbmeta} without
