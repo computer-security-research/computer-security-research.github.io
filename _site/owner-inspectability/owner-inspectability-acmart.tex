@@ -91,12 +91,12 @@ inspection therefore makes the device fail attestation, causing banking,
 payment, and similar apps that depend on it to stop working. Root access
 does not fully remove these limitations: it provides only an in-system
 vantage point, not control over the boot chain and underlying firmware,
-and can be deceived by a kernel-space rootkit. The owner is squeezed
-from both sides: inspecting the device requires the very modification
-that attestation rejects. Most established malware-analysis techniques
-are thus unavailable without first breaking the phone\textquotesingle s
+and can be deceived by a kernel-space rootkit. The owner is caught in a
+bind: inspecting the device requires the very modification that
+attestation rejects. Most established malware-analysis techniques are
+thus unavailable without first breaking the phone\textquotesingle s
 attestation guarantees, making the absence of findings weak evidence of
-integrity. The paper asks what capability would escape this squeeze:
+integrity. The paper asks what capability would escape this bind:
 owner-controlled privileged inspection that preserves verified boot and
 attestation. It finds that no shipped or proposed approach provides this
 capability, leaving an open problem. The analysis focuses on stock
@@ -186,9 +186,9 @@ contributions are:
 \item
   it frames owner-controlled privileged inspection -\/- a secure root
   that preserves verified boot and relying-party attestation -\/- as the
-  capability that would dissolve the inspection-versus-attestation
-  squeeze, systematizes the design space of approaches shipped or
-  proposed, and identifies the gap no current approach closes.
+  capability that would dissolve the inspection-versus-attestation bind,
+  systematizes the design space of approaches shipped or proposed, and
+  identifies the gap no current approach closes.
 \end{itemize}
 
 The paper is organized as follows. Section 2 summarizes the platform
@@ -197,9 +197,9 @@ including the constrained meaning of root and the definition of
 owner-inspectability. Section 4 situates the work in prior literature.
 Sections 5 through 11 catalog the verification limits. Section 12
 addresses objections, including aftermarket operating systems. Section
-13 asks whether an owner-controlled secure root could dissolve the
-squeeze, and maps the design space of attempts. Section 14 discusses the
-findings and their limitations, and Section 15 concludes.
+13 asks whether an owner-controlled secure root could dissolve the bind,
+and maps the design space of attempts. Section 14 discusses the findings
+and their limitations, and Section 15 concludes.
 
 \subsection{2. Background}\label{background}
 
@@ -467,7 +467,7 @@ on which a remote relying party, not the owner, depends. That
 vendor-approved standing is a property in tension with
 owner-inspectability rather than a part of it -\/- on stock Android the
 two are coupled, so that gaining owner inspection forfeits the
-vendor-approved status, and it is that squeeze, not any inability to
+vendor-approved status, and it is that bind, not any inability to
 self-verify, that this paper traces.
 
 The term is deliberately distinct from forensic readiness as defined in
@@ -496,7 +496,7 @@ modification -\/- unlocking, rooting, or booting a custom kernel
 \citep{yang-live-memory-acquisition} -\/- that, as Section 8 shows,
 forfeits the device\textquotesingle s attested status. For such live
 threats inspectability and modifiability cannot be cleanly separated,
-and the squeeze on the owner deepens rather than eases. AOSP in
+and the owner\textquotesingle s bind deepens rather than eases. AOSP in
 principle allows a device to be locked to a user-controlled root of
 trust rather than only to the vendor\textquotesingle s
 \citep{aosp-verified-boot}; whether that latent capability is usable in
@@ -1348,8 +1348,8 @@ boot state, not certify a locked, vendor-approved one, so a tamper of
 the boot chain between inspections is no longer prevented but at best
 detectable by hand. Such an installation therefore satisfies inspection
 while giving up the enforced, attestable verified-boot state -\/- an
-illustration of the squeeze this paper describes, not a counterexample
-to it.
+illustration of the bind this paper describes, not a counterexample to
+it.
 
 A smaller number of them support re-locking the bootloader after
 installation \citep{grapheneos-install-locking},
@@ -1466,7 +1466,7 @@ publicly shared keys being banned by Google as they surface
 Section 14 describes, in which the spoofing side has been progressively
 constrained \citep{nguyen-vu-android-rooting}.
 
-That squeeze raises a further question -\/- whether any owner-controlled
+That bind raises a further question -\/- whether any owner-controlled
 privilege could dissolve it rather than merely confirm it, a secure root
 that preserves both verified boot and attestation -\/- which Section 13
 takes up, systematizing the design space and the gap none of its
@@ -1632,8 +1632,8 @@ owner needs in order to inspect the system -\/- to examine it from a
 clean vantage, to hunt a kernel-level rootkit or a vendor backdoor, and
 to let independent researchers work on hardware they own -\/- is exactly
 the access that forfeits the device\textquotesingle s attested standing.
-The capability that would dissolve this squeeze is what this paper calls
-a secure root: owner-controlled privileged inspection that surrenders
+The capability that would dissolve this bind is what this paper calls a
+secure root: owner-controlled privileged inspection that surrenders
 neither verified boot nor the attestation a relying party accepts. This
 section asks whether such a capability exists. It proposes and evaluates
 no system; it systematizes the approaches that have been shipped or
@@ -2023,8 +2023,8 @@ some devices unlocking can be reversed and the verified-boot and
 attestation state is restored on relocking -\/- to the full state under
 the vendor\textquotesingle s stock key, or to a reduced state under an
 owner-enrolled key \citep{aosp-verified-boot},
-\citep{aosp-key-id-attestation}. Even there the squeeze holds, because
-the reversible path returns the owner to the vendor-keyed configuration
+\citep{aosp-key-id-attestation}. Even there the bind holds, because the
+reversible path returns the owner to the vendor-keyed configuration
 without ever granting the top attestation standing while the device
 remains open to inspection.
 
