@@ -1602,3 +1602,51 @@ label = "CAP_NET_RAW -- raw/packet sockets need a capability app UIDs lack (so f
 quotes = [
   { text = "Use RAW and PACKET sockets;", label = "CAP_NET_RAW governs raw/packet sockets", note = "Linux man-pages, capabilities(7) (man7.org/linux/man-pages/man7/capabilities.7.html); the CAP_NET_RAW capability, held by root and not by app UIDs, gates raw packet capture. Cited in the Section 7 comparison table. Verified verbatim via WebFetch." },
 ]
+
+[aosp-build-variants]
+label = "Android build variants -- user (production) vs userdebug/eng (developer)"
+claims = [
+  { section = "Sec. 13", text = "Android is built in three variants selected by TARGET_BUILD_VARIANT: the production user build and the userdebug and eng developer builds; the user build provides limited access and is suited for production." },
+]
+quotes = [
+  { text = "This build variant provides limited security access and is suited for production.", label = "user build: limited access, for production", note = "Android Open Source Project, Build Android (build-variants table), describing the user variant. Verified verbatim via WebFetch 2026-11-03." },
+]
+
+[aosp-sysprop-config]
+label = "ro.debuggable=1 on userdebug/eng; ro.secure/ro.debuggable set per build variant"
+claims = [
+  { section = "Sec. 13", text = "A userdebug or eng build sets ro.debuggable=1 (eng additionally sets ro.secure=0), whereas a user build sets ro.secure=1 and ro.debuggable=0." },
+]
+quotes = [
+  { text = "ADDITIONAL_SYSTEM_PROPERTIES += ro.debuggable=1", label = "ro.debuggable=1 when target debugging is enabled (userdebug/eng)", note = "AOSP core/sysprop_config.mk (platform/build, commit 2867f02a3a); set in the enable_target_debugging branch; the else branch sets ro.debuggable=0. Verified verbatim via gitiles 2026-11-03." },
+  { text = "user_variant := $(filter user userdebug,$(TARGET_BUILD_VARIANT))", label = "user/userdebug get ro.secure=1; eng (else) gets ro.secure=0" },
+]
+
+[aosp-adbd-main]
+label = "adbd keeps uid-0 only on a debuggable build (adb root gated on ro.debuggable)"
+claims = [
+  { section = "Sec. 13", text = "adbd drops privileges by default (ro.secure); adb root keeps uid-0 only when the build is debuggable (ro.debuggable), so adb root yields root only on userdebug/eng." },
+]
+quotes = [
+  { text = "if (ro_debuggable && adb_root) {", label = "adb root keeps privileges only on a debuggable build", note = "AOSP adb daemon/main.cpp (platform/packages/modules/adb, main), in should_drop_privileges(); this guarded branch sets drop=false. Verified verbatim via WebFetch 2026-11-03." },
+  { text = 'bool ro_secure = android::base::GetBoolProperty("ro.secure", true);', label = "privileges dropped by default when ro.secure" },
+]
+
+[aosp-su]
+label = "AOSP su (system/extras) -- trivial su callable only by the root and shell UIDs"
+claims = [
+  { section = "Sec. 13", text = "AOSP's own su is a trivial program callable only from the root and shell UIDs (any other caller is refused)." },
+]
+quotes = [
+  { text = 'if (current_uid != AID_ROOT && current_uid != AID_SHELL) error(1, 0, "not allowed");', label = "su callable only by the root or shell UID", note = "AOSP su/su.cpp (platform/system/extras, main), main(); the only caller check. Verified verbatim via WebFetch 2026-11-03." },
+]
+
+[aosp-sepolicy-su-te]
+label = "su SELinux domain exists only under userdebug_or_eng and is permissive; SELinux otherwise stays enforcing"
+claims = [
+  { section = "Sec. 13", text = "The su SELinux domain is compiled in only under a userdebug_or_eng guard and is marked permissive; SELinux is not disabled on a developer build -- the HALs and other domains remain enforcing." },
+]
+quotes = [
+  { text = "permissive su;", label = "su domain is permissive on debug builds", note = "AOSP private/su.te (platform/system/sepolicy, main); the whole file is wrapped in a userdebug_or_eng(...) guard, so no su domain exists on a user build. Verified verbatim via gitiles 2026-11-03." },
+  { text = "VTS tests run in the permissive su domain on debug builds, but the HALs", label = "su is permissive while the HALs stay enforcing" },
+]
