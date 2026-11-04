@@ -2307,10 +2307,12 @@ No\footnote{Android bootloader: locked and vendor-signed; unlocking
   only by exploit or not at all.} \\
 Kernel, modules, initramfs, \texttt{init} & Yes & No\footnote{On a PC
   the owner builds and loads the kernel, modules, initramfs, and
-  \texttt{init} freely. On Android all four ship in the signed,
-  dm-verity-covered boot image and run under SELinux; a custom kernel or
-  modified ramdisk requires unlocking, and module loading is restricted
-  by lockdown and module-signature enforcement.} \\
+  \texttt{init} freely. On Android they ship in the vendor-signed boot
+  chain -\/- the kernel and ramdisk (carrying \texttt{init}) in the
+  AVB-hashed boot and \texttt{init\_boot} images, kernel modules in
+  dm-verity-protected vendor partitions -\/- all under SELinux; a custom
+  kernel or modified ramdisk requires unlocking, and module loading is
+  restricted by lockdown and module-signature enforcement.} \\
 Operating system & Yes & No\footnote{Android: a custom operating system
   requires unlocking and incurs an attestation penalty.} \\
 In-system superuser (root) & Yes & No\footnote{Android: withheld as
@@ -2327,12 +2329,13 @@ Remove and image storage & Yes & No\footnote{PC: detach the storage and
   image it on a trusted controller. Android: storage is soldered,
   chip-level reading is destructive, and the data returns as ciphertext
   under a hardware-bound key.} \\
-Platform firmware & Partial\footnote{Shared opaque floor. A
+Platform firmware & Partial\footnote{Shared opaque floor. A mainstream
   PC\textquotesingle s BIOS/UEFI is reflashable (hence Partial) but
   vendor-signed and opaque in practice, with in-the-wild implants
-  demonstrated \citep{eset-lojax}; Android\textquotesingle s bootloader
-  and vendor firmware are vendor-controlled and not owner-reflashable.}
-& No \\
+  demonstrated \citep{eset-lojax}; owner-flashable open firmware, where
+  the hardware allows it, rates higher and is outside this row.
+  Android\textquotesingle s bootloader and vendor firmware are
+  vendor-controlled and not owner-reflashable.} & No \\
 Management co-processor & No\footnote{Neither owner can inspect this
   layer. PC: Intel ME or AMD PSP, a vendor-firmware co-processor with
   privileged platform access \citep{ermolov-intel-me},
