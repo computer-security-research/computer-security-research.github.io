@@ -966,6 +966,26 @@ quotes = [
   { text = "\"activated automatically \\\"in cases where a great probability of exposing the agent exists.\\\" However, the documentation claims that sometimes Pegasus removal can result in an infected device rebooting immediately after removal.\"" },
 ]
 
+[lookout-pegasus-technical-analysis]
+label = "Lookout 2016 -- Pegasus the most sophisticated privately-developed mobile attack; in the wild since ~2013"
+claims = [
+  { section = "Sec. 15", text = "Pegasus is a sophisticated, privately-developed attack that was in the wild for years before its 2016 disclosure." },
+]
+quotes = [
+  { text = "to date, Pegasus is the most sophisticated privately-developed attack Lookout has encountered on a mobile endpoint.", label = "Most sophisticated privately-developed mobile attack", note = "Lookout, Inc., Technical Analysis of Pegasus Spyware (info.lookout.com/rs/051-ESQ-475/images/lookout-pegasus-technical-analysis.pdf), p. 4. Verified verbatim; the paper brackets 'Lookout has' as '[it had]'. Cited in Sec. 15." },
+  { text = "Based on artifacts in the code, this spyware has been in the wild for more than two years. The exploits have configuration settings that go all the way back to iOS 7, which was released in 2013 and superseded in 2014.", label = "In the wild since ~2013-2014 (code-artifact inference)", note = "Same source; supports the labeled 2013-2014 forensic inference, not a confirmed first-infection date." },
+]
+
+[projectzero-forcedentry]
+label = "Project Zero FORCEDENTRY -- among the most sophisticated exploits seen; rivals a handful of nation states"
+claims = [
+  { section = "Sec. 15", text = "Pegasus is the product of an advanced adversary: its exploit chain is among the most sophisticated observed, rivaling capability once thought limited to a few nation states." },
+]
+quotes = [
+  { text = "we assess this to be one of the most technically sophisticated exploits we've ever seen", label = "One of the most sophisticated exploits seen", note = "Beer & Gross, Google Project Zero, A deep dive into an NSO zero-click iMessage exploit (projectzero.google/2021/12/a-deep-dive-into-nso-zero-click.html). Verified verbatim. Cited in Sec. 15." },
+  { text = "the capabilities NSO provides rival those previously thought to be accessible to only a handful of nation states", label = "Rivals nation-state capability" },
+]
+
 [thompson-trusting-trust]
 label = "Thompson -- a system cannot be trusted to report on itself"
 claims = [
