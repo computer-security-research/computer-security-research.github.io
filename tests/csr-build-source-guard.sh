@@ -340,8 +340,28 @@ run_build "${fixture_n}"
 expect_guard_passed "N: a dirty CI workflow does not block a content deploy"
 safe-rm --recursive --force -- "${fixture_n}"
 
+## O. the committed _site deploy tree stays marked linguist-generated in the REAL
+## repo (not a fixture), so GitHub + CodeRabbit collapse/skip it in diffs and the
+## dist-ai-style gate skips its generated HTML -- the committed-_site review-noise
+## fix. A dropped .gitattributes marker silently restores that noise, so guard it;
+## the paired source assertion proves the marker is scoped to _site, not blanket.
+site_attr="$(git -C "${repo_root}" check-attr linguist-generated -- _site/owner-inspectability/index.html)"
+if contains "${site_attr}" "linguist-generated: set"; then
+   printf '%s\n' "ok O: _site is marked linguist-generated"
+else
+   printf '%s\n' "FAIL O: _site NOT marked linguist-generated (got: ${site_attr})" >&2
+   fails=$(( fails + 1 ))
+fi
+src_attr="$(git -C "${repo_root}" check-attr linguist-generated -- articles/owner-inspectability/paper.md)"
+if contains "${src_attr}" "linguist-generated: unspecified"; then
+   printf '%s\n' "ok O: article source is not linguist-generated"
+else
+   printf '%s\n' "FAIL O: article source unexpectedly linguist-generated (got: ${src_attr})" >&2
+   fails=$(( fails + 1 ))
+fi
+
 if [ "${fails}" -eq 0 ]; then
-   printf '%s\n' "csr-build-source-guard: all 14 cases passed"
+   printf '%s\n' "csr-build-source-guard: all 15 cases passed"
 else
    printf '%s\n' "csr-build-source-guard: ${fails} case(s) failed" >&2
    exit 1
