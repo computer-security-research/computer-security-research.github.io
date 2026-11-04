@@ -695,6 +695,37 @@ can neither refuse nor independently inspect. That is a backdoor vector
 not evidence that any such backdoor exists in a given product; what the
 owner provably lacks is the means to establish that it does not.
 
+United States foreign-intelligence law illustrates how far such
+compulsion reaches, and where it stops. Under Section 702 of the Foreign
+Intelligence Surveillance Act a provider can be directed to "immediately
+provide the Government with all information, facilities, or assistance
+necessary to accomplish the acquisition" (50 U.S.C. 1881a(i))
+\citep{usc-50-1881a}, a directive the government may enforce by
+petitioning to compel compliance, on pain of contempt. That authority
+has been used to compel assistance and the disclosure of cryptographic
+keys: a provider was ordered to produce "all information necessary to
+decrypt communications ... including encryption keys and SSL keys,"
+enforced by a five-thousand-dollar-per-day sanction (In re Under Seal,
+749 F.3d 276 (4th Cir. 2014)) \citep{lavabit-4cir-2014}, and another was
+compelled to assist warrantless acquisition over its objection,
+reportedly under a threat of escalating daily fines (In re Directives,
+551 F.3d 1004 (FISA Ct. Rev. 2008)) \citep{inre-directives-2008}.
+Whether the authority extends further -\/- to compelling a vendor to
+build a new backdoor into its product -\/- is legally untested: the only
+litigated attempt to compel affirmative engineering, the order discussed
+above, arose under the All Writs Act rather than FISA and was withdrawn
+without a ruling \citep{apple-order-2016}; no published order construes
+the Section 702 assistance clause to mandate product redesign; and the
+Communications Assistance for Law Enforcement Act forbids the government
+to "require any specific design of equipment, facilities, services,
+features, or system configurations" (47 U.S.C. 1002(b)(1))
+\citep{usc-47-1002}, though that bar\textquotesingle s reach over a
+Section 702 directive is itself unadjudicated. National Security
+Letters, by contrast, reach only non-content records and cannot compel a
+capability at all (18 U.S.C. 2709) \citep{usc-18-2709}. Because these
+instruments operate under nondisclosure, the absence of a public example
+settles nothing about what has or has not been ordered.
+
 Update-related communication is, moreover, not anonymous on devices
 certified for Google Mobile Services (GMS). Google Play services
 periodically checks in with Google, transmitting persistent hardware
@@ -2472,7 +2503,8 @@ called it "the most sophisticated privately-developed attack {[}it
 had{]} encountered on a mobile endpoint"
 \citep{lookout-pegasus-technical-analysis}; and it is sold only to
 governments \citep{marczak-million-dollar-dissident}, with recent
-variants delivered zero-click \citep{amnesty-pegasus-methodology}.
+variants delivered zero-click \citep{amnesty-pegasus-methodology},
+\citep{projectzero-forcedentry}.
 
 This threat falls squarely in the class the owner cannot verify. The
 standard forensic response -\/- examine the device from a clean, trusted
@@ -2485,11 +2517,12 @@ from the non-volatile filesystem"; "instead, one would need to be able
 to jailbreak the device without reboot, and attempt to extract payloads
 from memory" \citep{amnesty-pegasus-methodology}. That one path is the
 capability the locked device denies its owner (Section 13), and it is
-self-defeating, since the reboot clears the implant. And as Section 14
-sets out, even a live, instrumented view can be turned against the
-examiner: Pegasus is documented to detect analysis and emulator
-conditions and to carry self-destruct functionality, so an implant can
-remove itself before it is seen \citep{lookout-chrysaor},
+self-defeating, since the reboot clears the implant
+\citep{amnesty-pegasus-methodology}. And as Section 14 sets out, even a
+live, instrumented view can be turned against the examiner: Pegasus is
+documented to detect analysis and emulator conditions and to carry
+self-destruct functionality, so an implant can remove itself before it
+is seen \citep{lookout-chrysaor},
 \citep{marczak-million-dollar-dissident}.
 
 The consequence is a loop that closes against the owner, and it is not
