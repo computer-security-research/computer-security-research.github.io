@@ -209,7 +209,7 @@ Table 3. Comparison of malware-analysis capabilities: a traditional Linux host t
 | Filesystem analysis | Yes -- full access to logs, temporary files, droppers, and rootkits | Partial -- the application sandbox limits access to other applications' data; root or a forensic image is required for a full view |
 | Network monitoring and command-and-control analysis | Yes -- packet-capture and filtering tools usable without restriction | Partial -- requires root [@linux-capabilities], [@aosp-kernel] or VPN-based monitoring [@aosp-vpn-guide] |
 | External monitoring | Yes -- broad options, including out-of-band approaches and host-controlled capture and analysis | No -- limited on the device as sold; out-of-band monitoring is generally unavailable without elevated access or specialized tooling |
-| Log-based forensics | Yes | Partial -- limited; absence of traces after thorough manual analysis does not establish that a device was not compromised, and log-based methods may need to be combined with other forensic techniques where compromise is strongly suspected [@socialtic-log-forensics] |
+| Log-based forensics | Yes | Partial -- limited; absence of traces after thorough manual analysis does not establish that a device was not compromised, and log-based methods may, where compromise is strongly suspected, need to be combined with other forensic techniques [@socialtic-log-forensics] -- which divide by vantage point: off-device network-traffic monitoring stays feasible without touching the locked device, whereas the full-image, live-memory, and trusted-boot inspection of Sections 7, 9, 10, and 13 are exactly the capabilities a locked device withholds |
 
 ## 11. Limitations on Encryption Key Backups
 
