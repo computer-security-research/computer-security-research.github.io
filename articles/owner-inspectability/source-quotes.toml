@@ -1002,6 +1002,15 @@ quotes = [
   { text = "\"You can't trust code that you did not totally create yourself. (Especially code from companies that employ people like me.) No amount of source-level verification or scrutiny will protect you from using untrusted code.\"" },
 ]
 
+[rutkowska-state-harmful]
+label = "Rutkowska -- firmware self-report is only as trustworthy as the (possibly compromised) firmware (chicken-and-egg)"
+claims = [
+  { section = "Sec. 14", text = "a device asked to report on its own firmware state can be only as trustworthy as that possibly-compromised firmware -- the same self-report problem, applied to firmware." },
+]
+quotes = [
+  { text = "Indeed, by merely asking a flash-hosting device, such as the SPI flash chip, or some other u-controller such as one used on a NIC, to tell us what firmware it has inside, we can only get as trustworthy a response as is the device itself, or worse even: as is the current firmware that is used to serve our request... A classic chicken and egg problem.", label = "Firmware self-report is only as trustworthy as the firmware", note = "Rutkowska, State considered harmful (2015), footnote on inspecting firmware (blog.invisiblethings.org/2015/12/23/state_harmful.html). Verified byte-exact; the '...' is literal in the source. Fully ASCII. Cited in Sec. 14 alongside Thompson." },
+]
+
 [garfinkel-vmi]
 label = "Garfinkel & Rosenblum VMI -- isolate the monitor, retain visibility"
 claims = [
