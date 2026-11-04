@@ -736,8 +736,8 @@ claims = [
   { section = "Sec. 8, 12", text = "integrity-masking modules spoof software-visible signals. On Android <13 they can pass the device-integrity verdict (the weaker ctsProfileMatch successor) by rewriting android.os.Build fields and properties, with NO keybox. The hardware-backed A13+ device verdict (locked-bootloader-anchored) and the strong verdict yield only to genuine certified hardware or a leaked, unrevoked hardware keybox, not to software spoofing." },
 ]
 quotes = [
-  { text = "\"A Zygisk module which fixes \\\"MEETS_DEVICE_INTEGRITY\\\" for the Android <13 \\\"deviceRecognitionVerdict\\\" of the Play Integrity API.\" / \"you can include as few or as many android.os.Build class fields and Android system properties as needed to pass DEVICE integrity\"." },
-  { text = "\"the Android 13+ Play Integrity \\\"deviceRecognitionVerdict\\\" ... relies on locked bootloader checks to pass even DEVICE integrity\" / \"you can't use values from recent devices due to them only being allowed with full hardware backed attestation\" / \"Using Tricky Store to achieve <A13 PI STRONG integrity (with an unrevoked hardware keybox.xml)\".", label = "A13+/strong boundary" },
+  { text = "\"A Zygisk module which fixes \"MEETS_DEVICE_INTEGRITY\" for the Android <13 \"deviceRecognitionVerdict\" of the Play Integrity API.\" / \"you can include as few or as many android.os.Build class fields and Android system properties as needed to pass DEVICE integrity\"." },
+  { text = "\"the Android 13+ Play Integrity \"deviceRecognitionVerdict\" ... relies on locked bootloader checks to pass even DEVICE integrity\" / \"you can't use values from recent devices due to them only being allowed with full hardware backed attestation\" / \"Using Tricky Store to achieve <A13 PI STRONG integrity (with an unrevoked hardware keybox.xml)\".", label = "A13+/strong boundary" },
 ]
 
 [microg-gmscore]
@@ -860,7 +860,7 @@ claims = [
   { section = "Sec. 1, 14", text = "the anti-forensics literature names artifact wiping, trail obfuscation, and self-removal." },
 ]
 quotes = [
-  { text = "\"Anti-Forensics (AF) tools and techniques frustrate CFTs by erasing or altering information; creating \\\"chaff\\\" that wastes time and hides information; implicating innocent parties by planting fake evidence; exploiting implementation bugs in known tools...\"" },
+  { text = "\"Anti-Forensics (AF) tools and techniques frustrate CFTs by erasing or altering information; creating \"chaff\" that wastes time and hides information; implicating innocent parties by planting fake evidence; exploiting implementation bugs in known tools...\"" },
 ]
 
 [leith-handset-privacy]
@@ -970,7 +970,7 @@ claims = [
   { section = "Sec. 14", text = "the iOS variant self-destructs when exposure is likely." },
 ]
 quotes = [
-  { text = "\"activated automatically \\\"in cases where a great probability of exposing the agent exists.\\\" However, the documentation claims that sometimes Pegasus removal can result in an infected device rebooting immediately after removal.\"" },
+  { text = "\"activated automatically \"in cases where a great probability of exposing the agent exists.\" However, the documentation claims that sometimes Pegasus removal can result in an infected device rebooting immediately after removal.\"" },
 ]
 
 [lookout-pegasus-technical-analysis]
@@ -1346,7 +1346,7 @@ claims = [
   { section = "Sec. 12", text = "boot-ROM flaws are permanent and unpatchable (read-only mask) and not specific to one vendor; the exploit needs physical access and is non-persistent." },
 ]
 quotes = [
-  { text = "\"vulnerable to arbitrary code execution at the Boot ROM level (called \\\"SecureROM\\\" by Apple)\" / \"Because SecureROM is read-only, it cannot be patched with a firmware update.\" / \"requires physical access to the device\" / \"The exploit is not persistent; rebooting the device overrides any changes\"" },
+  { text = "\"vulnerable to arbitrary code execution at the Boot ROM level (called \"SecureROM\" by Apple)\" / \"Because SecureROM is read-only, it cannot be patched with a firmware update.\" / \"requires physical access to the device\" / \"The exploit is not persistent; rebooting the device overrides any changes\"" },
 ]
 
 [ioactive-antifuse]
@@ -1427,7 +1427,7 @@ claims = [
   { section = "Sec. 5", text = "a \"full backup\" on a non-rooted device is partial and mediated by individual applications, which can opt their data out via the android:allowBackup flag." },
 ]
 quotes = [
-  { text = "\"If this attribute is set to \\\"false\\\", no backup or restore of the application is ever performed, disabling all cloud backups and device-to-device (D2D) transfers, even by a full-system backup that otherwise causes all application data to save using adb. The default value of this attribute is \\\"true\\\".\"" },
+  { text = "\"If this attribute is set to \"false\", no backup or restore of the application is ever performed, disabling all cloud backups and device-to-device (D2D) transfers, even by a full-system backup that otherwise causes all application data to save using adb. The default value of this attribute is \"true\".\"" },
 ]
 
 [iso-27043]
