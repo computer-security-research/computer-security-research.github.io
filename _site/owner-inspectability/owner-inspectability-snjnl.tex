@@ -2520,29 +2520,29 @@ variants delivered zero-click \citep{amnesty-pegasus-methodology},
 
 What such an implant can do, once installed, bears on the stakes.
 Pegasus\textquotesingle s documented reach is comprehensive: after
-zero-click installation through unpatched zero-days
-\citep{projectzero-forcedentry}, \citep{projectzero-badbinder}, it has
-been observed exfiltrating messages, call logs, contacts, email, browser
-history, calendar entries, photos, and files \citep{lookout-chrysaor};
-capturing live microphone audio and camera imagery
-\citep{lookout-chrysaor}, \citep{marczak-million-dollar-dissident};
-tracking location; harvesting saved credentials, including Wi-Fi and
-router passwords \citep{marczak-million-dollar-dissident},
+zero-click installation through an unpatched zero-day
+\citep{projectzero-forcedentry}, it has been observed exfiltrating
+messages, call logs, contacts, email, browser history, calendar entries,
+photos, and files \citep{lookout-chrysaor}; capturing live microphone
+audio and camera imagery \citep{lookout-chrysaor},
+\citep{marczak-million-dollar-dissident}; tracking location; harvesting
+saved credentials, including Wi-Fi and router passwords
+\citep{marczak-million-dollar-dissident},
 \citep{lookout-pegasus-technical-analysis}; reading the content of
-end-to-end-encrypted chats and calls by taking it on the device after
-decryption \citep{lookout-pegasus-technical-analysis},
-\citep{lookout-chrysaor}; and removing itself to frustrate forensics
-\citep{lookout-chrysaor}. Its further reach is not a longer feature list
-but a consequence of the privilege this behavior already demonstrates:
-an implant holding root or kernel access inside the
-device\textquotesingle s trust boundary can, in principle, read or alter
-any data any application can and move between the operating
-system\textquotesingle s own isolation domains \citep{talos-predator},
-and -\/- the point that matters here -\/- it can subvert the
-owner\textquotesingle s own in-system checks, because a compromised
-platform cannot be trusted to report truthfully on its own state
-\citep{thompson-trusting-trust}, \citep{rutkowska-state-harmful},
-\citep{guri-joker-jtag}.
+end-to-end-encrypted chats and calls by taking it on the device, before
+it is encrypted or after it is decrypted
+\citep{lookout-pegasus-technical-analysis}, \citep{lookout-chrysaor};
+and removing itself to frustrate forensics \citep{lookout-chrysaor}. Its
+further reach is not a longer feature list but a consequence of the
+privilege this behavior already demonstrates: an implant that reaches
+the kernel, or escapes its confinement into privileged system domains as
+such spyware has done \citep{talos-predator}, can, in principle, read or
+alter any data any application can and move between the operating
+system\textquotesingle s own isolation domains, and -\/- the point that
+matters here -\/- it can subvert the owner\textquotesingle s own
+in-system checks, because a compromised platform cannot be trusted to
+report truthfully on its own state \citep{thompson-trusting-trust},
+\citep{rutkowska-state-harmful}, \citep{guri-joker-jtag}.
 
 That privilege extends to writing, not only reading: an implant able to
 alter any data an application can is, in principle, able to plant or
