@@ -288,8 +288,41 @@ expect_guard_passed "I: without -uall the config hides the untracked source"
 safe-rm --recursive --force -- "${fixture_i}"
 safe-rm --force -- "${unflagged}"
 
+## J. a dirty BUILD SCRIPT is not a render input -> must NOT block (dev1355's
+## over-block: a sibling editing bin/csr-build false-blocked a content deploy).
+fixture_j="$(make_fixture)"
+printf '%s\n' '## sibling WIP edit' >> "${fixture_j}/bin/csr-build"
+run_build "${fixture_j}"
+expect_guard_passed "J: a dirty build script does not block a content deploy"
+safe-rm --recursive --force -- "${fixture_j}"
+
+## K. CANARY: with the non-render excludes removed, the SAME dirty build script
+## DOES block -- proves J is red on the pre-fix (_site-only exclude) code.
+unscoped="$(mktemp)"
+sed "s/ ':(exclude)bin'//; s/ ':(exclude)tests'//; s/ ':(exclude).github'//; s/ ':(exclude).gitattributes'//; s/ ':(exclude).gitignore'//" "${csr_build}" > "${unscoped}"
+chmod +x -- "${unscoped}"
+if cmp --silent -- "${csr_build}" "${unscoped}"; then
+   printf '%s\n' "FAIL: K: canary could not strip the non-render excludes" >&2
+   fails=$((fails + 1))
+fi
+fixture_k="$(make_fixture "${unscoped}")"
+printf '%s\n' '## sibling WIP edit' >> "${fixture_k}/bin/csr-build"
+run_build "${fixture_k}"
+expect_guard_fired "K: without the excludes a dirty build script blocks"
+safe-rm --recursive --force -- "${fixture_k}"
+safe-rm --force -- "${unscoped}"
+
+## L. pages/ is a render input not named in the build invocation; it MUST still
+## block -- confirms the exclude-list is fail-closed for content.
+fixture_l="$(make_fixture)"
+mkdir -- "${fixture_l}/pages"
+printf '%s\n' '# new page' > "${fixture_l}/pages/about.md"
+run_build "${fixture_l}"
+expect_guard_fired "L: a dirty pages/ render input is refused"
+safe-rm --recursive --force -- "${fixture_l}"
+
 if [ "${fails}" -eq 0 ]; then
-   printf '%s\n' "csr-build-source-guard: all 9 cases passed"
+   printf '%s\n' "csr-build-source-guard: all 12 cases passed"
 else
    printf '%s\n' "csr-build-source-guard: ${fails} case(s) failed" >&2
    exit 1

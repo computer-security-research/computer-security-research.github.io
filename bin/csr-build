@@ -41,9 +41,15 @@ check_svg_safety="${dist_ai}/usr/share/website-tests/check_svg_safety.py"
 ## both the pre-build guard and the post-build re-check so their scope cannot
 ## drift apart.
 dirty_sources_outside_site() {
-   ## --untracked-files=all overrides a user's status.showUntrackedFiles=no, so
-   ## an untracked source can never be hidden from the guard.
-   git -C "${content_dir}" status --porcelain --untracked-files=all -- . ':(exclude)_site'
+   ## Dirty RENDER INPUTS outside _site (articles/, pages/, site.toml + per-
+   ## article refs.bib/source-quotes.toml), tracked or untracked. Shared by the
+   ## pre-build guard and the post-build re-check so their scope cannot drift.
+   ## Exclude _site (output) and the non-render tooling/meta (bin/, tests/,
+   ## .github, repo dotfiles) -- a dirty build script or CI file is not a raced
+   ## render and must not block a content deploy. Fail-closed: a NEW top-level
+   ## content path is guarded by default (only listed tooling is skipped).
+   ## --untracked-files=all overrides a user's status.showUntrackedFiles=no.
+   git -C "${content_dir}" status --porcelain --untracked-files=all -- . ':(exclude)_site' ':(exclude)bin' ':(exclude)tests' ':(exclude).github' ':(exclude).gitattributes' ':(exclude).gitignore'
 }
 
 do_commit=1
@@ -61,15 +67,16 @@ fi
 
 ## Refuse to build+publish when article SOURCES are uncommitted. csr-build
 ## deploys the _site it renders from the WORKING TREE but commits only _site
-## (below), so an uncommitted source edit (paper.md, refs.bib,
-## source-quotes.toml, meta.toml, site.toml, this script, ...) would ship in the
+## (below), so an uncommitted render-input edit (paper.md, refs.bib,
+## source-quotes.toml, meta.toml, site.toml, ...) would ship in the
 ## deployed tree yet be absent from git: committed source and committed _site
 ## drift, and on a shared tree a sibling's uncommitted edit would be published
 ## too. The author commits sources themselves, with their own message; this
 ## guard makes that the REQUIRED path, not one to remember. Preview uncommitted
-## work with --no-commit. Scope: any uncommitted change outside _site, tracked
-## or untracked (the build renders from the working tree, not from git), checked
-## BEFORE the build so a dirty tree fails in a second, not after a long render.
+## work with --no-commit. Scope: uncommitted render inputs (articles/, pages/,
+## site.toml, ...), tracked or untracked -- NOT the build tooling (bin/, tests/,
+## .github); the build renders from the working tree, checked BEFORE the build
+## so a dirty tree fails in a second, not after a long render.
 if [ "${do_commit}" -eq 1 ]; then
    dirty_sources="$(dirty_sources_outside_site)"
    if [ -n "${dirty_sources}" ]; then
