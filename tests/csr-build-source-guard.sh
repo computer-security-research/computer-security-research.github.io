@@ -299,7 +299,7 @@ safe-rm --recursive --force -- "${fixture_j}"
 ## K. CANARY: with the non-render excludes removed, the SAME dirty build script
 ## DOES block -- proves J is red on the pre-fix (_site-only exclude) code.
 unscoped="$(mktemp)"
-sed "s/ ':(exclude)bin'//; s/ ':(exclude)tests'//; s/ ':(exclude).github'//; s/ ':(exclude).gitattributes'//; s/ ':(exclude).gitignore'//" "${csr_build}" > "${unscoped}"
+sed "s/ ':(exclude)bin'//; s/ ':(exclude)tests'//" "${csr_build}" > "${unscoped}"
 chmod +x -- "${unscoped}"
 if cmp --silent -- "${csr_build}" "${unscoped}"; then
    printf '%s\n' "FAIL: K: canary could not strip the non-render excludes" >&2
@@ -321,8 +321,17 @@ run_build "${fixture_l}"
 expect_guard_fired "L: a dirty pages/ render input is refused"
 safe-rm --recursive --force -- "${fixture_l}"
 
+## M. .github/web-tests.yml IS copied into _site, so a dirty one MUST block --
+## .github is NOT excluded as tooling. Guards against re-over-excluding .github.
+fixture_m="$(make_fixture)"
+mkdir -- "${fixture_m}/.github"
+printf '%s\n' 'policies: [csr]' > "${fixture_m}/.github/web-tests.yml"
+run_build "${fixture_m}"
+expect_guard_fired "M: a dirty .github/web-tests.yml (copied into _site) is refused"
+safe-rm --recursive --force -- "${fixture_m}"
+
 if [ "${fails}" -eq 0 ]; then
-   printf '%s\n' "csr-build-source-guard: all 12 cases passed"
+   printf '%s\n' "csr-build-source-guard: all 13 cases passed"
 else
    printf '%s\n' "csr-build-source-guard: ${fails} case(s) failed" >&2
    exit 1
