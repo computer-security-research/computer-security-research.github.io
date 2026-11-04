@@ -804,6 +804,7 @@ quotes = [
   { text = "\"In Amnesty International's experience there are significantly more forensic traces accessible to investigators on Apple iOS devices than on stock Android devices, therefore our methodology is focused on the former. As a result, most recent cases of confirmed Pegasus infections have involved iPhones.\"" },
   { text = "It is important to note that this does not necessarily reflect the relative security of iOS devices compared to Android devices, or other operating systems and phone manufacturers.", label = "iOS focus does not imply iOS is more secure" },
   { text = "Amnesty International's investigations, corroborated by secondary information we have received, seem to suggest that Pegasus is no longer maintaining persistence on iOS devices. Therefore, binary payloads associated with these processes are not recoverable from the non-volatile filesystem. Instead, one would need to be able to jailbreak the device without reboot, and attempt to extract payloads from memory.", label = "Non-persistent payload -- recoverable only from memory, not the filesystem artifact-based tools read", note = "Amnesty International, Forensic Methodology Report (amnesty.org/.../forensic-methodology-report-how-to-catch-nso-groups-pegasus). Verbatim; source uses a typographic apostrophe in 'International's', normalized to ASCII here. Reinforces Sec. 9/12: an in-memory implant leaves no static filesystem trace for an IOC/artifact-based tool like MVT to find." },
+  { text = "These also include so-called \"zero-click\" attacks which do not require any interaction from the target.", label = "Zero-click: no interaction required", note = "Amnesty International, Forensic Methodology Report. Verified verbatim. Cited in Sec. 15 for 'delivered zero-click'; the canonical zero-click Pegasus exploit analysis is projectzero-forcedentry, whose title names the zero-click iMessage exploit." },
 ]
 
 [mvt-android-methodology]
@@ -1064,6 +1065,47 @@ claims = [
 quotes = [
   { text = "In the BSI's view, the use of Windows 8 in combination with a TPM 2.0 entails a loss of control over the operating system used and the hardware employed. / Furthermore, the newly deployed mechanisms can also be used for acts of sabotage by third parties.", label = "Loss of control and sabotage vector (English translation of the German original)", note = "Federal Office for Information Security (BSI), Stellungnahme zu MS Windows 8 und TPM, 2013-08-21 (original page 404; Internet Archive snapshot cited). This is a FAITHFUL ENGLISH TRANSLATION of the German originals, not a verbatim English quote; see the archived source for the exact German. Fairness: the same release states the BSI does NOT warn against Windows 8 -- these are its stated TPM-2.0 risk concerns, not a blanket warning. Cited in Sec. 6." },
 ]
+
+[usc-50-1881a]
+label = "FISA 702 directive -- provider must furnish all information, facilities, or assistance"
+claims = [
+  { section = "Sec. 6", text = "under FISA Section 702 a provider can be directed to provide all information, facilities, or assistance necessary to accomplish an acquisition, enforceable by an order to compel and contempt." },
+]
+quotes = [
+  { text = "immediately provide the Government with all information, facilities, or assistance necessary to accomplish the acquisition in a manner that will protect the secrecy of the acquisition and produce a minimum of interference with the services that such electronic communication service provider is providing to the target of the acquisition", label = "Compelled assistance (50 U.S.C. 1881a(i)(1)(A))", note = "50 U.S.C. 1881a(i)(1)(A) (2023 ed.), verified byte-exact against govinfo and Cornell LII. Subsection was (h) before the 2017 Reauthorization renumbered it to (i). Enforcement at (i)(5)(A) ('order to compel'), contempt at (i)(5)(D). Cited in Sec. 6." },
+]
+
+[usc-18-2709]
+label = "NSL -- non-content records only; cannot compel a capability; carries a gag"
+claims = [
+  { section = "Sec. 6", text = "a National Security Letter compels only non-content subscriber and transactional records and cannot compel a technical capability; it carries a nondisclosure obligation." },
+]
+quotes = [
+  { text = "A wire or electronic communication service provider shall comply with a request for subscriber information and toll billing records information, or electronic communication transactional records in its custody or possession made by the Director of the Federal Bureau of Investigation under subsection (b) of this section.", label = "NSL scope: non-content records (18 U.S.C. 2709(a))", note = "18 U.S.C. 2709(a) (2023 ed.), verified byte-exact. Nothing in 2709 authorizes compelling a technical capability; 2709(c) imposes nondisclosure. Cited in Sec. 6." },
+]
+
+[usc-47-1002]
+label = "CALEA -- no government mandate of equipment/system design"
+claims = [
+  { section = "Sec. 6", text = "CALEA forbids the government to require any specific design of equipment, facilities, services, features, or system configurations." },
+]
+quotes = [
+  { text = "to require any specific design of equipment, facilities, services, features, or system configurations to be adopted by any provider of a wire or electronic communication service, any manufacturer of telecommunications equipment, or any provider of telecommunications support services", label = "No design mandate (47 U.S.C. 1002(b)(1))", note = "47 U.S.C. 1002(b)(1) (2023 ed.), verified byte-exact; the lead-in is 'This subchapter does not authorize any law enforcement agency or officer-- (A) ...'. 1002(b)(3) adds that a carrier need not decrypt unless it provided the encryption and holds the key. Cited in Sec. 6; its reach over a Section 702 directive is unadjudicated." },
+]
+
+[lavabit-4cir-2014]
+label = "Lavabit -- compelled disclosure of SSL/TLS private keys (decided on waiver, not merits)"
+claims = [
+  { section = "Sec. 6", text = "a provider was compelled to produce all information necessary to decrypt communications, including its SSL/TLS private keys, enforced by a daily sanction; the appeal was decided on waiver, not on whether compelled key disclosure is lawful." },
+]
+quotes = [
+  { text = "[a]ll information necessary to decrypt communications sent to or from [the target's] Lavabit email account . . ., including encryption keys and SSL keys.", label = "Compelled production of SSL keys", note = "In re Under Seal (Lavabit), 749 F.3d 276, 4th Cir. 2014, slip op. p. 13 (quoting the seizure warrant, J.A. 27). Byte-exact from the official Fourth Circuit PDF; the court's editorial brackets and ellipsis are preserved; the original uses typographic quotation marks/apostrophe, ASCII-normalized here. HONESTY: the Fourth Circuit decided on WAIVER, without reaching the merits of whether compelled key disclosure is lawful. Cited in Sec. 6." },
+  { text = "furnish [to the Government] . . . all information, facilities, and technical assistance necessary to accomplish the installation and use of the pen/trap device unobtrusively and with minimum interference.", label = "Compelled technical assistance (pen/trap order)" },
+]
+
+[inre-directives-2008]
+label = "In re Directives -- provider (Yahoo) compelled to assist warrantless acquisition; directives upheld"
+no_quote = "Cited in Sec. 6 for the holding that the FISA Court of Review upheld compelled assistance with warrantless acquisition over the provider's objection (551 F.3d 1004, 2008); not quoted verbatim. The threatened escalating daily fine (reported $250,000 per day, doubling weekly) is NOT in the opinion -- it is from the Government's 2008 motion, declassified and reported Sept. 2014 (PBS/AP, Christian Science Monitor, The Hill); represented as reported-from-declassified-records, not a judicial quote."
 
 [keys-under-doormats]
 label = "Keys Under Doormats -- exceptional access creates concentrated targets; complexity is the enemy of security"
