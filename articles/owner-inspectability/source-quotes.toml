@@ -591,6 +591,13 @@ claims = [
 ]
 quotes = [
   { text = "\"Keys need to be generated for resigning completed builds from the publicly available test keys.\" / \"there's no value in a locked bootloader without signing the build using release keys, since verified boot will be meaningless and the keys used to verify sideloaded updates are also public.\"" },
+  { text = "To reproduce a past build, you need to export BUILD_DATETIME and BUILD_NUMBER to the values set for the past build.", label = "Documented reproducible-build procedure", note = "GrapheneOS, Build, 'Reproducible builds' section (grapheneos.org/build#reproducible-builds). Verified verbatim. Supports the paper's description of GrapheneOS as a public project with a reproducible build (Sec. 12)." },
+]
+
+[owasp-mastg-repackaging]
+label = "OWASP MASTG -- bypass pinning by patching and repackaging the app (no root)"
+quotes = [
+  { text = "In most cases, both issues can be fixed by making minor changes to the app (aka. patching) and then re-signing and repackaging it.", label = "Patch and repackage to bypass pinning", note = "OWASP Mobile Application Security Testing Guide (mas.owasp.org/MASTG/techniques/android/MASTG-TECH-0038). Verified verbatim. Cited in Appendix B: bypassing pinning in a repackageable app is an ADB-shell-tier route needing no root, and fails against an app that verifies its own signature or server-backed integrity." },
 ]
 
 [aosp-loadable-kernel-modules]
