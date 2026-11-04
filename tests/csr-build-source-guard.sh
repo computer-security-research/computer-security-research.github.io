@@ -296,19 +296,20 @@ run_build "${fixture_j}"
 expect_guard_passed "J: a dirty build script does not block a content deploy"
 safe-rm --recursive --force -- "${fixture_j}"
 
-## K. CANARY: with the non-render excludes removed, the SAME dirty build script
-## DOES block -- proves J is red on the pre-fix (_site-only exclude) code.
+## K. CANARY: reverting to the old broad scope ('.' except _site) makes the SAME
+## dirty build script block -- proves the positive render-input list (case J) is
+## what lets a non-render edit through, i.e. J is red on the pre-fix code.
 unscoped="$(mktemp)"
-sed "s/ ':(exclude)bin'//; s/ ':(exclude)tests'//" "${csr_build}" > "${unscoped}"
+sed "s|-- articles pages site.toml .github/web-tests.yml|-- . ':(exclude)_site'|" "${csr_build}" > "${unscoped}"
 chmod +x -- "${unscoped}"
 if cmp --silent -- "${csr_build}" "${unscoped}"; then
-   printf '%s\n' "FAIL: K: canary could not strip the non-render excludes" >&2
+   printf '%s\n' "FAIL: K: canary could not rewrite the render-input pathspec" >&2
    fails=$((fails + 1))
 fi
 fixture_k="$(make_fixture "${unscoped}")"
 printf '%s\n' '## sibling WIP edit' >> "${fixture_k}/bin/csr-build"
 run_build "${fixture_k}"
-expect_guard_fired "K: without the excludes a dirty build script blocks"
+expect_guard_fired "K: the old broad scope blocks a dirty build script"
 safe-rm --recursive --force -- "${fixture_k}"
 safe-rm --force -- "${unscoped}"
 
@@ -330,8 +331,17 @@ run_build "${fixture_m}"
 expect_guard_fired "M: a dirty .github/web-tests.yml (copied into _site) is refused"
 safe-rm --recursive --force -- "${fixture_m}"
 
+## N. a dirty CI workflow is not a render input (never copied into _site) and
+## MUST NOT block -- only .github/web-tests.yml under .github is a render input.
+fixture_n="$(make_fixture)"
+mkdir -- "${fixture_n}/.github" "${fixture_n}/.github/workflows"
+printf '%s\n' '# WIP' > "${fixture_n}/.github/workflows/build.yml"
+run_build "${fixture_n}"
+expect_guard_passed "N: a dirty CI workflow does not block a content deploy"
+safe-rm --recursive --force -- "${fixture_n}"
+
 if [ "${fails}" -eq 0 ]; then
-   printf '%s\n' "csr-build-source-guard: all 13 cases passed"
+   printf '%s\n' "csr-build-source-guard: all 14 cases passed"
 else
    printf '%s\n' "csr-build-source-guard: ${fails} case(s) failed" >&2
    exit 1
