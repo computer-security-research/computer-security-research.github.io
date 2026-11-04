@@ -201,7 +201,8 @@ Sections 5 through 11 catalog the verification limits. Section 12
 addresses objections, including aftermarket operating systems. Section
 13 asks whether a verified owner-inspection mode could escape the bind,
 and maps the design space of attempts. Section 14 discusses the findings
-and their limitations, and Section 15 concludes.
+and their limitations, Section 15 draws out the practical consequences
+through a real-world case, and Section 16 concludes.
 
 \subsection{2. Background}\label{background}
 
@@ -615,11 +616,12 @@ operating system and by individual applications
 \citep{android-allowbackup}, \citep{aosp-auto-backup}.
 
 For the same reasons, demonstrating the presence or absence of a hidden
-backdoor is difficult. An examiner who cannot fully inspect system
-files, logs, and low-level components without first modifying the device
-is restricted to what the running operating system reports -\/- the same
-limited vantage point a well-concealed backdoor would rely on (Section
-9).
+backdoor is difficult \citep{mvt-android-methodology},
+\citep{amnesty-pegasus-methodology}. An examiner who cannot fully
+inspect system files, logs, and low-level components without first
+modifying the device is restricted to what the running operating system
+reports -\/- the same limited vantage point a well-concealed backdoor
+would rely on (Section 9).
 
 \subsection{6. Risks of Centralized Application and Update
 Delivery}\label{risks-of-centralized-application-and-update-delivery}
@@ -1272,9 +1274,13 @@ the device as sold; out-of-band monitoring is generally unavailable
 without elevated access or specialized tooling \\
 Log-based forensics & Yes & Partial -\/- limited; absence of traces
 after thorough manual analysis does not establish that a device was not
-compromised, and log-based methods may need to be combined with other
-forensic techniques where compromise is strongly suspected
-\citep{socialtic-log-forensics} \\
+compromised, and log-based methods may, where compromise is strongly
+suspected, need to be combined with other forensic techniques
+\citep{socialtic-log-forensics} -\/- which divide by vantage point:
+off-device network-traffic monitoring stays feasible without touching
+the locked device, whereas the full-image, live-memory, and trusted-boot
+inspection of Sections 7, 9, 10, and 13 are exactly the capabilities a
+locked device withholds \\
 \end{longtable}
 
 \subsection{11. Limitations on Encryption Key
@@ -1470,17 +1476,18 @@ no published, independent anchor for the owner\textquotesingle s
 verified-boot key, so the gap is the absence of a trust anchor, not the
 unavailability of the key -\/- publishing the key would not close it. An
 official GrapheneOS key differs only in that a relying party can choose
-to trust GrapheneOS, a public project with a reproducible build, as that
-anchor; a self-generated key vouches for no one but its owner. For
-everyday use, neither the owner-signed build nor the official GrapheneOS
-build is a Google-certified configuration, so neither obtains the
-device-integrity or strong attestation verdicts that mainstream
-applications increasingly demand \citep{play-integrity-improvements},
-\citep{owasp-mastg-play-integrity}: the same owner-controlled posture
-that makes the device inspectable makes an apparently growing set of
-applications refuse to run on it, and GrapheneOS\textquotesingle s
-stated position is that it will not spoof or otherwise circumvent these
-checks to impersonate a stock device \citep{grapheneos-usage}.
+to trust GrapheneOS, a public project with a reproducible build
+\citep{grapheneos-build}, as that anchor; a self-generated key vouches
+for no one but its owner. For everyday use, neither the owner-signed
+build nor the official GrapheneOS build is a Google-certified
+configuration, so neither obtains the device-integrity or strong
+attestation verdicts that mainstream applications increasingly demand
+\citep{play-integrity-improvements}, \citep{owasp-mastg-play-integrity}:
+the same owner-controlled posture that makes the device inspectable
+makes an apparently growing set of applications refuse to run on it, and
+GrapheneOS\textquotesingle s stated position is that it will not spoof
+or otherwise circumvent these checks to impersonate a stock device
+\citep{grapheneos-usage}.
 
 Other owner-controlled systems take the opposite tack: the microG-based
 distributions CalyxOS and /e/OS bundle a reimplementation of Google Play
@@ -1849,10 +1856,13 @@ patched to run as root, with no on-device \texttt{su}
 (resign-android-image \citep{resign-android-image}) & Yes -\/- reachable
 only over ADB, no app-facing \texttt{su} & Yes & No & Yes -\/- the root
 path ships inside the owner-signed, verity-covered image, so tampering
-remains detectable and a reboot restores the verified state; it trusts
-no unverified persistent state, unlike a \texttt{/data} module store,
-because \texttt{/system} stays mounted read-only under verity and even
-this full root cannot persistently write it in place \\
+remains detectable and a reboot restores the verified state; it keeps no
+unverified persistent state that can modify the running system, unlike a
+\texttt{/data} module store, because \texttt{/system} stays mounted
+read-only under verity and even this full root cannot persistently write
+it in place (device-authorization state such as the \texttt{adbd} key
+store sits in \texttt{/data}, outside verified boot, as other user data
+does) \\
 Privileged but not root: ADB-shell brokering (Shizuku) \citep{shizuku} &
 No -\/- capped at the ADB shell permission set, via an app-broker API &
 Yes & No & Yes -\/- stock image unmodified \\
@@ -2057,11 +2067,11 @@ inventing new ones. The third is not the owner\textquotesingle s to
 satisfy. A relying-party-accepted verdict is anchored, by construction,
 to the vendor\textquotesingle s root of trust, and the attestation
 ecosystem does not accept owner-enrolled keys (Appendix A); nor, on the
-available evidence, does it have reason to, since the same verified,
-vendor-keyed state is a precondition for hardware-backed content
-protection \citep{patat-widevine}, \citep{rafi-drm-mobile},
-\citep{aosp-drm} and for the platform-policy objectives the model is
-built to enforce \citep{mayrhofer-android-security-model},
+available evidence, does it have reason to, since the same verified
+device state is a precondition for hardware-backed content protection
+\citep{patat-widevine}, \citep{rafi-drm-mobile}, \citep{aosp-drm} and
+for the platform-policy objectives the model is built to enforce
+\citep{mayrhofer-android-security-model},
 \citep{doctorow-general-computation}. The open problem is therefore
 asymmetric. Owner-side verifiability is attainable today for owners who
 accept the loss of vendor-gated attestation; re-admitting an
@@ -2397,7 +2407,59 @@ modes, exportable integrity measurements, or supported trusted-boot
 verification paths -\/- in which verifiability and platform integrity
 might be advanced together rather than traded off.
 
-\subsection{15. Conclusion}\label{conclusion}
+\subsection{15. Practical Consequences}\label{practical-consequences}
+
+The owner-inspectability gap is not an abstraction: it has a concrete,
+decade-old instance in Pegasus, the spyware developed and sold by the
+commercial surveillance vendor NSO Group. Pegasus has been documented
+exploiting users\textquotesingle{} devices in the open since its public
+disclosure in August 2016 \citep{marczak-million-dollar-dissident},
+\citep{lookout-pegasus-technical-analysis}, with code artifacts
+indicating in-the-wild activity from as early as 2013 to 2014
+\citep{lookout-pegasus-technical-analysis} and attacks recorded through
+2021 \citep{amnesty-pegasus-methodology} -\/- roughly a decade in which
+one tool has remained effective against current devices. It is the work
+of an advanced adversary: Project Zero assessed one of its exploit
+chains as "one of the most technically sophisticated exploits
+we\textquotesingle ve ever seen" and judged that "the capabilities NSO
+provides rival those previously thought to be accessible to only a
+handful of nation states" \citep{projectzero-forcedentry}; Lookout
+called it "the most sophisticated privately-developed attack {[}it
+had{]} encountered on a mobile endpoint"
+\citep{lookout-pegasus-technical-analysis}; and it is sold only to
+governments \citep{marczak-million-dollar-dissident}, with recent
+variants delivered zero-click \citep{amnesty-pegasus-methodology}.
+
+This threat falls squarely in the class the owner cannot verify. The
+standard forensic response -\/- examine the device from a clean, trusted
+vantage point and work from a verified image -\/- is exactly what a
+stock locked device withholds (Sections 7, 9, 10), and the recent
+implant is engineered to leave nothing recoverable by the means
+available to the owner: it is non-persistent and memory-resident, so
+"binary payloads associated with these processes are not recoverable
+from the non-volatile filesystem"; "instead, one would need to be able
+to jailbreak the device without reboot, and attempt to extract payloads
+from memory" \citep{amnesty-pegasus-methodology}. That one path is the
+capability the locked device denies its owner (Section 13), and it is
+self-defeating, since the reboot clears the implant. And as Section 14
+sets out, even a live, instrumented view can be turned against the
+examiner: Pegasus is documented to detect analysis and emulator
+conditions and to carry self-destruct functionality, so an implant can
+remove itself before it is seen \citep{lookout-chrysaor},
+\citep{marczak-million-dollar-dissident}.
+
+The consequence is a loop that closes against the owner, and it is not
+hypothetical. For the commodity, application-level threats most users
+face, on-device defenses work (Sections 6, 12); but for the targeted,
+state-grade class -\/- of which Pegasus is a real, long-running, widely
+deployed example -\/- the platform leaves the owner unable to establish
+either the presence or the absence of a compromise. That is the
+practical cost of withholding owner-inspectability: not that the device
+is defenseless, but that against the adversary who most warrants
+independent verification, the owner is left without the means to perform
+it.
+
+\subsection{16. Conclusion}\label{conclusion}
 
 Vendor-locked devices systematically limit the owner\textquotesingle s
 ability to inspect, control, and independently verify the software they
@@ -2426,19 +2488,29 @@ key is likewise impractical for most owners.
 
 The existence of consensual forensic tooling, and of aftermarket
 operating systems such as GrapheneOS, does not overturn these
-conclusions: such tooling is bounded by the limited diagnostic data the
-platform exposes, owner-inspectable configurations are reachable only by
-leaving the as-sold device behind and paying an attestation penalty -\/-
-the loss of device-integrity standing that leads an apparently growing
-set of applications to refuse to run -\/- to do so, and an absence of
-findings is accordingly weak evidence of integrity. These limits are not
-accidents of one vendor\textquotesingle s engineering but consequences
-of vendor-lock itself, and the owner\textquotesingle s structural
-position recurs, to varying degrees, on other vendor-locked devices.
-Treating security as owner-side verifiability, rather than as
-platform-side policy enforcement, makes these limitations visible as a
-coherent whole and identifies owner-inspectability as a property in need
-of improvement.
+conclusions, and it does not locate the gap in those systems. Such
+tooling is bounded by the limited diagnostic data the platform exposes,
+and owner-inspectable configurations are reachable only by leaving the
+as-sold device behind and accepting the attestation penalty the
+platform\textquotesingle s ecosystem imposes on any configuration not
+signed by the vendor\textquotesingle s key -\/- the loss of
+device-integrity standing that leads an apparently growing set of
+applications to refuse to run -\/- so an absence of findings on a stock
+device remains weak evidence of integrity. The aftermarket systems in
+fact afford the owner more administrative control, not less, and so
+demonstrate that owner-inspectability is a feasible configuration rather
+than a hardware necessity: what withholds it from the as-sold device is
+the vendor\textquotesingle s design decision to confer administrative
+capability on the vendor and manufacturer alone, and what withholds a
+relying-party-accepted standing from an owner-controlled configuration
+is a platform policy choice rather than a missing device mechanism
+(Sections 13, 14). These limits are therefore not accidents of one
+vendor\textquotesingle s engineering but consequences of vendor-lock
+itself, and the owner\textquotesingle s structural position recurs, to
+varying degrees, on other vendor-locked devices. Treating security as
+owner-side verifiability, rather than as platform-side policy
+enforcement, makes these limitations visible as a coherent whole and
+identifies owner-inspectability as a property in need of improvement.
 
 \subsection{Appendix A. GrapheneOS Auditor verified-boot key
 allowlist}\label{appendix-a.-grapheneos-auditor-verified-boot-key-allowlist}
@@ -2630,7 +2702,13 @@ injection: the verity-disabled \texttt{/system} configuration can place
 or replace files, but the pinning-bypass and framework-hooking goals
 additionally need an app-facing superuser and Zygote injection
 \citep{aosp-zygote}, \citep{magisk-guides}, which only the Magisk and
-KernelSU rows provide.
+KernelSU rows provide. The pinning-bypass goal is the narrower
+exception: for a repackageable application an owner can strip its
+pinning by patching and reinstalling the app at the ADB-shell tier,
+without root \citep{owasp-mastg-repackaging}, so superuser and Zygote
+injection are the minimum only for in-place, system-wide injection, and
+repackaging fails against an application that verifies its own signature
+or enforces a server-backed integrity check.
 
 Two further points sharpen the remaining rows. The last
 row\textquotesingle s "module store" is the systemless userspace module
@@ -2652,12 +2730,15 @@ forfeits the hardware-backed verdict \citep{resign-android-image}.
 Finally, the ad-blocking and custom-CA goals are not met by a bounded
 verified extension: an APEX activates only its own signed namespace and
 does not overlay arbitrary \texttt{/system} paths \citep{aosp-apex}, and
-the updatable system trust store introduced in recent Android
-\citep{aosp-conscrypt} is a vendor-signed module an owner cannot inject
-into -\/- so these goals need a persistent \texttt{/system} write, which
-keeps the verified-boot model only when it is an owner-signed image
-rebuild rather than a \texttt{/data} overlay or a verity-disabled
-\texttt{/system}.
+the custom-CA store, on Android 14 and later, is the vendor-signed
+Conscrypt APEX (\texttt{/apex/com.android.conscrypt/cacerts}) that an
+owner cannot inject into, with the legacy
+\texttt{/system/etc/security/cacerts} path applying on earlier releases
+\citep{aosp-conscrypt} -\/- so these goals need a persistent
+\texttt{/system} write (or, on recent Android, an overlay of the APEX
+store), which keeps the verified-boot model only when it is an
+owner-signed image rebuild rather than a \texttt{/data} overlay or a
+verity-disabled \texttt{/system}.
 
   \bibliography{refs}
 
