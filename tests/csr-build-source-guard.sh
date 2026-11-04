@@ -38,6 +38,8 @@ repo_root="$(dirname -- "${test_dir}")"
 csr_build="${repo_root}/bin/csr-build"
 guard_msg="uncommitted source changes"
 tool_check_msg="journal-maker not found"
+recheck_msg="sources changed during the build"
+pushed_msg="committed + pushed"
 fails=0
 build_out=""
 build_rc=0
@@ -59,7 +61,7 @@ make_fixture() {
    git -C "${fixture}" config user.email test@example.invalid
    git -C "${fixture}" config user.name "csr test"
    mkdir -- "${fixture}/bin" "${fixture}/_site" "${fixture}/articles"
-   cp -- "${csr_build}" "${fixture}/bin/csr-build"
+   cp -- "${1:-${csr_build}}" "${fixture}/bin/csr-build"
    printf '%s\n' 'name = "x"' > "${fixture}/site.toml"
    printf '%s\n' 'paper source' > "${fixture}/articles/paper.md"
    printf '%s\n' '<html></html>' > "${fixture}/_site/index.html"
@@ -103,6 +105,30 @@ expect_guard_passed() {
    fi
 }
 
+make_exit0_stub() {
+   ## executable no-op stub: passes csr-build's [ -x ] checks and exits 0.
+   cat > "$1" <<'STUB'
+#!/bin/bash
+
+exit 0
+STUB
+   chmod +x -- "$1"
+}
+
+run_build_full() {
+   ## Run the real csr-build all the way to the commit path: build tools stubbed
+   ## present, sandbox faked, HOME confined so the hardcoded staging is temp.
+   local fixture="$1"
+   build_rc=0
+   build_out="$(
+      PATH="${fakebin}:${PATH}" \
+      HOME="${tmp_home}" \
+      CSR_JOURNAL_MAKER="${stub_jm}" \
+      CSR_DIST_AI="${stub_dist}" \
+      "${fixture}/bin/csr-build" 2>&1
+   )" || build_rc=$?
+}
+
 ## A. dirty tracked source, committing -> guard FIRES
 fixture_a="$(make_fixture)"
 printf '%s\n' 'edited paper source' > "${fixture_a}/articles/paper.md"
@@ -137,8 +163,105 @@ run_build "${fixture_e}"
 expect_guard_fired "E: an untracked new source file is refused"
 safe-rm --recursive --force -- "${fixture_e}"
 
+## Cases F/G reach the commit path (A-E halt earlier at the tool check), so the
+## build tools must be present+succeeding and the sandbox render faked.
+fakebin="$(mktemp --directory)"
+stub_root="$(mktemp --directory)"
+tmp_home="$(mktemp --directory)"
+stub_jm="${stub_root}/journal-maker"
+stub_dist="${stub_root}/dist-ai"
+
+## Fake sandbox: create the pulled staging index.html AND dirty a tracked source,
+## simulating a concurrent edit that races the multi-minute render.
+cat > "${fakebin}/sandbox" <<'SANDBOX'
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+staging=""
+workdir=""
+while [ "$#" -gt 0 ]; do
+   case "$1" in
+      --pull)
+         staging="$2"
+         shift 2
+         ;;
+      --workdir)
+         workdir="$2"
+         shift 2
+         ;;
+      --)
+         shift
+         break
+         ;;
+      *)
+         shift
+         ;;
+   esac
+done
+
+mkdir --parents -- "${staging}"
+printf '%s\n' '<html>built</html>' > "${staging}/index.html"
+printf '%s\n' 'raced edit during render' >> "${workdir}/articles/paper.md"
+SANDBOX
+chmod +x -- "${fakebin}/sandbox"
+
+make_exit0_stub "${fakebin}/git-push"
+mkdir --parents -- "${stub_jm}/usr/bin" "${stub_dist}/usr/share/website-tests"
+make_exit0_stub "${stub_jm}/usr/bin/journal-maker"
+make_exit0_stub "${stub_dist}/usr/share/website-tests/check_site.py"
+make_exit0_stub "${stub_dist}/usr/share/website-tests/check_svg_safety.py"
+
+## F. a source edit RACES the render (lands after the clean pre-build guard) ->
+## the post-build re-check FIRES and refuses before committing.
+fixture_f="$(make_fixture)"
+run_build_full "${fixture_f}"
+if [ "${build_rc}" -ne 1 ]; then
+   printf '%s\n' "FAIL: F: raced edit -- expected rc 1, got ${build_rc}: ${build_out}" >&2
+   fails=$((fails + 1))
+fi
+if ! contains "${build_out}" "${recheck_msg}"; then
+   printf '%s\n' "FAIL: F: raced edit -- expected the post-build re-check message, got: ${build_out}" >&2
+   fails=$((fails + 1))
+fi
+if contains "${build_out}" "${pushed_msg}"; then
+   printf '%s\n' "FAIL: F: raced edit -- committed despite the race, got: ${build_out}" >&2
+   fails=$((fails + 1))
+fi
+safe-rm --recursive --force -- "${fixture_f}"
+
+## G. CANARY: the SAME race against a pre-fix csr-build (re-check stripped) must
+## NOT refuse -- it commits + pushes. Proves case F is red on the old code.
+stripped="$(mktemp)"
+sed '/CANARY-RECHECK-START/,/CANARY-RECHECK-END/d' "${csr_build}" > "${stripped}"
+chmod +x -- "${stripped}"
+if cmp --silent -- "${csr_build}" "${stripped}"; then
+   printf '%s\n' "FAIL: G: canary could not strip the re-check (sentinels missing?)" >&2
+   fails=$((fails + 1))
+fi
+fixture_g="$(make_fixture "${stripped}")"
+run_build_full "${fixture_g}"
+if [ "${build_rc}" -ne 0 ]; then
+   printf '%s\n' "FAIL: G: canary -- pre-fix code expected rc 0, got ${build_rc}: ${build_out}" >&2
+   fails=$((fails + 1))
+fi
+if contains "${build_out}" "${recheck_msg}"; then
+   printf '%s\n' "FAIL: G: canary -- pre-fix code must not run the re-check, got: ${build_out}" >&2
+   fails=$((fails + 1))
+fi
+if ! contains "${build_out}" "${pushed_msg}"; then
+   printf '%s\n' "FAIL: G: canary -- pre-fix code should commit+push, got: ${build_out}" >&2
+   fails=$((fails + 1))
+fi
+safe-rm --recursive --force -- "${fixture_g}"
+safe-rm --force -- "${stripped}"
+
+safe-rm --recursive --force -- "${fakebin}" "${stub_root}" "${tmp_home}"
+
 if [ "${fails}" -eq 0 ]; then
-   printf '%s\n' "csr-build-source-guard: all 5 cases passed"
+   printf '%s\n' "csr-build-source-guard: all 7 cases passed"
 else
    printf '%s\n' "csr-build-source-guard: ${fails} case(s) failed" >&2
    exit 1

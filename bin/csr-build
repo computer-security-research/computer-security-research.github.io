@@ -37,6 +37,13 @@ dist_ai="${CSR_DIST_AI:-$(dirname -- "${content_dir}")/dist-ai}"
 check_site="${dist_ai}/usr/share/website-tests/check_site.py"
 check_svg_safety="${dist_ai}/usr/share/website-tests/check_svg_safety.py"
 
+## Working-tree changes outside _site (tracked or untracked). Single source for
+## both the pre-build guard and the post-build re-check so their scope cannot
+## drift apart.
+dirty_sources_outside_site() {
+   git -C "${content_dir}" status --porcelain -- . ':(exclude)_site'
+}
+
 do_commit=1
 if [ "${1:-}" = "--no-commit" ]; then
    do_commit=0
@@ -62,7 +69,7 @@ fi
 ## or untracked (the build renders from the working tree, not from git), checked
 ## BEFORE the build so a dirty tree fails in a second, not after a long render.
 if [ "${do_commit}" -eq 1 ]; then
-   dirty_sources="$(git -C "${content_dir}" status --porcelain -- . ':(exclude)_site')"
+   dirty_sources="$(dirty_sources_outside_site)"
    if [ -n "${dirty_sources}" ]; then
       printf '%s\n' "csr-build: refusing to build+publish -- uncommitted source changes outside _site:" >&2
       printf '%s\n' "${dirty_sources}" >&2
@@ -140,6 +147,22 @@ if [ "${do_commit}" -eq 0 ]; then
 fi
 
 cd -- "${content_dir}"
+
+## CANARY-RECHECK-START
+## Re-check for source changes that raced the multi-minute render (TOCTOU): the
+## pre-build guard ran on the pre-render tree, but a concurrent edit landing
+## DURING the render is baked into _site while the commit stages only _site --
+## publishing source absent from git. Same scope as the pre-build guard.
+## (Sentinels delimit the block the source-guard regression canary strips.)
+dirty_sources="$(dirty_sources_outside_site)"
+if [ -n "${dirty_sources}" ]; then
+   printf '%s\n' "csr-build: refusing to commit -- sources changed during the build:" >&2
+   printf '%s\n' "${dirty_sources}" >&2
+   printf '%s\n' "csr-build: a concurrent edit raced the render; re-run so _site matches committed sources." >&2
+   exit 1
+fi
+## CANARY-RECHECK-END
+
 git add -- _site
 if git diff --cached --quiet -- _site; then
    printf '%s\n' "csr-build: _site unchanged; nothing to commit."
