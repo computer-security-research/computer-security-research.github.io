@@ -422,6 +422,16 @@ quotes = [
   { text = "ALIEN is injected into the zygote address space to pivot into specialized privileged processes inside the Android permission model. Since zygote is the parent process of most of the Android processes, it can change to most UIDs and transition into other SELinux contexts that possess different privileges.", label = "zygote injection, SELinux transition", note = "Cisco Talos, technical analysis of Intellexa's PREDATOR (2023)." },
 ]
 
+[hegel-modifiedelephant-2022]
+label = "SentinelOne -- ModifiedElephant planted evidence via commodity RATs; Pegasus kept separate"
+quotes = [
+  { text = "The objective of ModifiedElephant is long-term surveillance that at times concludes with the delivery of 'evidence'", label = "objective: surveillance concluding in planted 'evidence'", note = "SentinelOne Labs, Tom Hegel (2022). Source typographic quotes normalized to ASCII." },
+  { text = "The primary malware families deployed were NetWire and DarkComet remote access trojans (RATs).", label = "tooling: NetWire/DarkComet RATs -- NOT Pegasus", note = "SentinelOne Labs (2022). The planting is attributed to commodity RATs, not Pegasus." },
+  { text = "It turns out that a compromise of defendant systems led to the planting of files", label = "planting of files on defendant systems", note = "SentinelOne Labs (2022)." },
+  { text = "Notable targets include individuals associated with the Bhima Koregaon case.", label = "Bhima Koregaon targets", note = "SentinelOne Labs (2022)." },
+  { text = "Additionally, the Bhima Koregaon case defendant Rona Wilson's iPhone was targeted with Pegasus since 2017", label = "Pegasus SEPARATE from RAT planting -- overlap in victims only", note = "SentinelOne Labs (2022). Supports keeping the two distinct: planting = NetWire; Pegasus = separate surveillance of the same victim." },
+]
+
 [aosp-adb-root]
 label = "AOSP adb -- a stock user build never lets adbd stay root"
 claims = [
