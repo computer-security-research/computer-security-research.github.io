@@ -1556,7 +1556,7 @@ quotes = [
 [rafi-drm-mobile]
 label = "A First Look at Mobile DRM -- every Widevine level requires a signed image via a secure bootloader; L1/L2 need TEE in the chain of trust"
 claims = [
-  { section = "Sec. 13", text = "the same verified, vendor-keyed device state is a precondition for hardware-backed content protection: all Widevine levels require a signed system image loaded by a secure bootloader, and the hardware levels require the TEE components in the bootloader chain of trust." },
+  { section = "Sec. 13", text = "the same verified device state is a precondition for hardware-backed content protection: all Widevine levels require a signed system image loaded by a secure bootloader, and the hardware levels require the TEE components in the bootloader chain of trust." },
 ]
 quotes = [
   { text = "All Widevine security levels require signed system images to be loaded on devices by a secure bootloader.", label = "Signed image + secure bootloader is a precondition", note = "Rafi, Shepherd & Markantonakis, A First Look at Digital Rights Management Systems for Secure Mobile Content Delivery, IEEE TrustCom 2023; verified verbatim from the arXiv HTML (2308.00437)." },
