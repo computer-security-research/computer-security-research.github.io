@@ -2548,6 +2548,26 @@ platform cannot be trusted to report truthfully on its own state
 \citep{thompson-trusting-trust}, \citep{rutkowska-state-harmful},
 \citep{guri-joker-jtag}.
 
+That privilege extends to writing, not only reading: an implant able to
+alter any data an application can is, in principle, able to plant or
+fabricate evidence as readily as it exfiltrates it, and
+Amnesty\textquotesingle s forensics confirm that Pegasus does write to
+and manipulate on-device databases to conceal its own traces
+\citep{amnesty-pegasus-methodology}. Whether this has been turned to
+planting evidence is a question the public record answers carefully: the
+documented cases of fabricated files placed on
+activists\textquotesingle{} devices -\/- most prominently those planted
+ahead of arrests in the Bhima Koregaon prosecutions -\/- are attributed
+not to Pegasus but to commodity remote-access trojans deployed in the
+long-running ModifiedElephant campaign
+\citep{hegel-modifiedelephant-2022}, several of whose targets were,
+separately, also targeted with Pegasus. The distinction is worth
+preserving: evidence exfiltration is documented of Pegasus, whereas
+evidence planting is a demonstrated capability of comparable spyware
+against overlapping victims and a privilege-level consequence that
+Pegasus\textquotesingle s own write access shares -\/- not an act the
+record attributes to Pegasus itself.
+
 This threat falls squarely in the class the owner cannot verify. The
 standard forensic response -\/- examine the device from a clean, trusted
 vantage point and work from a verified image -\/- is exactly what a
