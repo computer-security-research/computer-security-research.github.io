@@ -337,7 +337,7 @@ quotes = [
 [shizuku]
 label = "Shizuku/Sui -- ADB-shell privilege brokering, not root"
 claims = [
-  { section = "Sec. 13", text = "Shizuku lets ordinary apps use privileged system APIs at the ADB/shell permission level through a brokered server process, without full root." },
+  { section = "Sec. 13", text = "Shizuku lets ordinary apps call privileged system APIs through a brokered server process whose privilege is that of whatever started it -- ADB/shell, or root where the owner starts it with root -- without the client app itself holding root; Table 4's row is the ADB-shell start mode." },
 ]
 quotes = [
   { text = "Shizuku guides users to run a process, Shizuku server, with root or ADB first.", label = "Broker runs at ADB/root privilege", note = "Rikka Apps, Shizuku README, 'How does Shizuku work?' section (github.com/RikkaApps/Shizuku). Verified verbatim. Cited in Sec. 13." },
@@ -1557,7 +1557,7 @@ quotes = [
 [patat-widevine]
 label = "Widevine for Fun and Profit -- L1 (HD/UHD) content protection depends on the hardware TEE"
 claims = [
-  { section = "Sec. 13", text = "hardware-backed content protection (Widevine's top security level) depends on the device's trusted execution environment, a precondition that rests on the verified, vendor-keyed device state." },
+  { section = "Sec. 13", text = "hardware-backed content protection (Widevine's top security level) depends on the device's trusted execution environment, a precondition that rests on the verified device state." },
 ]
 quotes = [
   { text = "Widevine relies on ARM TrustZone based Trusted Execution Environment (TEE) when available for strong security guarantee in many Android devices.", label = "Strong protection relies on the TEE", note = "Patat, Sabt & Fouque, Exploring Widevine for Fun and Profit, IEEE SPW/WOOT 2022; verified verbatim from the arXiv HTML (2204.09298)." },
@@ -1615,7 +1615,7 @@ no_quote = "Cited in Appendix B for its rooting-motivations/methods taxonomy. No
 [kernel-erofs]
 label = "EROFS -- Enhanced Read-Only File System, read-only by design"
 claims = [
-  { section = "Sec. 13", text = "/system on modern Android ships as EROFS, a read-only filesystem, so it cannot be remounted read-write in place." },
+  { section = "Sec. 13", text = "where a build selects EROFS for /system (the read-only filesystem modern Android selects at build time via BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE), it is read-only by design and cannot be remounted read-write in place." },
 ]
 quotes = [
   { text = "EROFS (Enhanced Read-Only File System) is a modern, efficient, and secure read-only kernel filesystem", label = "Read-only kernel filesystem", note = "The Linux Kernel documentation, EROFS (docs.kernel.org/filesystems/erofs.html). Verified verbatim via WebFetch." },
