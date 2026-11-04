@@ -284,6 +284,13 @@ quotes = [
   { text = "the Android team decided not to overlay files on the /system partition because this could impact performance as the number of files being overlaid (possibly even stacked one after another) increased.", label = "Does not overlay /system", note = "Design-rationale section; the stated reason for surfacing APEX content under /apex/<name> rather than overlaying /system." },
 ]
 
+[aosp-conscrypt]
+label = "Conscrypt module -- Android 14 updatable root trust store, delivered as a vendor-signed APEX"
+quotes = [
+  { text = "Android 14 introduces an updatable root trust store within Conscrypt.", label = "Updatable root trust store (Android 14)", note = "Android Open Source Project, Conscrypt module (source.android.com/docs/core/ota/modular-system/conscrypt). Verified verbatim. Cited in Appendix B: the CA store is now updatable but ships in the vendor-signed com.android.conscrypt APEX, whose runtime signature check an owner cannot substitute into." },
+  { text = "Starting in Android 14, root trust certificates are stored in the Conscrypt module APEX and the system partition.", label = "Certificates ride the Conscrypt APEX and the system partition" },
+]
+
 [systemd-sysext]
 label = "systemd-sysext -- signed, verity-authenticated, read-only system-extension images (Linux)"
 claims = [
@@ -784,6 +791,7 @@ quotes = [
 label = "Amnesty International -- fewer forensic traces on Android than iOS"
 claims = [
   { section = "Sec. 12", text = "significantly more forensic traces are accessible on iOS than stock Android, so the methodology focused on iOS; most confirmed Pegasus infections were iPhones." },
+  { section = "Sec. 12", text = "where the spyware no longer persists, its payload is recoverable only from volatile memory, not the non-volatile filesystem, so an examination confined to stored artifacts cannot surface it." },
 ]
 quotes = [
   { text = "\"In Amnesty International's experience there are significantly more forensic traces accessible to investigators on Apple iOS devices than on stock Android devices, therefore our methodology is focused on the former. As a result, most recent cases of confirmed Pegasus infections have involved iPhones.\"" },
@@ -1543,6 +1551,7 @@ claims = [
 quotes = [
   { text = "A Magisk module is a folder placed in /data/adb/modules with the structure below:", label = "Module store in /data/adb/modules", note = "Magisk Documentation, Developer Guides (topjohnwu.github.io/Magisk/guides.html). Markdown backticks removed. Verified via WebFetch." },
   { text = "This folder will be recursively merged into the real /system", label = "Merged onto /system" },
+  { text = "Zygisk is a feature of Magisk that allows advanced module developers to run code directly in every Android applications' processes before they are specialized and running.", label = "Zygisk -- Zygote injection into every app process", note = "Magisk Documentation, Developer Guides, Zygisk section (topjohnwu.github.io/Magisk/guides.html). Verified verbatim. Cited in Appendix B for framework (Zygote) injection: Zygisk is Zygote + Magisk, i.e. injection into the Zygote parent so code runs in every forked app process." },
 ]
 
 [patat-widevine]
