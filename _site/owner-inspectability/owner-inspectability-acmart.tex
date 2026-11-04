@@ -653,6 +653,47 @@ same logic, device manufacturers control firmware and system updates, so
 targeted malicious system upgrades are likewise possible if that control
 is abused.
 
+These are not merely hypothetical concerns about the delivery
+architecture: the capability it concentrates has repeatedly been the
+actual vector of a backdoor elsewhere, and has been the explicit object
+of legal compulsion. A backdoor, in the standard sense, is an
+undocumented or hidden means of access that bypasses a
+system\textquotesingle s normal authentication or security controls,
+whether an unintentional flaw, a mechanism deliberately installed by the
+system\textquotesingle s creator, or one surreptitiously installed by an
+intruder \citep{rfc4949}. The trusted code-signing channel that
+underpins software updates has been abused in exactly this way: the
+Flame malware obtained a certificate that chained to the Microsoft root
+authority and could therefore sign code trusted across Windows
+\citep{flame-collision}, and a change to one of the elliptic-curve
+points used by the Dual EC generator planted a passive
+traffic-decryption capability in Juniper\textquotesingle s ScreenOS
+firmware \citep{juniper-dual-ec}. Both were third-party abuses of a
+signing or firmware channel rather than vendor-planted trapdoors, but
+each shows the choke point is exploitable.
+
+The same channel has also been the object of legal compulsion: a United
+States court ordered a vendor to produce and cryptographically sign
+custom firmware loadable onto a specific device \citep{apple-order-2016}
+(an order later withdrawn once the government obtained access by other
+means), and Australia has legislated compulsory technical-capability
+notices that can require a provider to build a new capability, including
+a new decryption capability, into its product \citep{tola-2018} (the
+statute\textquotesingle s prohibition on building a "systemic weakness"
+is contested, because it excludes a weakness "selectively introduced to
+one or more target technologies that are connected with a particular
+person"). The security literature names the structural hazard directly:
+exceptional access "would create concentrated targets that could attract
+bad actors," and "complexity is the enemy of security"
+\citep{keys-under-doormats}. The point for owner-inspectability is
+deliberately narrow: a mandatory, un-refusable, cryptographically gated
+update channel, combined with hardware attestation, concentrates into a
+single vendor-controlled choke point the capability to deliver code the
+owner can neither refuse nor independently inspect. That is a backdoor
+vector -\/- a capability a compromised or compelled vendor could exploit
+-\/- not evidence that any such backdoor exists in a given product; what
+the owner provably lacks is the means to establish that it does not.
+
 Update-related communication is, moreover, not anonymous on devices
 certified for Google Mobile Services (GMS). Google Play services
 periodically checks in with Google, transmitting persistent hardware
