@@ -41,7 +41,9 @@ check_svg_safety="${dist_ai}/usr/share/website-tests/check_svg_safety.py"
 ## both the pre-build guard and the post-build re-check so their scope cannot
 ## drift apart.
 dirty_sources_outside_site() {
-   git -C "${content_dir}" status --porcelain -- . ':(exclude)_site'
+   ## --untracked-files=all overrides a user's status.showUntrackedFiles=no, so
+   ## an untracked source can never be hidden from the guard.
+   git -C "${content_dir}" status --porcelain --untracked-files=all -- . ':(exclude)_site'
 }
 
 do_commit=1
@@ -154,6 +156,11 @@ cd -- "${content_dir}"
 ## DURING the render is baked into _site while the commit stages only _site --
 ## publishing source absent from git. Same scope as the pre-build guard.
 ## (Sentinels delimit the block the source-guard regression canary strips.)
+## Accepted residual: catches an edit still present at commit time (the common
+## shared-tree case). An edit rendered then reverted, or a source change
+## COMMITTED by another session mid-render, leave the tree clean here and slip
+## through -- closing those needs rendering from an immutable HEAD snapshot. For
+## this public content repo that is self-healing _site staleness, not a leak.
 dirty_sources="$(dirty_sources_outside_site)"
 if [ -n "${dirty_sources}" ]; then
    printf '%s\n' "csr-build: refusing to commit -- sources changed during the build:" >&2

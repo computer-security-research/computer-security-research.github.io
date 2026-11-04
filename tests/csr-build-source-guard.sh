@@ -260,8 +260,36 @@ safe-rm --force -- "${stripped}"
 
 safe-rm --recursive --force -- "${fakebin}" "${stub_root}" "${tmp_home}"
 
+## H. an untracked source under status.showUntrackedFiles=no still FIRES the
+## pre-build guard: --untracked-files=all overrides the config, so the untracked
+## file cannot be hidden. (Guard fires before the tool check -- no sandbox.)
+fixture_h="$(make_fixture)"
+git -C "${fixture_h}" config status.showUntrackedFiles no
+printf '%s\n' '# sneaked-in article' > "${fixture_h}/articles/sneak.md"
+run_build "${fixture_h}"
+expect_guard_fired "H: untracked source under showUntrackedFiles=no is refused"
+safe-rm --recursive --force -- "${fixture_h}"
+
+## I. CANARY: the SAME case against a copy with --untracked-files=all stripped
+## must NOT fire -- the config hides the untracked source. Proves H is red on
+## the pre-fix code.
+unflagged="$(mktemp)"
+sed 's/ --untracked-files=all//' "${csr_build}" > "${unflagged}"
+chmod +x -- "${unflagged}"
+if cmp --silent -- "${csr_build}" "${unflagged}"; then
+   printf '%s\n' "FAIL: I: canary could not strip --untracked-files=all (flag missing?)" >&2
+   fails=$((fails + 1))
+fi
+fixture_i="$(make_fixture "${unflagged}")"
+git -C "${fixture_i}" config status.showUntrackedFiles no
+printf '%s\n' '# sneaked-in article' > "${fixture_i}/articles/sneak.md"
+run_build "${fixture_i}"
+expect_guard_passed "I: without -uall the config hides the untracked source"
+safe-rm --recursive --force -- "${fixture_i}"
+safe-rm --force -- "${unflagged}"
+
 if [ "${fails}" -eq 0 ]; then
-   printf '%s\n' "csr-build-source-guard: all 7 cases passed"
+   printf '%s\n' "csr-build-source-guard: all 9 cases passed"
 else
    printf '%s\n' "csr-build-source-guard: ${fails} case(s) failed" >&2
    exit 1
