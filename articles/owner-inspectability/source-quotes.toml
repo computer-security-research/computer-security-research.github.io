@@ -1056,6 +1056,15 @@ quotes = [
   { text = "A technical assistance request, technical assistance notice or technical capability notice must not have the effect of: (a) requesting or requiring a designated communications provider to implement or build a systemic weakness, or a systemic vulnerability, into a form of electronic protection", label = "s317ZG systemic-weakness prohibition", note = "Telecommunications and Other Legislation Amendment (Assistance and Access) Act 2018 (Cth), No. 148, s317ZG (legislation.gov.au C2018A00148). Byte-exact. CONTESTED: 'systemic weakness' excludes 'a weakness that is selectively introduced to one or more target technologies that are connected with a particular person', so a per-target weakness is not barred. Cited in Sec. 6." },
 ]
 
+[bsi-tpm-2013]
+label = "BSI 2013 -- TPM 2.0 can mean a loss of owner control and a sabotage vector (national authority)"
+claims = [
+  { section = "Sec. 6", text = "a national cybersecurity authority cautioned that a TPM-2.0-based configuration can entail a loss of owner control over the operating system and hardware, and that its mechanisms could be used for sabotage by a third party." },
+]
+quotes = [
+  { text = "In the BSI's view, the use of Windows 8 in combination with a TPM 2.0 entails a loss of control over the operating system used and the hardware employed. / Furthermore, the newly deployed mechanisms can also be used for acts of sabotage by third parties.", label = "Loss of control and sabotage vector (English translation of the German original)", note = "Federal Office for Information Security (BSI), Stellungnahme zu MS Windows 8 und TPM, 2013-08-21 (original page 404; Internet Archive snapshot cited). This is a FAITHFUL ENGLISH TRANSLATION of the German originals, not a verbatim English quote; see the archived source for the exact German. Fairness: the same release states the BSI does NOT warn against Windows 8 -- these are its stated TPM-2.0 risk concerns, not a blanket warning. Cited in Sec. 6." },
+]
+
 [keys-under-doormats]
 label = "Keys Under Doormats -- exceptional access creates concentrated targets; complexity is the enemy of security"
 claims = [
