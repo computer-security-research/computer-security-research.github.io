@@ -1107,6 +1107,17 @@ quotes = [
 label = "In re Directives -- provider (Yahoo) compelled to assist warrantless acquisition; directives upheld"
 no_quote = "Cited in Sec. 6 for the holding that the FISA Court of Review upheld compelled assistance with warrantless acquisition over the provider's objection (551 F.3d 1004, 2008); not quoted verbatim. The threatened escalating daily fine (reported $250,000 per day, doubling weekly) is NOT in the opinion -- it is from the Government's 2008 motion, declassified and reported Sept. 2014 (PBS/AP, Christian Science Monitor, The Hill); represented as reported-from-declassified-records, not a judicial quote."
 
+[kerr-schneier-2018]
+label = "Kerr & Schneier -- compelled assistance/key disclosure established; compelled product redesign unresolved"
+claims = [
+  { section = "Sec. 6", text = "legal scholarship treats compelled provider assistance and key disclosure as established, court-sanctioned mechanisms, while the authority to compel a manufacturer to weaken or redesign its own product is largely unresolved." },
+]
+quotes = [
+  { text = "network surveillance laws generally include assistance provisions requiring providers to provide necessary assistance to effectuate surveillance pursuant to court orders. The Supreme Court has interpreted the All Writs Act to grant judges a somewhat analogous authority to mandate some amount of provider assistance in the execution of search warrants.", label = "Compelled assistance is an established mechanism", note = "Kerr & Schneier, Encryption Workarounds, 106 Geo. L.J. 989 (2018), ~pp. 1016-17. Verified byte-exact from the Georgetown PDF; curly quotes/soft-hyphens normalized to ASCII. Cited in Sec. 6." },
+  { text = "mandating assistance with workarounds may compel manufacturers or designers of encryption products to help weaken the products they manufacture or design.", label = "Compelled redesign/weakening is the frontier" },
+  { text = "the level of permitted technical assistance under statutes such as the All Writs Act is largely unresolved and raises complex questions about the standards for measuring the burden of assistance.", label = "Scope of compelled assistance is unresolved" },
+]
+
 [keys-under-doormats]
 label = "Keys Under Doormats -- exceptional access creates concentrated targets; complexity is the enemy of security"
 claims = [
