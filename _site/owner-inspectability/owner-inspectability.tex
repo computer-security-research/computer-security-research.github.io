@@ -160,9 +160,11 @@ supported by cited evidence from claims that remain asserted without a
 specific source.
 
 This is a systematization-and-position paper: it introduces no new
-experiment or dataset and instead organizes existing technical and
-forensic evidence around a single owner-centric criterion. Its
-contributions are:
+experiment or dataset and instead organizes existing technical,
+forensic, and legal evidence around a single owner-centric criterion,
+applies that criterion to a documented real-world surveillance case, and
+argues a defensible position on how the gap it identifies could be
+narrowed. Its contributions are:
 
 \begin{itemize}
 \tightlist
@@ -174,6 +176,13 @@ contributions are:
   it catalogs, against that criterion, the specific verification limits
   of stock Android and traces each to the same deliberate design choice
   rather than to isolated implementation defects;
+\item
+  it analyzes the centralized application- and update-delivery channel
+  as a backdoor vector the owner can neither refuse nor independently
+  inspect, drawing the documented technical abuses of code-signing and
+  firmware channels together with the legal compelled-access regime that
+  can reach the same choke point, and distinguishing established
+  compulsion from what remains legally unresolved;
 \item
   it shows that root access -\/- as distinct from the full
   administrative control withheld from the owner -\/- does not restore
@@ -190,14 +199,21 @@ contributions are:
 \item
   it provides a structured capability comparison with a fully controlled
   host that makes the aggregate effect legible as a single design
-  trade-off; and
+  trade-off;
 \item
   it frames owner-controlled privileged inspection -\/- a verified
   owner-inspection mode that preserves verified boot and relying-party
   attestation -\/- as the capability that would be needed to escape the
   inspection-versus-attestation bind, systematizes the design space of
   approaches shipped or proposed, and identifies the gap no current
-  approach closes.
+  approach closes; and
+\item
+  it applies the criterion to a documented, long-running real-world
+  surveillance case, showing that against the targeted, low-level class
+  of adversary the owner can establish neither the presence nor the
+  absence of compromise, and separating the evidence exfiltration the
+  record attributes to that case from the evidence-planting capability
+  demonstrated by comparable spyware against overlapping targets.
 \end{itemize}
 
 The paper is organized as follows. Section 2 summarizes the platform
@@ -1252,9 +1268,10 @@ inspect disks and memory from that trusted environment while minimizing
 reliance on the suspect operating system; instrument or replace the
 kernel to load debugging or integrity tooling; and run security tools
 outside the potentially compromised system, from an external host or
-trusted boot environment. Taken together, these capabilities permit
-independent verification even when the original installation is
-suspected to be malicious.
+trusted boot environment \citep{sikorski-practical-malware},
+\citep{nist-sp800-86}, \citep{ligh-memory-forensics}. Taken together,
+these capabilities permit independent verification even when the
+original installation is suspected to be malicious.
 
 On a stock Android device these same capabilities are, in general,
 absent. The operating system cannot be freely replaced, so restoring a
@@ -2481,6 +2498,26 @@ the same move as re-locking to a different vendor\textquotesingle s key
 routes through the broader modification the platform withholds is itself
 the case for decoupling the two by design.
 
+That the owner of a fully administered platform can carry out this
+inspection at all is not incidental: the administrative vantage recorded
+in the left column of Table 5 is what the established techniques of
+host-based malware analysis, memory forensics, and deception-based
+detection presuppose \citep{sikorski-practical-malware},
+\citep{nist-sp800-86}, \citep{ligh-memory-forensics},
+\citep{spitzner-honeypots}, and it is what lets a defender, or a
+researcher acting for the owner, capture and study an implant once there
+is cause to look. This advantage should not be mistaken for a blanket
+claim that an open platform is safer. The same reach also removes a
+platform-enforced barrier to persistence -\/- the firmware-level
+implants discussed above run beneath exactly such a platform
+\citep{kaspersky-equation}, \citep{eset-lojax} -\/- so the honest
+statement is a trade-off, not a ranking; and to infer that
+owner-administrable platforms are safer because few long-lived implants
+have been catalogued on them would repeat the absence-of-evidence
+reasoning this analysis rejects. Whether broad, open participation
+improves security in the aggregate is itself contested rather than
+settled \citep{raymond-cathedral-bazaar}, \citep{wheeler-heartbleed}.
+
 A measured reading is that the platform optimizes for resistance to the
 ordinary running adversary at the cost of owner-side auditability, and
 that the two objectives, while not strictly incompatible, are in current
@@ -2496,6 +2533,34 @@ That position suggests a design space -\/- owner-attestable inspection
 modes, exportable integrity measurements, or supported trusted-boot
 verification paths -\/- in which verifiability and platform integrity
 might be advanced together rather than traded off.
+
+The design space these possibilities point to is not unexplored, yet
+nothing in it meets the owner\textquotesingle s need at once. A long
+line of work has sought to observe a system from beneath its operating
+system -\/- coprocessor- and bus-based kernel-integrity monitors
+\citep{petroni-copilot} and late-launch isolated measurement
+\citep{mccune-flicker}, the hardware-rooted continuation of
+virtual-machine introspection \citep{garfinkel-vmi} -\/- but these
+detect or measure integrity rather than hand the owner an arbitrary,
+trustworthy image, and each introduces a monitor that must itself be
+trusted. The shipping primitives divide the same way: the facilities
+that can read full state out of band are the proprietary management and
+firmware layers that Table 5 already marks opaque, themselves documented
+sources of compromise invisible to the operating system
+\citep{ermolov-intel-me}, \citep{embleton-smm-rootkit}, while the
+trustworthy launch primitives emit only measurements, never the measured
+bytes \citep{tcg-tpm-library}. The hardware trend runs against
+acquisition on both platforms: beyond the input-output memory management
+units already noted, memory encryption now prevents even a maximally
+privileged party from reading a running system\textquotesingle s memory
+\citep{amd-sev-snp} -\/- a protection against a malicious host that, in
+the owner-inspection framing, bars the owner too. A facility powerful
+enough to image the whole machine would thus itself be a high-value,
+often-proprietary target, enlarging the trusted computing base it is
+meant to verify unless it is owner-controlled and auditable -\/- the
+same requirement, owner-facing and verifiable and
+attack-surface-contained, that no mechanism available today satisfies
+together.
 
 \subsection{15. Practical Consequences}\label{practical-consequences}
 
