@@ -1011,6 +1011,61 @@ quotes = [
   { text = "Indeed, by merely asking a flash-hosting device, such as the SPI flash chip, or some other u-controller such as one used on a NIC, to tell us what firmware it has inside, we can only get as trustworthy a response as is the device itself, or worse even: as is the current firmware that is used to serve our request... A classic chicken and egg problem.", label = "Firmware self-report is only as trustworthy as the firmware", note = "Rutkowska, State considered harmful (2015), footnote on inspecting firmware (blog.invisiblethings.org/2015/12/23/state_harmful.html). Verified byte-exact; the '...' is literal in the source. Fully ASCII. Cited in Sec. 14 alongside Thompson." },
 ]
 
+[rfc4949]
+label = "RFC 4949 -- standard definition of a back door"
+claims = [
+  { section = "Sec. 6", text = "a backdoor is an undocumented or hidden means of access bypassing normal authentication or security controls -- which may be an unintentional flaw, deliberately installed by the creator, or surreptitiously installed by an intruder." },
+]
+quotes = [
+  { text = "A computer system feature -- which may be (a) an unintentional flaw, (b) a mechanism deliberately installed by the system's creator, or (c) a mechanism surreptitiously installed by an intruder -- that provides access to a system resource by other than the usual procedure and usually is hidden or otherwise not well-known.", label = "Definition of back door", note = "IETF RFC 4949, Internet Security Glossary v2 (Shirey, 2007), 'back door' entry (rfc-editor.org/rfc/rfc4949.txt). Byte-exact; 'trap door' is defined as a synonym. Cited in Sec. 6." },
+]
+
+[flame-collision]
+label = "Flame -- forged certificate chaining to the Microsoft root authority (signing-channel abuse)"
+claims = [
+  { section = "Sec. 6", text = "the trusted code-signing channel is abusable: Flame obtained a certificate chaining to the Microsoft root authority, able to sign code trusted across Windows -- a third-party forgery, not a vendor-planted trapdoor." },
+]
+quotes = [
+  { text = "After this attack, the attacker had a certificate that could be used to sign code that chained up to the Microsoft Root Authority and worked on all versions of Windows.", label = "Forged cert chaining to the Microsoft root", note = "Microsoft Security Response Center / SRD blog, Flame malware collision attack explained (2012-06-06). Byte-exact. Flame was a third-party collision forgery against the Terminal Server licensing CA, not a Microsoft-planted backdoor. Cited in Sec. 6." },
+]
+
+[juniper-dual-ec]
+label = "Juniper ScreenOS Dual EC -- passive VPN-decryption capability via a changed curve point"
+claims = [
+  { section = "Sec. 6", text = "a signed-firmware parameter change planted a passive VPN-decryption capability in Juniper ScreenOS -- introduced by an unknown third party, not planted by the vendor." },
+]
+quotes = [
+  { text = "The more sophisticated of these vulnerabilities was a passive VPN decryption capability, enabled by a change to one of the elliptic curve points used by the Dual EC pseudorandom number generator.", label = "Passive VPN-decryption capability via Dual EC", note = "Checkoway et al., A Systematic Analysis of the Juniper Dual EC Incident, ACM CCS 2016 (eprint.iacr.org/2016/376; verified from the author-hosted PDF). Byte-exact (line wraps reflowed). The malicious parameter was introduced via unauthorized third-party code, not planted by Juniper. Cited in Sec. 6." },
+]
+
+[apple-order-2016]
+label = "US court order compelling a vendor to sign custom firmware (later mooted)"
+claims = [
+  { section = "Sec. 6", text = "a court ordered a vendor to produce and cryptographically sign custom firmware loadable onto a specific device -- the signed-firmware capability as a compelled vector; the order was later withdrawn when the government obtained access by other means." },
+]
+quotes = [
+  { text = "Apple's reasonable technical assistance may include, but is not limited to: providing the FBI with a signed iPhone Software file, recovery bundle, or other Software Image File (\"SIF\") that can be loaded onto the SUBJECT DEVICE.", label = "Compelled signed firmware image", note = "Order Compelling Apple Inc. to Assist Agents in Search, No. ED 15-0451M, U.S. District Court C.D. Cal., 2016-02-16 (justice.gov/usao-cdca/file/825001/dl). Byte-exact (layout spacing normalized). HONESTY: the order was mooted/withdrawn -- the FBI obtained third-party access, no ruling on the merits. Cited in Sec. 6." },
+]
+
+[tola-2018]
+label = "Australia TOLA 2018 -- compulsory technical-capability notices (contested systemic-weakness carve-out)"
+claims = [
+  { section = "Sec. 6", text = "a national legislature has made the compelled-capability vector law: a technical capability notice can require a provider to build a new capability (including a new decryption capability); the bar on a systemic weakness is contested, because it excludes a weakness selectively introduced to target technologies connected with a particular person." },
+]
+quotes = [
+  { text = "A technical assistance request, technical assistance notice or technical capability notice must not have the effect of: (a) requesting or requiring a designated communications provider to implement or build a systemic weakness, or a systemic vulnerability, into a form of electronic protection", label = "s317ZG systemic-weakness prohibition", note = "Telecommunications and Other Legislation Amendment (Assistance and Access) Act 2018 (Cth), No. 148, s317ZG (legislation.gov.au C2018A00148). Byte-exact. CONTESTED: 'systemic weakness' excludes 'a weakness that is selectively introduced to one or more target technologies that are connected with a particular person', so a per-target weakness is not barred. Cited in Sec. 6." },
+]
+
+[keys-under-doormats]
+label = "Keys Under Doormats -- exceptional access creates concentrated targets; complexity is the enemy of security"
+claims = [
+  { section = "Sec. 6", text = "mandating exceptional access concentrates risk: it creates concentrated targets attractive to bad actors, and added complexity undermines security." },
+]
+quotes = [
+  { text = "Third, exceptional access would create concentrated targets that could attract bad actors.", label = "Concentrated targets", note = "Abelson et al., Keys under doormats, Journal of Cybersecurity 1(1):69-79 (2015), doi 10.1093/cybsec/tyv009 (author-hosted CSAIL PDF). Byte-exact. Cited in Sec. 6." },
+  { text = "Security researchers inside and outside government agree that complexity is the enemy of security", label = "Complexity is the enemy of security" },
+]
+
 [garfinkel-vmi]
 label = "Garfinkel & Rosenblum VMI -- isolate the monitor, retain visibility"
 claims = [
