@@ -432,6 +432,48 @@ quotes = [
   { text = "Additionally, the Bhima Koregaon case defendant Rona Wilson's iPhone was targeted with Pegasus since 2017", label = "Pegasus SEPARATE from RAT planting -- overlap in victims only", note = "SentinelOne Labs (2022). Supports keeping the two distinct: planting = NetWire; Pegasus = separate surveillance of the same victim." },
 ]
 
+[sikorski-practical-malware]
+label = "Sikorski & Honig -- host-based malware analysis presupposes owner-provisioned admin environment"
+no_quote = "Cited in Sec. 10 and Sec. 14 as a standard-practice anchor: dynamic malware analysis is performed in an owner-provisioned, administratively-controlled lab. Textbook (No Starch Press, 2012); cited for the established technique, not quoted verbatim."
+
+[ligh-memory-forensics]
+label = "Ligh et al. -- memory forensics presupposes privileged/offline acquisition"
+no_quote = "Cited in Sec. 10 and Sec. 14 as a standard-practice anchor: memory acquisition and analysis presuppose administrative/offline access to RAM. Canonical Volatility reference (Wiley, 2014); not quoted verbatim."
+
+[spitzner-honeypots]
+label = "Spitzner -- deception/honeypots presuppose administrative control"
+no_quote = "Cited in Sec. 14 as a standard-practice anchor: deploying honeypots/deception presupposes administrative control of the deploying systems. Standard reference (Addison-Wesley, 2002); not quoted verbatim."
+
+[raymond-cathedral-bazaar]
+label = "Raymond -- origin of the CONTESTED 'many eyes' (Linus's Law) position"
+no_quote = "Cited in Sec. 14 as the source of the 'many eyes' position (Linus's Law), presented as a CONTESTED claim, not endorsed. Not quoted verbatim: the primary host (catb.org) currently serves a mismatched TLS certificate, so the page could not be byte-verified against a secondary copy; paired with [[wheeler-heartbleed]] as the counterweight."
+
+[wheeler-heartbleed]
+label = "Wheeler -- Heartbleed qualifies the 'many eyes' claim"
+quotes = [
+  { text = "The vulnerable code was reviewed by a human, so merely having a single human reviewer was obviously not enough.", label = "single reviewer not enough (many-eyes qualifier)", note = "David A. Wheeler, How to Prevent the Next Heartbleed (2014, rev. 2024); verified verbatim from dwheeler.com/essays/heartbleed. Source italics on 'was'/'not' rendered as plain ASCII." },
+]
+
+[petroni-copilot]
+label = "Petroni et al. -- coprocessor-based below-OS kernel integrity monitor"
+no_quote = "Cited in Sec. 14 for the external-monitor lineage: a PCI coprocessor that DMA-reads host memory to detect kernel modification. USENIX Security 2004; cited for the approach (detects/measures integrity, gives no owner dump), not quoted verbatim."
+
+[mccune-flicker]
+label = "McCune et al. -- DRTM late-launch minimal-TCB isolated execution"
+no_quote = "Cited in Sec. 14 for the external-monitor lineage: late-launch (DRTM) isolated measured execution of a small payload. EuroSys 2008 (doi 10.1145/1352592.1352625, Crossref-verified); ACM full text paywalled, so cited for the approach, not quoted verbatim."
+
+[embleton-smm-rootkit]
+label = "Embleton et al. -- SMM is a below-OS layer that is also a rootkit substrate"
+no_quote = "Cited in Sec. 14 for the attack-surface tradeoff: System Management Mode runs beneath and invisibly to the OS with full physical-memory access -- the same below-OS layer monitors rely on is a documented rootkit substrate. SecureComm 2008 (doi 10.1145/1460877.1460892); paywalled, cited for the documented capability, not quoted verbatim."
+
+[tcg-tpm-library]
+label = "TCG TPM 2.0 -- measurement/attestation primitive, not a readable store"
+no_quote = "Cited in Sec. 14 for the 'measure, not dump' distinction: the TPM emits measurement digests and signed quotes (PCRs are extend-only), never the measured bytes. TCG TPM 2.0 Library Specification (2019); cited for the architectural property, not quoted verbatim."
+
+[amd-sev-snp]
+label = "AMD SEV-SNP -- VM memory encryption bars even a privileged reader (owner included)"
+no_quote = "Cited in Sec. 14 for the acquisition-closing trend: with guest memory encryption a privileged component reading guest RAM sees only ciphertext -- a protection against a malicious host that, in the owner-inspection framing, equally bars the owner. AMD SEV-SNP white paper (2020); PDF fetch timed out at verification, so cited for the documented property rather than a verbatim quote."
+
 [aosp-adb-root]
 label = "AOSP adb -- a stock user build never lets adbd stay root"
 claims = [
