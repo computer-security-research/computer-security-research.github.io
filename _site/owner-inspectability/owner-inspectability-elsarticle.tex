@@ -122,7 +122,14 @@ Google Mobile Services \citep{aosp-sepolicy-gmscore} (Section 6). If
 that trust is abused -\/- through compromise of the delivery
 infrastructure, coercion of an operator, or a malicious insider -\/-
 targeted malicious installations or updates may be difficult to detect,
-independently verify, or prove to a third party.
+independently verify, or prove to a third party. That this matters is
+not hypothetical: documented surveillance campaigns have compromised the
+stock devices of journalists, lawyers, and human-rights defenders
+\citep{amnesty-pegasus-methodology},
+\citep{marczak-million-dollar-dissident}, and firmware implants deployed
+in the wild persist across a full operating-system reinstall
+\citep{eset-lojax} -\/- so an owner\textquotesingle s inability to
+establish what their device is running carries real consequences.
 
 The same constraints bear on malware investigation, though their force
 depends on the class of malware. Commodity, application-level threats
@@ -2516,6 +2523,32 @@ had{]} encountered on a mobile endpoint"
 governments \citep{marczak-million-dollar-dissident}, with recent
 variants delivered zero-click \citep{amnesty-pegasus-methodology},
 \citep{projectzero-forcedentry}.
+
+What such an implant can do, once installed, bears on the stakes.
+Pegasus\textquotesingle s documented reach is comprehensive: after
+zero-click installation through unpatched zero-days
+\citep{projectzero-forcedentry}, \citep{projectzero-badbinder}, it has
+been observed exfiltrating messages, call logs, contacts, email, browser
+history, calendar entries, photos, and files \citep{lookout-chrysaor};
+capturing live microphone audio and camera imagery
+\citep{lookout-chrysaor}, \citep{marczak-million-dollar-dissident};
+tracking location; harvesting saved credentials, including Wi-Fi and
+router passwords \citep{marczak-million-dollar-dissident},
+\citep{lookout-pegasus-technical-analysis}; reading the content of
+end-to-end-encrypted chats and calls by taking it on the device after
+decryption \citep{lookout-pegasus-technical-analysis},
+\citep{lookout-chrysaor}; and removing itself to frustrate forensics
+\citep{lookout-chrysaor}. Its further reach is not a longer feature list
+but a consequence of the privilege this behavior already demonstrates:
+an implant holding root or kernel access inside the
+device\textquotesingle s trust boundary can, in principle, read or alter
+any data any application can and move between the operating
+system\textquotesingle s own isolation domains \citep{talos-predator},
+and -\/- the point that matters here -\/- it can subvert the
+owner\textquotesingle s own in-system checks, because a compromised
+platform cannot be trusted to report truthfully on its own state
+\citep{thompson-trusting-trust}, \citep{rutkowska-state-harmful},
+\citep{guri-joker-jtag}.
 
 This threat falls squarely in the class the owner cannot verify. The
 standard forensic response -\/- examine the device from a clean, trusted
