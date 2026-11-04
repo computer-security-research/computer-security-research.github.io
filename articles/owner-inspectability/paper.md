@@ -204,20 +204,35 @@ Table 3. Comparison of malware-analysis capabilities: a traditional Linux host t
 
 | Aspect | Traditional Linux | Stock Android (as sold) |
 | --- | --- | --- |
-| System access (examiner-controlled) | Yes -- full root access common in testbeds and forensic imaging | No -- root typically restricted; requires manufacturer unlock (often unavailable) or an exploit to gain privileged access |
-| User-controlled root | Yes -- commonly available in lab and test environments and on self-managed systems | No -- not available on the device as sold; typically requires bootloader unlock, custom builds, or an exploit |
-| Raw disk imaging | Yes -- straightforward via standard forensic imaging workflows, including booting from external media | No -- not feasible on the device as sold; generally requires root, an unlocked bootloader, or specialized vendor or forensic access |
-| Live memory acquisition | Yes -- readily possible with standard memory-capture tooling | No -- not feasible without root; no official RAM-acquisition interfaces |
-| Kernel analysis | Yes -- kernel modules can be inserted, traced, or extracted; symbols often available | No -- unavailable on the device as sold without root, special builds, or vendor support |
-| Kernel integrity verification | Yes -- possible using external boot media and host-controlled integrity tooling | No -- not available in a user-controlled way; verification is typically limited and vendor-controlled |
-| Independent integrity verification | Yes -- possible by booting a trusted environment and performing independent integrity checks | No -- limited on the device as sold; attestation and integrity guarantees are typically vendor-controlled |
-| Binary reverse engineering | Yes -- straightforward access to malware files, system binaries, and logs | Partial -- possible, but often limited to application-level packages unless rooted or firmware access is available |
-| Hook and injection analysis | Yes -- library preloading, process tracing, and syscall interposition easily observed | Partial -- requires rooting; SELinux and sandboxing block injection methods by default |
-| Dynamic instrumentation | Yes -- tracing and debugging tools available and effective | Partial -- requires root or debugging permissions |
-| Filesystem analysis | Yes -- full access to logs, temporary files, droppers, and rootkits | Partial -- the application sandbox limits access to other applications' data; root or a forensic image is required for a full view |
-| Network monitoring and command-and-control analysis | Yes -- packet-capture and filtering tools usable without restriction | Partial -- requires root [@linux-capabilities], [@aosp-kernel] or VPN-based monitoring [@aosp-vpn-guide] |
-| External monitoring | Yes -- broad options, including out-of-band approaches and host-controlled capture and analysis | No -- limited on the device as sold; out-of-band monitoring is generally unavailable without elevated access or specialized tooling |
-| Log-based forensics | Yes | Partial -- limited; absence of traces after thorough manual analysis does not establish that a device was not compromised, and log-based methods may, where compromise is strongly suspected, need to be combined with other forensic techniques [@socialtic-log-forensics] -- which divide by vantage point: off-device network-traffic monitoring stays feasible without touching the locked device, whereas the full-image, live-memory, and trusted-boot inspection of Sections 7, 9, 10, and 13 are exactly the capabilities a locked device withholds |
+| System access (examiner-controlled) | Yes | No[^t3-sys] |
+| User-controlled root | Yes | No[^t3-root] |
+| Raw disk imaging | Yes | No[^t3-image] |
+| Live memory acquisition | Yes | No[^t3-mem] |
+| Kernel analysis | Yes | No[^t3-kernel] |
+| Kernel integrity verification | Yes | No[^t3-kiv] |
+| Independent integrity verification | Yes | No[^t3-iiv] |
+| Binary reverse engineering | Yes | Partial[^t3-bre] |
+| Hook and injection analysis | Yes | Partial[^t3-hook] |
+| Dynamic instrumentation | Yes | Partial[^t3-dyn] |
+| Filesystem analysis | Yes | Partial[^t3-fs] |
+| Network monitoring and command-and-control analysis | Yes | Partial[^t3-net] |
+| External monitoring | Yes | No[^t3-ext] |
+| Log-based forensics | Yes | Partial[^t3-log] |
+
+[^t3-sys]: On the device as sold, root is typically restricted; examiner access requires a manufacturer unlock (often unavailable) or an exploit. On Linux, full root is common in testbeds and forensic imaging.
+[^t3-root]: Not available on the device as sold; typically requires bootloader unlock, custom builds, or an exploit.
+[^t3-image]: Not feasible on the device as sold; generally requires root, an unlocked bootloader, or specialized vendor or forensic access.
+[^t3-mem]: Not feasible without root; there are no official RAM-acquisition interfaces.
+[^t3-kernel]: Unavailable on the device as sold without root, special builds, or vendor support. On Linux, kernel modules can be inserted, traced, or extracted, and symbols are often available.
+[^t3-kiv]: Not available in a user-controlled way; verification is typically limited and vendor-controlled.
+[^t3-iiv]: Limited on the device as sold; attestation and integrity guarantees are typically vendor-controlled.
+[^t3-bre]: Possible, but often limited to application-level packages unless rooted or firmware access is available.
+[^t3-hook]: Requires rooting; SELinux and sandboxing block injection methods by default.
+[^t3-dyn]: Requires root or debugging permissions.
+[^t3-fs]: The application sandbox limits access to other applications' data; root or a forensic image is required for a full view.
+[^t3-net]: On-device capture requires root [@linux-capabilities], [@aosp-kernel] or VPN-based monitoring [@aosp-vpn-guide]; off-device capture at the network boundary is unrestricted.
+[^t3-ext]: Limited on the device as sold; out-of-band monitoring is generally unavailable without elevated access or specialized tooling.
+[^t3-log]: Limited; absence of traces after thorough manual analysis does not establish that a device was not compromised, and log-based methods may, where compromise is strongly suspected, need to be combined with other forensic techniques [@socialtic-log-forensics] -- which divide by vantage point: off-device network-traffic monitoring stays feasible without touching the locked device, whereas the full-image, live-memory, and trusted-boot inspection of Sections 7, 9, 10, and 13 are exactly the capabilities a locked device withholds.
 
 ## 11. Limitations on Encryption Key Backups
 
@@ -287,15 +302,23 @@ Restricting attention to what an owner can do while keeping the bootloader locke
 
 Table 4. Owner root and privilege options that keep the bootloader locked and verified boot engaged.
 
-| Approach | Full superuser? | Persists across reboot? | Persistent `/system` overlay from `/data`? | Verified-boot security model preserved (owner can detect tampering)? |
+| Approach | Full superuser? | Persists? | `/system` overlay from `/data`? | Verified-boot model preserved? |
 | --- | --- | --- | --- | --- |
-| Root baked into a signed image and relocked under an owner key: a Magisk-style systemless patch (avbroot [@avbroot]) | Yes -- app-facing `su` | Yes | Yes -- module store in `/data/adb/modules` [@magisk-guides] | No -- verified boot no longer certifies the running system: the module store is magic-mounted onto `/system` at every boot [@magisk-details], so the running system depends on it, yet it lives in `/data`, the writable user-data partition [@aosp-file-based-encryption], outside the read-only verity hashtree that covers `/system` [@aosp-dm-verity], [@kernel-dm-verity] |
-| Scoped kernel root baked in the same way: KernelSU, with per-app profiles [@kernelsu] | Yes -- in the kernel; per-app-profile gated (narrows the surface, not a security boundary) | Yes | Yes -- `/data/adb/modules`, overlaid on `/system` via OverlayFS [@kernelsu-modules] | No -- the same violation as the row above, with the superuser in the kernel rather than in `init`: the module store is overlaid onto `/system` at every boot [@kernelsu-modules], so the running system depends on it, yet it sits in `/data` [@aosp-file-based-encryption], outside the read-only verity hashtree covering `/system` [@aosp-dm-verity], [@kernel-dm-verity] |
-| Persistent `/system` read-write: dm-verity for `/system` disabled in the owner-signed image (`vbmeta` hashtree-disabled flag, or `vbmeta` without `/system`'s hashtree descriptor), relocked under the owner's key (avbroot [@avbroot], [@aosp-avb-readme]) | Yes -- `/system` itself persistently writable (direct, not an overlay) | Yes | No -- direct writes to the `/system` partition, not an overlay | No -- the `vbmeta` still verifies under the owner's key, so the device boots locked, in the YELLOW state [@aosp-avb-readme]; but with dm-verity disabled `/system` falls outside the hashtree [@aosp-dm-verity], so tampering of `/system` is undetectable and the writable `/system` is unverified persistent state |
-| Non-persistent root: a special-boot-mode terminal not retained across reboot [@grapheneos-root-statement] | Yes -- special-boot-mode terminal, no app-facing `su` | No | No | Yes -- the root does not persist across reboot, which restores the verified boot chain and system image (writable user data, outside verified boot, is a separate matter) |
-| Signed, verified extension shipped inside the image: Android APEX [@aosp-apex] (the Linux analogue, under a verity-and-signature image policy, is systemd-sysext [@systemd-sysext]) | No -- bounded, policy-confined verified capability | Yes | No -- shipped as a signed, verity-checked image | Yes -- a signed, verity-checked image, so its contents are verified rather than arbitrary mutable state |
-| ADB-root baked into an owner-signed, relocked image: `adbd` patched to run as root, with no on-device `su` (resign-android-image [@resign-android-image]) | Yes -- reachable only over ADB, no app-facing `su` | Yes | No | Yes -- the root path ships inside the owner-signed, verity-covered image, so tampering remains detectable and a reboot restores the verified state; it keeps no unverified persistent state that can modify the running system, unlike a `/data` module store, because `/system` stays mounted read-only under verity and even this full root cannot persistently write it in place (device-authorization state such as the `adbd` key store sits in `/data`, outside verified boot, as other user data does) |
-| Privileged but not root: ADB-shell brokering (Shizuku) [@shizuku] | No -- capped at the ADB shell permission set, via an app-broker API | Yes | No | Yes -- stock image unmodified |
+| Magisk-style systemless patch, relocked under an owner key[^t4-magisk] | Yes | Yes | Yes | No |
+| Scoped kernel root: KernelSU[^t4-ksu] | Yes | Yes | Yes | No |
+| Verity-disabled `/system`[^t4-verity] | Yes | Yes | No | No |
+| Non-persistent special-boot-mode root[^t4-np] | Yes | No | No | Yes |
+| Signed, verified extension (Android APEX)[^t4-apex] | No | Yes | No | Yes |
+| ADB-root in a re-signed image[^t4-adb] | Yes | Yes | No | Yes |
+| ADB-shell broker (Shizuku)[^t4-shizuku] | No | Yes | No | Yes |
+
+[^t4-magisk]: Root baked into a signed image and relocked under an owner key (avbroot [@avbroot]); app-facing `su`. Verified boot no longer certifies the running system: the module store in `/data/adb/modules` [@magisk-guides] is magic-mounted onto `/system` at every boot [@magisk-details], so the running system depends on it, yet it lives in `/data`, the writable user-data partition [@aosp-file-based-encryption], outside the read-only verity hashtree that covers `/system` [@aosp-dm-verity], [@kernel-dm-verity].
+[^t4-ksu]: Scoped kernel root, with per-app profiles [@kernelsu] (per-app gating narrows the surface, not a security boundary); the superuser sits in the kernel rather than in `init`. Same violation as the Magisk row: the `/data/adb/modules` store is overlaid onto `/system` via OverlayFS at every boot [@kernelsu-modules], outside the verity hashtree [@aosp-dm-verity], [@kernel-dm-verity].
+[^t4-verity]: dm-verity for `/system` disabled in the owner-signed image (`vbmeta` hashtree-disabled flag, or `vbmeta` without `/system`'s hashtree descriptor), relocked under the owner's key (avbroot [@avbroot], [@aosp-avb-readme]); `/system` itself is persistently writable (a direct write, not an overlay). The `vbmeta` still verifies, so the device boots locked in the yellow state [@aosp-avb-readme], but with dm-verity disabled `/system` falls outside the hashtree [@aosp-dm-verity], so tampering of `/system` is undetectable.
+[^t4-np]: A special-boot-mode terminal not retained across reboot [@grapheneos-root-statement]; no app-facing `su`. The root does not persist, so a reboot restores the verified boot chain and system image (writable user data, outside verified boot, is a separate matter).
+[^t4-apex]: Android APEX [@aosp-apex] (the Linux analogue, under a verity-and-signature image policy, is systemd-sysext [@systemd-sysext]); a bounded, policy-confined verified capability rather than a superuser. Shipped as a signed, verity-checked image, so its contents are verified rather than arbitrary mutable state.
+[^t4-adb]: `adbd` patched to run as root, reachable only over ADB, with no on-device `su` (resign-android-image [@resign-android-image]). The root path ships inside the owner-signed, verity-covered image, so tampering remains detectable and a reboot restores the verified state; it keeps no unverified persistent state that can modify the running system, because `/system` stays mounted read-only under verity (device-authorization state such as the `adbd` key store sits in `/data`, outside verified boot, as other user data does).
+[^t4-shizuku]: ADB-shell brokering (Shizuku) [@shizuku]; capped at the ADB shell permission set via an app-broker API, not root. The stock image is unmodified.
 
 Three qualifications attach to Table 4. The non-persistent row can be realized by a RAM-backed overlay, but an overlay's upper layer lies outside the verified-boot hashtree [@aosp-dm-verity], [@kernel-dm-verity], so the content it serves is unverified whatever backs it; ephemerality bounds the window of unverified operation rather than keeping the running system verified. And the design space is not closed in principle: image-based operating systems have prompted proposals for an owner-facing "developer mode" that would reconcile locally built or signed code with an immutable, cryptographically validated system, but such a mode remains a design proposal rather than a shipping feature [@poettering-developer-mode]. Third, the avbroot and resign-android-image rows assume the verity-preserving case: dm-verity stays enabled under the owner's key, so cryptographic verified boot remains intact, but its security model is not. While verity is preserved `/system` stays mounted read-only and cannot be written in place -- a `touch` there fails with a read-only-filesystem error [@aosp-dynamic-partitions] and a read-write remount is refused on a production build [@aosp-set-verity-service] -- so modifying the running system there takes either a `/data` overlay re-applied at boot (the Magisk and KernelSU rows) or disabling verity outright, and the ADB-root row's full, persistent root, confined to this read-only image, can persist nothing to `/system`. The persistent `/system` read-write row is the verity-disabling alternative: taking the hashtree off `/system` -- the `vbmeta` hashtree-disabled flag, or a `vbmeta` without `/system`'s hashtree descriptor -- places `/system` outside the verified hashtree, so cryptographic verified boot still covers the boot chain but no longer `/system`. Disabling the hashtree only removes the integrity check, though: where `/system` ships as EROFS -- the Enhanced Read-Only File System [@kernel-erofs] that modern Android selects for read-only partitions at build time (`BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs`) [@aosp-erofs] -- it is read-only by design and cannot be remounted read-write at all, so a persistently writable `/system` additionally requires rebuilding the owner-signed image with a writable filesystem (ext4 or f2fs) in place of EROFS [@aosp-erofs]. The bootloader stays locked, because it verifies the `vbmeta` signature, not the verity policy the signed `vbmeta` declares [@aosp-avb-readme] (the AVB reference behavior; a specific vendor's firmware may differ).
 
@@ -325,22 +348,30 @@ Hardware memory acquisition sharpens the same contrast, but only partly, because
 
 Table 5 sets the owner's control over each layer of the stack side by side for the two platforms, read downward from the bootloader to the firmware beneath the operating system. The pattern is a categorical difference across the upper, operating-system-and-boot layers, where the personal-computer owner holds administrative control and the stock-phone owner holds none, and a shared opaque floor at the firmware and management-coprocessor layers below them, where neither owner can inspect what runs.
 
-Table 5. Owner control over the stack: a traditional modular personal computer the owner administers versus stock Android (as sold).
+Table 5. Owner control over the stack: a traditional modular personal computer the owner administers versus stock Android (as sold). Yes = the owner can inspect and replace this layer; Partial = reflashable but not owner-inspectable; No = vendor-controlled or withheld.
 
 | Stack layer | Traditional personal computer (owner) | Stock Android, as sold (owner) |
 | --- | --- | --- |
-| Bootloader | Replaceable; Secure Boot is optional, and the owner can enroll custom keys or disable it | Locked and vendor-signed; unlocking wipes user data and drops attestation, and some devices are unlockable only by exploit or not at all |
-| Kernel | Owner builds and boots an arbitrary kernel | Vendor-signed boot image; a custom kernel requires unlocking |
-| Kernel modules | Owner loads arbitrary modules | Lockdown, module-signature, and dm-verity enforcement restrict loading |
-| initramfs | Owner controls | Part of the signed boot image; not owner-modifiable on stock |
-| `init` (first userspace, PID 1) | Owner chooses or replaces the init system, and can boot to an alternate `init` or single-user mode | Android `init` ships in the signed ramdisk and system partitions under verified boot and dm-verity, runs under SELinux, and is not owner-modifiable on stock |
-| Operating system | Owner installs any operating system | A custom operating system requires unlocking and incurs an attestation penalty |
-| In-system superuser (root) | Available to the owner by default | Withheld as sold; reachable only by exploit or unlocking -- exploit-gained root is SELinux-confined, while systemless root sidesteps SELinux but remains below the kernel's lockdown and module-signature enforcement |
-| Boot an external trusted system | Yes, from external media | Not supported while locked: the bootloader boots only signed images and an external system requires first unlocking [@aosp-fastboot-protocol], [@aosp-bootloader-locking]; the path is then device-specific |
-| Remove and image storage | Yes: detach the storage and image it on a trusted controller | Storage is soldered; chip-level reading is destructive, and the data returns as ciphertext under a hardware-bound key |
-| Platform firmware | BIOS/UEFI: reflashable but vendor-signed and opaque in practice, and in-the-wild implants have been demonstrated [@eset-lojax] | Bootloader and vendor firmware: vendor-controlled and owner-opaque |
-| Management co-processor | Intel ME or AMD PSP: a vendor-firmware co-processor the owner cannot inspect -- the ME embedded in the chipset with privileged access to platform data [@ermolov-intel-me], the AMD-SP a boot-time root of trust that runs before the main cores [@jacob-faultpm] | Cellular baseband, and any discrete secure element: vendor firmware on separate silicon the owner cannot inspect [@weinmann-baseband] |
-| Storage-controller firmware | Opaque; controller-firmware implants demonstrated in the lab [@zaddach-hdd-backdoor] and found in the wild [@kaspersky-equation] | Opaque |
+| Bootloader | Yes[^t5-pcboot] | No[^t5-andboot] |
+| Kernel, modules, initramfs, `init` | Yes | No[^t5-kernel] |
+| Operating system | Yes | No[^t5-os] |
+| In-system superuser (root) | Yes | No[^t5-root] |
+| Boot an external trusted system | Yes | No[^t5-ext] |
+| Remove and image storage | Yes | No[^t5-storage] |
+| Platform firmware | Partial[^t5-fw] | No |
+| Management co-processor | No[^t5-mco] | No |
+| Storage-controller firmware | No[^t5-sctl] | No |
+
+[^t5-pcboot]: PC bootloader: replaceable; Secure Boot is optional, and the owner can enroll custom keys or disable it.
+[^t5-andboot]: Android bootloader: locked and vendor-signed; unlocking wipes user data and drops attestation, and some devices are unlockable only by exploit or not at all.
+[^t5-kernel]: On a PC the owner builds and loads the kernel, modules, initramfs, and `init` freely. On Android all four ship in the signed, dm-verity-covered boot image and run under SELinux; a custom kernel or modified ramdisk requires unlocking, and module loading is restricted by lockdown and module-signature enforcement.
+[^t5-os]: Android: a custom operating system requires unlocking and incurs an attestation penalty.
+[^t5-root]: Android: withheld as sold, reachable only by exploit or unlocking. Exploit-gained root is SELinux-confined; systemless root sidesteps SELinux but remains below the kernel's lockdown and module-signature enforcement (Section 3, Table 4).
+[^t5-ext]: A PC boots freely from external media; locked Android boots only signed images, so an external system requires unlocking first [@aosp-fastboot-protocol], [@aosp-bootloader-locking], and the path is then device-specific.
+[^t5-storage]: PC: detach the storage and image it on a trusted controller. Android: storage is soldered, chip-level reading is destructive, and the data returns as ciphertext under a hardware-bound key.
+[^t5-fw]: Shared opaque floor. A PC's BIOS/UEFI is reflashable (hence Partial) but vendor-signed and opaque in practice, with in-the-wild implants demonstrated [@eset-lojax]; Android's bootloader and vendor firmware are vendor-controlled and not owner-reflashable.
+[^t5-mco]: Neither owner can inspect this layer. PC: Intel ME or AMD PSP, a vendor-firmware co-processor with privileged platform access [@ermolov-intel-me], [@jacob-faultpm]. Android: the cellular baseband and any discrete secure element, vendor firmware on separate silicon [@weinmann-baseband].
+[^t5-sctl]: Opaque on both platforms; controller-firmware implants have been demonstrated in the lab [@zaddach-hdd-backdoor] and found in the wild [@kaspersky-equation].
 
 The division is systematic. On the personal computer the owner commands the entire operating-system-and-boot stack and is blocked only at the firmware and management-coprocessor floor; on the stock phone the owner commands essentially none of the stack, so the same firmware floor sits beneath a barrier that is already categorical at every layer above it. Administrative control, in the sense defined in Section 3, is exactly what the left column has and the right column lacks; root, where a phone owner reaches it, adds only the single "in-system superuser" row and leaves every other row unchanged.
 
@@ -447,7 +478,7 @@ Table 6. Owner goals, the capability each requires, and the Table 4 configuratio
 
 | Owner goal | Minimum capability | Satisfied by |
 | --- | --- | --- |
-| Read system logs; read all files on disk; image a partition; snapshot memory; full device backup | Full-root read, one-shot (no persistence or write) | Any full-root configuration: Magisk, KernelSU, verity-disabled `/system`, non-persistent root, ADB-root. Not the bounded verified extension or the shell-tier broker (which reaches the log buffer but not another application's private storage, a raw block device, or kernel memory) |
+| Owner-inspection: read logs and all files, image a partition, snapshot memory, full backup | Full-root read, one-shot (no persistence or write) | Any full-root configuration[^t6-inspect] |
 | Disable or uninstall a preinstalled app for the current user | ADB-shell tier | Any of the above, plus the shell-tier broker and plain stock ADB -- no root required |
 | Remove a preinstalled app from the image (reclaim space; remove for all users) | Persistent `/system` write | Magisk and KernelSU (via the `/data` overlay), or the verity-disabled `/system` configuration (direct write) |
 | System-wide ad and tracker blocking via the hosts file; install a custom CA into the system trust store | Persistent `/system` write (a `/data` overlay suffices) | Magisk, KernelSU, verity-disabled `/system`, or baked into the owner-signed, verity-covered image (the avbroot or resign-android-image row) [@adaway] |
@@ -456,6 +487,8 @@ Table 6. Owner goals, the capability each requires, and the Table 4 configuratio
 | Disable certificate pinning, or theme the system by code injection | App-facing `su` with framework (Zygote) injection [@aosp-zygote], [@frida], [@magisk-guides] | Magisk, KernelSU [@lsposed] |
 | Privileged automation; run applications that require root | App-facing `su` at runtime | Magisk, KernelSU |
 | Pass software-tier application-integrity checks while modified (not hardware-backed attestation) | App-facing `su` plus an integrity-masking module in the `/data/adb/modules` store | Magisk, KernelSU |
+
+[^t6-inspect]: Magisk, KernelSU, verity-disabled `/system`, non-persistent root, or ADB-root -- not the bounded verified extension or the shell-tier broker, which reaches the log buffer but not another application's private storage, a raw block device, or kernel memory.
 
 Two qualifications sharpen the debloating rows. The removal owners most often perform is a per-user disable or uninstall -- the platform's own `pm uninstall --user 0` and `pm disable-user`, an operation at the ADB-shell permission tier that the shell user is allowed to run without root [@aosp-shell-manifest]: it records a per-user uninstalled or disabled mark in `/data` and leaves the `/system` APK in place [@aosp-packagemanager-flags], so it needs no system write (the app is removed only for that user, reclaims no `/system` space, and returns for a new user or after a factory reset), and it is automated by tools built on it [@universal-android-debloater]. Only true removal from the image -- reclaiming the space, or removing the app for every user -- requires a persistent system write, and so one of the three write-capable configurations. Those three in turn split on injection: the verity-disabled `/system` configuration can place or replace files, but the pinning-bypass and framework-hooking goals additionally need an app-facing superuser and Zygote injection [@aosp-zygote], [@magisk-guides], which only the Magisk and KernelSU rows provide. The pinning-bypass goal is the narrower exception: for a repackageable application an owner can strip its pinning by patching and reinstalling the app at the ADB-shell tier, without root [@owasp-mastg-repackaging], so superuser and Zygote injection are the minimum only for in-place, system-wide injection, and repackaging fails against an application that verifies its own signature or enforces a server-backed integrity check.
 
