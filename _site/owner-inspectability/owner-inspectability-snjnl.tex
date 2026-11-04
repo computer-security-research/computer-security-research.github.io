@@ -681,14 +681,19 @@ one or more target technologies that are connected with a particular
 person"). The security literature names the structural hazard directly:
 exceptional access "would create concentrated targets that could attract
 bad actors," and "complexity is the enemy of security"
-\citep{keys-under-doormats}. The point for owner-inspectability is
-deliberately narrow: a mandatory, un-refusable, cryptographically gated
-update channel, combined with hardware attestation, concentrates into a
-single vendor-controlled choke point the capability to deliver code the
-owner can neither refuse nor independently inspect. That is a backdoor
-vector -\/- a capability a compromised or compelled vendor could exploit
--\/- not evidence that any such backdoor exists in a given product; what
-the owner provably lacks is the means to establish that it does not.
+\citep{keys-under-doormats}. A national cybersecurity authority has
+raised the kindred concern for trusted-computing hardware, cautioning
+that running a system on a TPM 2.0 can entail a loss of owner control
+over the operating system and the hardware, and that the mechanisms
+involved could be turned to sabotage by a third party
+\citep{bsi-tpm-2013}. The point for owner-inspectability is deliberately
+narrow: a mandatory, un-refusable, cryptographically gated update
+channel, combined with hardware attestation, concentrates into a single
+vendor-controlled choke point the capability to deliver code the owner
+can neither refuse nor independently inspect. That is a backdoor vector
+-\/- a capability a compromised or compelled vendor could exploit -\/-
+not evidence that any such backdoor exists in a given product; what the
+owner provably lacks is the means to establish that it does not.
 
 Update-related communication is, moreover, not anonymous on devices
 certified for Google Mobile Services (GMS). Google Play services
