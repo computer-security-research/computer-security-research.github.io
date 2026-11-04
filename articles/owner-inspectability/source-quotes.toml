@@ -788,15 +788,18 @@ claims = [
 quotes = [
   { text = "\"In Amnesty International's experience there are significantly more forensic traces accessible to investigators on Apple iOS devices than on stock Android devices, therefore our methodology is focused on the former. As a result, most recent cases of confirmed Pegasus infections have involved iPhones.\"" },
   { text = "It is important to note that this does not necessarily reflect the relative security of iOS devices compared to Android devices, or other operating systems and phone manufacturers.", label = "iOS focus does not imply iOS is more secure" },
+  { text = "Amnesty International's investigations, corroborated by secondary information we have received, seem to suggest that Pegasus is no longer maintaining persistence on iOS devices. Therefore, binary payloads associated with these processes are not recoverable from the non-volatile filesystem. Instead, one would need to be able to jailbreak the device without reboot, and attempt to extract payloads from memory.", label = "Non-persistent payload -- recoverable only from memory, not the filesystem artifact-based tools read", note = "Amnesty International, Forensic Methodology Report (amnesty.org/.../forensic-methodology-report-how-to-catch-nso-groups-pegasus). Verbatim; source uses a typographic apostrophe in 'International's', normalized to ASCII here. Reinforces Sec. 9/12: an in-memory implant leaves no static filesystem trace for an IOC/artifact-based tool like MVT to find." },
 ]
 
 [mvt-android-methodology]
 label = "MVT -- limited Android diagnostic information"
 claims = [
   { section = "Sec. 12", text = "Android stores little diagnostic information useful for triaging compromises and the toolkit's Android capabilities are correspondingly limited." },
+  { section = "Sec. 12", text = "the toolkit identifies known indicators of compromise, and its own documentation warns that an absence of indicator matches does not establish that a device is clean -- it can miss recent traces and give a false sense of security." },
 ]
 quotes = [
   { text = "\"The limited diagnostic information available makes it difficult to triage potential compromises\" / \"capabilities are limited as well. However, not all is lost.\"" },
+  { text = "Public indicators of compromise are insufficient to determine that a device is \"clean\", and not targeted with a particular spyware tool. Reliance on public indicators alone can miss recent forensic traces and give a false sense of security.", label = "Absence of IOC matches is not proof a device is clean", note = "MVT README / docs (github.com/mvt-project/mvt; docs.mvt.re). Verified verbatim against the raw source. Supports Sec. 12." },
 ]
 
 [guri-joker-jtag]
