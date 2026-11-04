@@ -31,4 +31,3 @@ status = "draft"
 
 # Standard scholarly statements (rendered only when present; honest for this work).
 data_availability = "This is an analysis paper. It introduces no new datasets or code; all sources are cited and publicly available at the URLs listed in the references."
-funding = "The author received no specific funding for this work."
