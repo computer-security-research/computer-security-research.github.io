@@ -1,6 +1,11 @@
 # _site is GENERATED output (built in the sandbox by bin/csr-build), committed
 # verbatim for deploy. Mark it linguist-generated so the dist-ai-style gate skips
 # its STYLE/format rules (it would otherwise rewrite the rendered HTML and drift
-# from the generator's output); the secret / large-file / structural checks still
-# apply. GitHub also collapses it in diffs and excludes it from language stats.
+# from the generator's output); the secret / structural checks still apply.
+# GitHub also collapses it in diffs and excludes it from language stats.
 _site/** linguist-generated
+# The Pages deploy serves the raw committed _site bytes (build_type=workflow, no
+# CI rebuild), so its inlined-asset HTML cannot move to git-lfs and legitimately
+# exceeds check-added-large-files' 500 KiB. Mark it a deliberately-committed large
+# artifact so the add-size gate skips it (opt-in; every other path default-denies).
+_site/** dist-ai-large-ok
