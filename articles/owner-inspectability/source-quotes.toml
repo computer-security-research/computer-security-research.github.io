@@ -456,15 +456,34 @@ quotes = [
 
 [petroni-copilot]
 label = "Petroni et al. -- coprocessor-based below-OS kernel integrity monitor"
-no_quote = "Cited in Sec. 14 for the external-monitor lineage: a PCI coprocessor that DMA-reads host memory to detect kernel modification. USENIX Security 2004; cited for the approach (detects/measures integrity, gives no owner dump), not quoted verbatim."
+claims = [
+  { section = "Sec. 14", text = "A coprocessor on a PCI add-in card DMA-reads host RAM to detect kernel modification; detection is by hashing kernel text and data -- a measurement/detection signal, not an arbitrary owner image." },
+]
+quotes = [
+  { text = "\"Copilot is a coprocessor-based kernel integrity monitor for commodity systems.\"", label = "Coprocessor-based kernel integrity monitor", note = "Petroni et al., Copilot (USENIX Security 2004), Abstract." },
+  { text = "\"The monitor retrieves parts of host RAM for examination through Direct Memory Access (DMA) without the knowledge or intervention of the host kernel.\"", label = "DMA-reads host RAM out of band", note = "Petroni et al., Copilot (USENIX Security 2004); prototype architecture." },
+  { text = "\"Presently, the Copilot monitor prototype implements a detection strategy based on MD5 hashes [29] of the host kernel's text, the text of any loaded LKMs, and the contents of some of the host kernel's critical data structures.\"", label = "Detects by hashing -- measures, does not dump", note = "Petroni et al., Copilot (USENIX Security 2004); detection strategy." },
+]
 
 [mccune-flicker]
 label = "McCune et al. -- DRTM late-launch minimal-TCB isolated execution"
-no_quote = "Cited in Sec. 14 for the external-monitor lineage: late-launch (DRTM) isolated measured execution of a small payload. EuroSys 2008 (doi 10.1145/1352592.1352625, Crossref-verified); ACM full text paywalled, so cited for the approach, not quoted verbatim."
+claims = [
+  { section = "Sec. 14", text = "Late launch runs security-sensitive code in complete isolation, trusting as few as 250 lines beyond it, with fine-grained attestation -- isolated measured execution, not an owner dump facility." },
+]
+quotes = [
+  { text = "\"We present Flicker, an infrastructure for executing security-sensitive code in complete isolation while trusting as few as 250 lines of additional code.\"", label = "Isolated execution, minimal TCB", note = "McCune et al., Flicker (EuroSys 2008), Abstract." },
+  { text = "\"To achieve these properties, Flicker utilizes hardware support for late launch and attestation recently introduced in commodity processors from AMD and Intel.\"", label = "Late launch (DRTM) + attestation", note = "McCune et al., Flicker (EuroSys 2008), Abstract." },
+]
 
 [embleton-smm-rootkit]
 label = "Embleton et al. -- SMM is a below-OS layer that is also a rootkit substrate"
-no_quote = "Cited in Sec. 14 for the attack-surface tradeoff: System Management Mode runs beneath and invisibly to the OS with full physical-memory access -- the same below-OS layer monitors rely on is a documented rootkit substrate. SecureComm 2008 (doi 10.1145/1460877.1460892); paywalled, cited for the documented capability, not quoted verbatim."
+claims = [
+  { section = "Sec. 14", text = "System Management Mode has its own memory invisible to the OS, lacks privilege levels, is immune to memory protection, and has unrestricted access to physical memory -- the same below-OS vantage a monitor needs is a documented rootkit substrate." },
+]
+quotes = [
+  { text = "\"It has its own private memory space and execution environment which is generally invisible to code running outside (e.g., the Operating System). Furthermore, SMM code is completely non-preemptible, lacks any concept of privilege level, and is immune to memory protection mechanisms.\"", label = "Below-OS, invisible, immune to memory protection", note = "Embleton et al., SMM Rootkits (SecureComm 2008), Abstract." },
+  { text = "\"Because SMM code has unrestricted access to physical memory...\"", label = "Unrestricted physical-memory access", note = "Embleton et al., SMM Rootkits (SecureComm 2008); privilege-escalation discussion." },
+]
 
 [tcg-tpm-library]
 label = "TCG TPM 2.0 -- measurement/attestation primitive, not a readable store"
@@ -472,7 +491,13 @@ no_quote = "Cited in Sec. 14 for the 'measure, not dump' distinction: the TPM em
 
 [amd-sev-snp]
 label = "AMD SEV-SNP -- VM memory encryption bars even a privileged reader (owner included)"
-no_quote = "Cited in Sec. 14 for the acquisition-closing trend: with guest memory encryption a privileged component reading guest RAM sees only ciphertext -- a protection against a malicious host that, in the owner-inspection framing, equally bars the owner. AMD SEV-SNP white paper (2020); PDF fetch timed out at verification, so cited for the documented property rather than a verbatim quote."
+claims = [
+  { section = "Sec. 14", text = "Guest VM memory is encrypted under a per-VM key the hypervisor does not hold, so a privileged component reading guest memory sees only ciphertext -- a protection against a malicious host that, in the owner-inspection framing, equally bars the owner." },
+]
+quotes = [
+  { text = "\"When a component such as the hypervisor attempts to read memory inside a guest, it is only able to see the encrypted bytes.\"", label = "Privileged reader sees only ciphertext", note = "AMD, SEV-SNP: Strengthening VM Isolation with Integrity Protection and More (2020)." },
+  { text = "\"An attacker without knowledge of the encryption key cannot decipher VM data that is stored in DRAM.\"", label = "No key -> cannot decipher VM memory", note = "AMD, SEV-SNP white paper (2020)." },
+]
 
 [aosp-adb-root]
 label = "AOSP adb -- a stock user build never lets adbd stay root"
@@ -1157,7 +1182,12 @@ quotes = [
 
 [inre-directives-2008]
 label = "In re Directives -- provider (Yahoo) compelled to assist warrantless acquisition; directives upheld"
-no_quote = "Cited in Sec. 6 for the holding that the FISA Court of Review upheld compelled assistance with warrantless acquisition over the provider's objection (551 F.3d 1004, 2008); not quoted verbatim. The threatened escalating daily fine (reported $250,000 per day, doubling weekly) is NOT in the opinion -- it is from the Government's 2008 motion, declassified and reported Sept. 2014 (PBS/AP, Christian Science Monitor, The Hill); represented as reported-from-declassified-records, not a judicial quote."
+claims = [
+  { section = "Sec. 6", text = "The FISA Court of Review affirmed the order compelling the provider's assistance with warrantless acquisition and denied its petition for review -- compelled assistance upheld over the provider's objection." },
+]
+quotes = [
+  { text = "\"The decision granting the government's motion to compel is affirmed; the petition for review is denied and dismissed; and the motion for a stay is denied as moot.\"", label = "Motion to compel affirmed; petition denied", note = "In re Directives, 551 F.3d 1004 (FISA Ct. Rev. 2008), disposition. The threatened escalating daily fine (reported $250,000/day, doubling weekly) is NOT in this opinion -- it is from the Government's 2008 motion, declassified and reported Sept. 2014; represent it as reported-from-declassified-records, not a judicial quote." },
+]
 
 [kerr-schneier-2018]
 label = "Kerr & Schneier -- compelled assistance/key disclosure established; compelled product redesign unresolved"
