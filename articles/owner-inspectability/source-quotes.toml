@@ -228,39 +228,92 @@ quotes = [
 
 [zhang-root-providers]
 label = "Android root as deployed enlarges attack surface (CCS 2015)"
-no_quote = "Cited for its empirical finding on the commercial one-click-root ecosystem, not for a quotation."
+claims = [
+  { section = "Sec. 4", text = "Root as actually shipped by commercial one-click providers distributes kernel exploits that malware can equally abuse, enlarging the attack surface rather than giving the owner controlled privileged access." },
+]
+quotes = [
+  { text = "If not carefully controlled, such exploits can be abused by malware author to gain unauthorized root privilege.", label = "Root exploits reusable by malware", note = "Zhang, She, Qian, Android Root and its Providers: A Double-Edged Sword, CCS 2015, abstract (cs.ucr.edu/~zhiyunq/pub/ccs15_root_providers.pdf). Verbatim; source prints the singular 'malware author'. Cited in Sec. 4." },
+  { text = "With full control over the device, a user can uninstall bloatware, enjoy the additional functionalities by specialized apps that require root privileges, or run paid apps for free.", label = "Rooting motivations", note = "Same source, Introduction. Supports the Appendix B motivations taxonomy." },
+  { text = "They allow users to bypass restrictions set by carriers, operating systems, and hardware manufactures.", label = "Bypassing carrier/vendor restrictions", note = "Same source, Introduction. Verbatim; source prints 'manufactures'." },
+]
 
 [sadeghi-property-attestation]
 label = "Property-based attestation -- certify properties, not a specific binary (NSPW 2004)"
-no_quote = "Cited for the property-based-attestation proposal it introduces, not for a quotation."
+claims = [
+  { section = "Sec. 4", text = "Property-based attestation proposes certifying that a platform satisfies required security properties rather than that it runs one specific binary configuration." },
+]
+quotes = [
+  { text = "the attestation of a platform should not depend on the specific software or/and hardware (configuration) as it is today's practice but only on the \"properties\" that the platform offers.", label = "Attest properties, not a specific configuration", note = "Sadeghi, Stueble, Property-based Attestation for Computing Platforms, NSPW 2004, abstract (TU Darmstadt author copy, download.hrz.tu-darmstadt.de). Verbatim; source uses typographic quotation marks around 'properties', rendered ASCII here. Cited in Sec. 4." },
+]
 
 [saltzer-schroeder]
 label = "Saltzer & Schroeder 1975 -- principle of least privilege"
-no_quote = "Cited for the principle of least privilege it formulates, not for a quotation."
+claims = [
+  { section = "Sec. 13", text = "Principle of least privilege: every program and every user operates with the least set of privileges necessary to complete the job." },
+]
+quotes = [
+  { text = "Every program and every user of the system should operate using the least set of privileges necessary to complete the job.", label = "Least privilege", note = "Saltzer & Schroeder, The Protection of Information in Computer Systems, 1975, Sec. I.A design principle (f) Least privilege (web.mit.edu/Saltzer/www/publications/protection/Basic.html). Verified verbatim. Cited in Sec. 13." },
+]
 
 [clark-wilson]
 label = "Clark & Wilson 1987 -- separation of duty as an integrity control"
-no_quote = "Cited for the separation-of-duty integrity model it formalizes, not for a quotation."
+claims = [
+  { section = "Sec. 13", text = "Separation of duty as an integrity control: dividing an operation among parties so that no single person both certifies and executes it." },
+]
+quotes = [
+  { text = "Perhaps the most basic separation of duty rule is that any person permitted to create or certify a well-formed transaction may not be permitted to execute it (at least against production data).", label = "Separation of duty", note = "Clark & Wilson, A Comparison of Commercial and Military Computer Security Policies, 1987 IEEE Symposium on Security and Privacy, p. 187. Transcribed visually from the page image (the PDF OCR layer is faulty) to guarantee verbatim accuracy. Cited in Sec. 13." },
+]
 
 [poettering-developer-mode]
 label = "Poettering 'Developer Mode' -- proposed owner-code-on-immutable-signed-OS mode (unshipped)"
-no_quote = "Cited for the developer-mode design direction it sketches, not for a quotation."
+claims = [
+  { section = "Sec. 13", text = "An owner-facing developer mode has been proposed to reconcile locally built or signed code with an immutable, cryptographically validated system, but it remains a design proposal rather than a shipping feature." },
+]
+quotes = [
+  { text = "First of all, I think there's value in allowing users to additively extend/override the OS via local developer system extensions.", label = "Developer mode -- local extensions over an immutable OS", note = "Poettering, Fitting Everything Together, 'Developer Mode' section (0pointer.net/blog/fitting-everything-together.html). Verified verbatim (ASCII-clean variant chosen; the fuller passage contains non-ASCII dashes). Cited in Sec. 13." },
+]
 
 [aosp-apex]
 label = "Android APEX -- signed, dm-verity-verified, read-only modular system component"
-no_quote = "Cited for the APEX mechanism it documents, not for a quotation."
+claims = [
+  { section = "Sec. 13", text = "APEX is a signed, dm-verity-verified container for modular system components; its payload is surfaced under its own path and AOSP deliberately does not overlay files on /system, so it is a bounded, policy-confined extension rather than an arbitrary /system overlay." },
+]
+quotes = [
+  { text = "The Android Pony EXpress (APEX) container format was introduced in Android 10 and it's used in the install flow for lower-level system modules.", label = "APEX -- modular system-component container", note = "Android Open Source Project, APEX container format (source.android.com/docs/core/ota/apex). Verified verbatim. Cited in Sec. 13 and Appendix B." },
+  { text = "apex_payload.img is an ext4 file system image backed by dm-verity.", label = "Payload is dm-verity-backed" },
+  { text = "the Android team decided not to overlay files on the /system partition because this could impact performance as the number of files being overlaid (possibly even stacked one after another) increased.", label = "Does not overlay /system", note = "Design-rationale section; the stated reason for surfacing APEX content under /apex/<name> rather than overlaying /system." },
+]
 
 [systemd-sysext]
 label = "systemd-sysext -- signed, verity-authenticated, read-only system-extension images (Linux)"
-no_quote = "Cited for the sysext mechanism it documents, not for a quotation."
+claims = [
+  { section = "Sec. 13", text = "The Linux analogue of APEX: systemd-sysext extends the base system with strictly read-only images that may optionally carry dm-verity authentication, under an image policy." },
+]
+quotes = [
+  { text = "System extension images are strictly read-only by default.", label = "Read-only extension images", note = "systemd project, systemd-sysext manual (freedesktop.org/software/systemd/man/latest/systemd-sysext.html). Verified verbatim (ASCII-clean quotes chosen; the Description's first sentence contains non-ASCII dashes). Cited in Sec. 13." },
+  { text = "they may optionally carry Verity authentication information.", label = "Optional Verity authentication" },
+]
 
 [avbroot]
 label = "avbroot -- owner re-signs + relocks, with optional baked-in root"
-no_quote = "Cited for the tool's capability (owner re-sign, relock, optional root), not for a quotation."
+claims = [
+  { section = "Sec. 13", text = "avbroot re-signs Android OTA images with the owner's own keys, enabling a relocked bootloader with optionally baked-in root." },
+]
+quotes = [
+  { text = "avbroot is a tool for modifying Android A/B OTA images reproducibly and re-signing them with custom keys.", label = "Owner re-signs OTA with custom keys", note = "chenxiaolong, avbroot README, opening sentence (github.com/chenxiaolong/avbroot). Verified verbatim. Cited in Sec. 13." },
+  { text = "The boot or init_boot image, depending on device, is patched to enable root access if requested.", label = "Optional baked-in root", note = "README, Patches section." },
+  { text = "Reboot back into fastboot and lock the bootloader.", label = "Relock under the owner key", note = "README, setup steps." },
+]
 
 [kernelsu]
 label = "KernelSU -- kernel-level Android root with per-app (app-profile) scoping"
-no_quote = "Cited for the project's kernel-root and app-profile design, not for a quotation."
+claims = [
+  { section = "Sec. 13", text = "KernelSU is a kernel-based root solution for Android with per-app (app-profile) scoping of root." },
+]
+quotes = [
+  { text = "A kernel-based root solution for Android devices.", label = "Kernel-based root", note = "KernelSU README tagline (github.com/tiann/KernelSU, docs/README.md on branch main). Verified verbatim. Cited in Sec. 13." },
+  { text = "App Profile: Lock up the root power in a cage.", label = "Per-app profile scoping", note = "README Features list, item 3." },
+]
 
 [kernelsu-modules]
 label = "KernelSU module -- store in /data/adb/modules, overlaid on /system each boot via OverlayFS (systemless)"
@@ -276,7 +329,13 @@ quotes = [
 
 [shizuku]
 label = "Shizuku/Sui -- ADB-shell privilege brokering, not root"
-no_quote = "Cited for the project's ADB-shell brokering design, not for a quotation."
+claims = [
+  { section = "Sec. 13", text = "Shizuku lets ordinary apps use privileged system APIs at the ADB/shell permission level through a brokered server process, without full root." },
+]
+quotes = [
+  { text = "Shizuku guides users to run a process, Shizuku server, with root or ADB first.", label = "Broker runs at ADB/root privilege", note = "Rikka Apps, Shizuku README, 'How does Shizuku work?' section (github.com/RikkaApps/Shizuku). Verified verbatim. Cited in Sec. 13." },
+  { text = "So, we reached our goal, to use system APIs with higher permission. And to the app, it is almost identical to the use of system APIs directly.", label = "Apps use system APIs at elevated privilege" },
+]
 
 [aosp-cdd]
 label = "Android CDD -- the compatibility requirements a device must meet to be Android"
@@ -1375,7 +1434,12 @@ quotes = [
 
 [eu-data-retention-directive]
 label = "EU Data Retention Directive -- mandated retention of communications data"
-no_quote = "Cited as an example of jurisdictions mandating retention of provider-side communications logs; EUR-Lex bot-walls automated fetch (CELEX query returns HTTP 202/empty), so the verbatim Art. 1(1) text was not re-verified this pass. Directive 2006/24/EC was later invalidated by the CJEU (Digital Rights Ireland, 2014); cited only as an example of mandated retention."
+claims = [
+  { section = "Sec. 6", text = "Many jurisdictions have mandated retention of provider-side communications data; Directive 2006/24/EC is cited as one example of such a mandate." },
+]
+quotes = [
+  { text = "This Directive aims to harmonise Member States' provisions concerning the obligations of the providers of publicly available electronic communications services or of public communications networks with respect to the retention of certain data which are generated or processed by them, in order to ensure that the data are available for the purpose of the investigation, detection and prosecution of serious crime, as defined by each Member State in its national law.", label = "Mandated retention of provider-side data (Art. 1(1))", note = "Directive 2006/24/EC, Art. 1(1) Subject matter and scope, Official Journal L 105/54. EUR-Lex bot-walls automated fetch (HTTP 202/empty); text recovered from the Wayback Machine snapshot of the official EUR-Lex page (web.archive.org .../CELEX:32006L0024) and verified ASCII-verbatim. The Directive was later invalidated by the CJEU (Digital Rights Ireland, 2014); cited only as an example of a mandated-retention regime. Cited in Sec. 6." },
+]
 
 [thalium-rkchk]
 label = "rkchk -- in-system Linux kernel module for LKM-rootkit detection"
@@ -1509,23 +1573,32 @@ quotes = [
 
 [adaway]
 label = "AdAway -- hosts-file ad/tracker blocker (systemless via Magisk)"
-no_quote = "Cited in Appendix B to name the hosts-file ad/tracker-blocking tool, not for a quotation."
+quotes = [
+  { text = "ad blocker for Android using the hosts file and local vpn.", label = "Hosts-file ad blocker", note = "AdAway README, verbatim sub-span of the project's one-line self-description (github.com/AdAway/AdAway); quoted to the clause relevant to the citation (hosts-file ad blocking). Cited in Appendix B." },
+]
 
 [afwall]
 label = "AFWall+ -- root-requiring iptables firewall for Android"
-no_quote = "Cited in Appendix B to name the root-requiring netfilter firewall app, not for a quotation."
+quotes = [
+  { text = "AFWall+ (Android Firewall+) is a powerful, open-source firewall application for rooted Android devices.", label = "Root-requiring firewall", note = "AFWall+ README, opening sentence (github.com/ukanth/afwall). Verified verbatim. Cited in Appendix B." },
+  { text = "Built on Linux's robust iptables framework, AFWall+ provides granular network control at the system level - something impossible with standard Android permissions.", label = "iptables/netfilter-based" },
+]
 
 [lsposed]
 label = "LSPosed -- Zygisk/Xposed framework-injection module"
-no_quote = "Cited in Appendix B to name the Zygote/framework code-injection tool, not for a quotation."
+quotes = [
+  { text = "A Riru / Zygisk module trying to provide an ART hooking framework which delivers consistent APIs with the OG Xposed, leveraging LSPlant hooking framework.", label = "Zygisk-based Xposed-API framework hooking", note = "LSPosed README, Introduction (github.com/LSPosed/LSPosed). Verified verbatim; the source says 'ART hooking framework'. Cited in Appendix B." },
+]
 
 [universal-android-debloater]
 label = "Universal Android Debloater NG -- ADB-based system-app removal (pm uninstall --user 0)"
-no_quote = "Cited in Appendix B to name the ADB-shell-tier debloat tool, not for a quotation."
+quotes = [
+  { text = "This aims to improve privacy and efficiency (energy, speed, memory) by removing unnecessary and obscure system apps.", label = "Removes system apps", note = "Universal Android Debloater Next Generation README, opening paragraph (github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation). Verified verbatim. Cited in Appendix B as a tool automating the per-user pm uninstall --user 0 operation; the ADB/no-root detail is sourced in-text via aosp-shell-manifest, as the README itself does not state it." },
+]
 
 [sun-android-rooting]
 label = "Sun et al. -- Android rooting: methods, detection, and evasion (CCS/SPSM 2015)"
-no_quote = "Cited in Appendix B for its rooting-motivations/methods taxonomy, not for a quotation."
+no_quote = "Cited in Appendix B for its rooting-motivations/methods taxonomy. No verbatim quote: the paper is closed-access (ACM DL returns HTTP 403; no open-access copy via Unpaywall or Semantic Scholar; the authors' pages host no PDF), so the body text could not be obtained to quote without fabrication. The same motivations (bloatware removal, apps requiring root, bypassing carrier/vendor restrictions) are quoted from an accessible primary source under zhang-root-providers."
 
 [kernel-erofs]
 label = "EROFS -- Enhanced Read-Only File System, read-only by design"
