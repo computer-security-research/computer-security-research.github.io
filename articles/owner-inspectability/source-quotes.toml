@@ -16,7 +16,7 @@ quotes = [
 [aosp-selinux-validate]
 label = "SELinux cannot be disabled on a production Android build (enforcing is CTS-verified)"
 claims = [
-  { section = "Sec. 13", text = "On a production (user) build SELinux cannot be set permissive or disabled through any admin path; permissive is unsupported and CTS verifies enforcing mode, so a confined uid-0 has no route to turn MAC off -- defeating SELinux requires a kernel-memory compromise." },
+  { section = "Sec. 13", text = "On a production (user) build, permissive mode is unsupported and CTS verifies enforcing mode; SELinux enforcement can be disabled with adb only on userdebug or eng builds." },
 ]
 quotes = [
   { text = "Permissive mode isn't supported on production devices. CTS tests confirm enforcing mode is enabled.", label = "No permissive mode on production; CTS-verified", note = "Android Open Source Project, Validating SELinux (source.android.com/docs/security/features/selinux/validate). Verified verbatim via host curl 2026-11-05. Cited in Sec. 13 (Table 4 kernel-exploit row)." },
@@ -425,7 +425,7 @@ quotes = [
 label = "Project Zero -- CVE-2019-2215 Binder use-after-free: in-the-wild kernel LPE on a running signed kernel (Pegasus chain)"
 claims = [
   { section = "Sec. 8", text = "A use-after-free in the Android kernel's Binder driver (CVE-2019-2215) gave a runtime, in-memory local privilege escalation to full compromise of an already-booted device, exploited in the wild in a Pegasus attack chain -- a compromise of the signed, running kernel that boot-time verification does not catch." },
-  { section = "Sec. 13", text = "Table 4's kernel-exploit row: CVE-2019-2215 is a documented in-the-wild kernel LPE reaching full compromise of a running, signed, locked device without unlocking the bootloader, and it was transient, closed by patching -- illustrating that exploit-gained temp-root neither persists nor leaves verified-boot-detectable state." },
+  { section = "Sec. 13", text = "Table 4's kernel-exploit row cites CVE-2019-2215 as a documented in-the-wild kernel LPE giving a runtime full compromise of an already-booted device, later closed by patching; the row's locked-device, SELinux-confined, and non-persistent properties are argued separately (Section 3), not claimed from this source." },
 ]
 quotes = [
   { text = "On October 3, 2019, we disclosed issue 1942 (CVE-2019-2215), which is a use-after-free in Binder in the Android kernel. The bug is a local privilege escalation vulnerability that allows for a full compromise of a vulnerable device.", label = "Kernel UAF -> full runtime compromise", note = "Google Project Zero, Bad Binder; verified verbatim." },
