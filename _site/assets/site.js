@@ -243,7 +243,11 @@
       var reduce = window.matchMedia
         && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       window.scrollTo({ top: 0, behavior: reduce ? "instant" : "smooth" });
-      btn.blur();
+      // Release focus only on a POINTER click (detail > 0; keyboard-activated clicks report 0),
+      // so the scroll-to-top's own hide() is not suppressed by the focus-guard, leaving the
+      // control at the top catching clicks. A keyboard user keeps focus (blurring would discard
+      // their place rather than move it somewhere sensible).
+      if (e.detail > 0) { btn.blur(); }
     });
     // On blur, re-check the threshold: hide at once near the top, else resume the idle-hide (a
     // focused control's idle timer no-ops, so without this it would linger once focus leaves).
