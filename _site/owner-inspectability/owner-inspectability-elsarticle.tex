@@ -1877,7 +1877,8 @@ not granting a full superuser (a bounded verified extension, or
 shell-tier brokering), by not persisting (a non-persistent
 special-boot-mode root), or by keeping even a full, persistent superuser
 entirely inside the owner-signed, verity-covered image with no
-unverified persistent state (ADB-root baked into a re-signed image).
+unverified persistent state that can modify the running system (ADB-root
+baked into a re-signed image).
 
 Table 4. Owner root and privilege options that keep the bootloader
 locked and verified boot engaged.
@@ -2162,15 +2163,18 @@ a read-only, one-time act that needs neither persistence, nor an
 app-facing superuser, nor any write to the system, so every full-root
 configuration in Table 4 satisfies it: the Magisk and KernelSU rows, the
 verity-disabled \texttt{/system} row, the non-persistent
-special-boot-mode root, and even the ADB-only root. The two that are not
-a full superuser do not -\/- the bounded verified extension reaches none
-of it, and the shell-tier broker reaches the log buffer but not another
-application\textquotesingle s private storage, a raw block device, or
-kernel memory. Inspection is thus the easy half of the capability; what
-binds the owner is not reaching it but the attestation penalty that
-reaching it exacts. The other goals owners pursue -\/- debloating,
-system-wide ad-blocking, firewall control, and more -\/- divide across
-these configurations less uniformly, as Appendix B maps.
+special-boot-mode root, and even the ADB-only root. The two owner
+options that are not a full superuser do not -\/- the bounded verified
+extension reaches none of it, and the shell-tier broker reaches the log
+buffer but not another application\textquotesingle s private storage, a
+raw block device, or kernel memory (the comparison-only kernel-exploit
+row, equally not a full superuser, is set aside here, being an attack
+technique rather than an owner option). Inspection is thus the easy half
+of the capability; what binds the owner is not reaching it but the
+attestation penalty that reaching it exacts. The other goals owners
+pursue -\/- debloating, system-wide ad-blocking, firewall control, and
+more -\/- divide across these configurations less uniformly, as Appendix
+B maps.
 
 One configuration deserves explicit mention as the most readily usable
 on a stock device. The shell-tier broker (Shizuku) grants an
@@ -2190,17 +2194,17 @@ the security model do so by breaking the model-forfeiting chain at some
 link: not persisting (the non-persistent root), not granting a full
 superuser (a verified extension, or shell-tier brokering), or keeping
 even a full, persistent superuser entirely inside the owner-signed,
-verity-covered image with no unverified \texttt{/data} state (the
-ADB-root re-sign). What forfeits the model is unverified persistent
-state the owner cannot check, in either of two forms: a mutable
-\texttt{/data} module store overlaid on \texttt{/system}, or a
-persistently writable \texttt{/system} with its dm-verity hashtree
-disabled. Relying-party attestation is in any case given up by every one
-of these owner-keyed configurations, which no longer carry the
-vendor\textquotesingle s key. A capability that closed the gap would
-have to assemble three things the shipped approaches reach only in
-pairs: privileged inspection the owner can invoke; an integrity state
-the owner, and ideally an independent verifier, can still check
+verity-covered image with no unverified \texttt{/data} state that can
+modify the running system (the ADB-root re-sign). What forfeits the
+model is unverified persistent state the owner cannot check, in either
+of two forms: a mutable \texttt{/data} module store overlaid on
+\texttt{/system}, or a persistently writable \texttt{/system} with its
+dm-verity hashtree disabled. Relying-party attestation is in any case
+given up by every one of these owner-keyed configurations, which no
+longer carry the vendor\textquotesingle s key. A capability that closed
+the gap would have to assemble three things the shipped approaches reach
+only in pairs: privileged inspection the owner can invoke; an integrity
+state the owner, and ideally an independent verifier, can still check
 afterward -\/- which means privilege that either does not survive a
 reboot or arrives as a signed, verity-covered extension, and, where a
 change is meant to persist, a system re-signed under the
