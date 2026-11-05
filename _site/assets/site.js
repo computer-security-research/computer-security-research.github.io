@@ -2,6 +2,10 @@
 (function () {
   "use strict";
 
+  // Mark the document JS-capable so the no-JS back-to-top CSS reveal floor (a pure
+  // progressive-enhancement fallback) steps aside and this script owns the control.
+  document.documentElement.classList.add("js");
+
   // Copy button on each cite-box / code <pre>.
   function addCopy(pre) {
     var btn = document.createElement("button");

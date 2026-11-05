@@ -338,11 +338,37 @@ ul.browse li { padding: 0.35rem 0; border-bottom: 1px solid var(--rule); font-fa
 ul.previews { list-style: none; padding: 0; }
 ul.previews li { padding: 0.6rem 0; border-bottom: 1px solid var(--rule); font-size: 1.05rem; }
 ul.previews .date { color: var(--muted); font-size: 0.85rem; font-family: var(--sans); margin-left: 0.5rem; }
-/* Back-to-top floating control: fixed bottom-right, hidden until SITE_JS reveals it
-   past 400px of scroll (progressive -- the <a href="#top"> jumps to top with no JS). */
+/* Back-to-top floating control: fixed bottom-right. With JS, SITE_JS drives [hidden]
+   for the exact 400px threshold + idle-hide. With no JS it falls to the @supports
+   floor below (reveal past 400px on modern browsers; always-visible on legacy ones).
+   The <a href="#top"> jumps to <body id="top"> with no JS regardless. */
 .back-to-top { position: fixed; right: 20px; bottom: 20px; z-index: 40; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: var(--surface); text-decoration: none; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2); transition: opacity 0.15s ease, background 0.12s ease; }
 .back-to-top:hover, .back-to-top:focus-visible { background: var(--fg); color: var(--surface); }
 .back-to-top[hidden] { display: none; }
+/* No-JS reveal floor -- a pure progressive-enhancement fallback. SITE_JS adds the `js`
+   class to the root, so with JS this NEVER applies: the script then owns [hidden]
+   entirely and its focus-guard / idle-hide can never be overridden by a competing CSS
+   reveal. With no JS the control reveals once scrolled past the JS 400px threshold
+   instead of sitting stuck visible at the top. A DISCRETE visibility flip (not an
+   opacity fade): visibility carries the whole state, so the control is either fully
+   hidden -- out of the tab order, no click target, no faint focus stop -- or fully
+   shown, mirroring the JS path's instant toggle and never interactive-while-faint
+   (an opacity fade is `visible` throughout, so it would be clickable at ~0 opacity).
+   visibility flips to `visible` for any scroll progress past the range start, so the
+   400px start IS the reveal point (the 440px end is nominal). On a short page the scroll
+   timeline is inactive and the animation drops out to the visibility:hidden base. The
+   @supports guard is REQUIRED: without scroll timelines the animation binds to the time
+   timeline and would stick the control hidden -- so unsupported browsers fall through
+   to the always-visible base. */
+@supports (animation-timeline: scroll()) {
+  :root:not(.js) .back-to-top { visibility: hidden; animation: back-to-top-reveal linear both; animation-timeline: scroll(root); animation-range: 400px 440px; }
+  /* Keep a focused control visible regardless of scroll -- parity with the JS
+     focus-guard: a keyboard user who tabs to it (while shown) then scrolls back
+     above 400px must keep its focus indicator, and focus must not be dropped by
+     a visibility:hidden mid-focus. */
+  :root:not(.js) .back-to-top:focus { animation: none; visibility: visible; }
+  @keyframes back-to-top-reveal { from { visibility: hidden; } to { visibility: visible; } }
+}
 @media print {
   :root { --bg: #ffffff; --fg: #000000; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; word-break: break-all; }
