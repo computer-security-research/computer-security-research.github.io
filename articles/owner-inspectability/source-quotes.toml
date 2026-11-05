@@ -13,6 +13,16 @@ quotes = [
   { text = "Android can better protect and confine system services, control access to application data and system logs, reduce the effects of malicious software, and protect users from potential flaws in code on mobile devices.", label = "Confines services, reduces malware's reach", note = "Android Open Source Project, Security-Enhanced Linux in Android." },
 ]
 
+[aosp-selinux-validate]
+label = "SELinux cannot be disabled on a production Android build (enforcing is CTS-verified)"
+claims = [
+  { section = "Sec. 13", text = "On a production (user) build SELinux cannot be set permissive or disabled through any admin path; permissive is unsupported and CTS verifies enforcing mode, so a confined uid-0 has no route to turn MAC off -- defeating SELinux requires a kernel-memory compromise." },
+]
+quotes = [
+  { text = "Permissive mode isn't supported on production devices. CTS tests confirm enforcing mode is enabled.", label = "No permissive mode on production; CTS-verified", note = "Android Open Source Project, Validating SELinux (source.android.com/docs/security/features/selinux/validate). Verified verbatim via host curl 2026-11-05. Cited in Sec. 13 (Table 4 kernel-exploit row)." },
+  { text = "SELinux enforcement can be disabled with adb on userdebug or eng builds.", label = "Disabling gated to debug builds only", note = "Same source. Verified verbatim." },
+]
+
 [kernel-lockdown]
 label = "Kernel lockdown -- withdraws root-accessible interfaces"
 claims = [
@@ -165,6 +175,8 @@ quotes = [
 label = "resign-android-image -- owner re-signs GrapheneOS OTAs with own keys; cannot pass Play Integrity"
 quotes = [
   { text = "Currently no bypass for Play Integrity is included, the best solution is to modify the specific applications to remove the Play Integrity-related checks (if they aren't fully server-side) or failing that to install Magisk and a module that spoofs the Play Integrity verdict.", label = "Owner-signed build cannot satisfy Play Integrity", note = "chriswoope/resign-android-image README (pinned aca8607e, MIT). The tool re-signs GrapheneOS OTA updates with the owner's own AVB + APK keys for a bootloader re-locked to the owner key, without a full source rebuild; tested only on Pixel 6 Pro and Pixel Tablet. Verified verbatim." },
+  { text = "The keys are written to /adb_keys, which is one of the only two paths adbd reads keys from; the other one is in /data, which is wiped along with the user data and can only be written by a device that boots.", label = "adbd authorizes from a /data key store (outside verity)", note = "Same README, 'ADB at boot' section. Verified verbatim via host curl of the raw file at the pinned commit. Supports [^t4-adb]: the adbd authorized-key store sits in /data, outside the verity hashtree." },
+  { text = "Security impact: an exploit can potentially become persistent by enabling network ADB and whitelisting their own keys; exploits that somehow allow unauthorized ADB access will now give root to the attacker", label = "Project names key-whitelisting as a persistence route", note = "Same README, 'ADB root' section. Verified verbatim. Documents that an added adb_key in /data persists across reboot and re-authorizes root ADB -- the point [^t4-adb] addresses as access-authorization state, not state that modifies the verity-covered system." },
 ]
 
 [grapheneos-auditor-domain]
@@ -335,13 +347,16 @@ quotes = [
 ]
 
 [shizuku]
-label = "Shizuku/Sui -- ADB-shell privilege brokering, not root"
+label = "Shizuku/Sui -- privilege brokering at ADB shell or root, per start mode; the paper's row and honorable mention are the ADB-shell (no-root) mode"
 claims = [
   { section = "Sec. 13", text = "Shizuku lets ordinary apps call privileged system APIs through a brokered server process whose privilege is that of whatever started it -- ADB/shell, or root where the owner starts it with root -- without the client app itself holding root; Table 4's row is the ADB-shell start mode." },
+  { section = "Sec. 13", text = "Shizuku's official site positions it as a root substitute for apps needing only adb/shell-tier privilege: it brokers higher-privilege system-API access without root, so it is root-adjacent but strictly capped at the shell tier -- the honorable-mention option usable on a stock, unmodified, locked device with no bootloader unlock." },
 ]
 quotes = [
   { text = "Shizuku guides users to run a process, Shizuku server, with root or ADB first.", label = "Broker runs at ADB/root privilege", note = "Rikka Apps, Shizuku README, 'How does Shizuku work?' section (github.com/RikkaApps/Shizuku). Verified verbatim. Cited in Sec. 13." },
   { text = "So, we reached our goal, to use system APIs with higher permission. And to the app, it is almost identical to the use of system APIs directly.", label = "Apps use system APIs at elevated privilege" },
+  { text = "Forget about root shell, you can use APIs with higher privileges \"directly\".", label = "Root-adjacent: higher-privilege APIs without a root shell", note = "Rikka Apps, official Shizuku site landing page (shizuku.rikka.app). Verified verbatim; inner quotation marks are straight ASCII in source. Cited in Sec. 13 honorable mention." },
+  { text = "If your \"root required app\" only needs adb permission, you can easily expand the audience by using Shizuku.", label = "Scoped substitute for root: apps needing only adb permission", note = "Same source, 'Supports adb usage' section. Verified verbatim." },
 ]
 
 [aosp-cdd]
@@ -410,10 +425,13 @@ quotes = [
 label = "Project Zero -- CVE-2019-2215 Binder use-after-free: in-the-wild kernel LPE on a running signed kernel (Pegasus chain)"
 claims = [
   { section = "Sec. 8", text = "A use-after-free in the Android kernel's Binder driver (CVE-2019-2215) gave a runtime, in-memory local privilege escalation to full compromise of an already-booted device, exploited in the wild in a Pegasus attack chain -- a compromise of the signed, running kernel that boot-time verification does not catch." },
+  { section = "Sec. 13", text = "Table 4's kernel-exploit row: CVE-2019-2215 is a documented in-the-wild kernel LPE reaching full compromise of a running, signed, locked device without unlocking the bootloader, and it was transient, closed by patching -- illustrating that exploit-gained temp-root neither persists nor leaves verified-boot-detectable state." },
 ]
 quotes = [
   { text = "On October 3, 2019, we disclosed issue 1942 (CVE-2019-2215), which is a use-after-free in Binder in the Android kernel. The bug is a local privilege escalation vulnerability that allows for a full compromise of a vulnerable device.", label = "Kernel UAF -> full runtime compromise", note = "Google Project Zero, Bad Binder; verified verbatim." },
   { text = "Google's Threat Analysis Group (TAG), Android Security, and Project Zero team received information suggesting that NSO had a 0-day exploit for Android that was part of an attack chain that installed Pegasus spyware on target devices.", label = "Exploited in the wild (Pegasus chain)" },
+  { text = "This bug was originally found and reported in November 2017 and patched in February 2018.", label = "Transient: closed by patching", note = "Google Project Zero, Bad Binder (projectzero.google/2019/11/bad-binder-android-in-wild-exploit.html). Verified verbatim. Supports Table 4's kernel-exploit row: the vulnerability is transient and closes with patching." },
+  { text = "It was patched in the Linux kernel >= 4.14 without a CVE.", label = "Patched upstream", note = "Same source. Verified verbatim." },
 ]
 
 [talos-predator]
@@ -1859,7 +1877,7 @@ quotes = [
 [aosp-erofs]
 label = "AOSP -- EROFS selected as the system-image filesystem at build time"
 claims = [
-  { section = "Sec. 13", text = "Android selects EROFS for the read-only system image at build time via BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs; a persistently writable /system therefore requires rebuilding the image with a writable filesystem (ext4 or f2fs)." },
+  { section = "Sec. 13", text = "Android can select EROFS for the read-only system image at build time via BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs; a persistently writable /system then requires rebuilding the image with a writable filesystem (ext4 or f2fs)." },
 ]
 quotes = [
   { text = "EROFS is a read-only file system introduced in Linux 4.19.", label = "Read-only filesystem", note = "Android Open Source Project, Enable EROFS (source.android.com/docs/core/architecture/kernel/erofs). Verified verbatim via WebFetch." },
