@@ -13,16 +13,6 @@ quotes = [
   { text = "Android can better protect and confine system services, control access to application data and system logs, reduce the effects of malicious software, and protect users from potential flaws in code on mobile devices.", label = "Confines services, reduces malware's reach", note = "Android Open Source Project, Security-Enhanced Linux in Android." },
 ]
 
-[aosp-selinux-validate]
-label = "SELinux cannot be disabled on a production Android build (enforcing is CTS-verified)"
-claims = [
-  { section = "Sec. 13", text = "On a production (user) build, permissive mode is unsupported and CTS verifies enforcing mode; SELinux enforcement can be disabled with adb only on userdebug or eng builds." },
-]
-quotes = [
-  { text = "Permissive mode isn't supported on production devices. CTS tests confirm enforcing mode is enabled.", label = "No permissive mode on production; CTS-verified", note = "Android Open Source Project, Validating SELinux (source.android.com/docs/security/features/selinux/validate). Verified verbatim via host curl 2026-11-05. Cited in Sec. 13 (Table 4 kernel-exploit row)." },
-  { text = "SELinux enforcement can be disabled with adb on userdebug or eng builds.", label = "Disabling gated to debug builds only", note = "Same source. Verified verbatim." },
-]
-
 [kernel-lockdown]
 label = "Kernel lockdown -- withdraws root-accessible interfaces"
 claims = [
@@ -175,7 +165,7 @@ quotes = [
 label = "resign-android-image -- owner re-signs GrapheneOS OTAs with own keys; cannot pass Play Integrity"
 quotes = [
   { text = "Currently no bypass for Play Integrity is included, the best solution is to modify the specific applications to remove the Play Integrity-related checks (if they aren't fully server-side) or failing that to install Magisk and a module that spoofs the Play Integrity verdict.", label = "Owner-signed build cannot satisfy Play Integrity", note = "chriswoope/resign-android-image README (pinned aca8607e, MIT). The tool re-signs GrapheneOS OTA updates with the owner's own AVB + APK keys for a bootloader re-locked to the owner key, without a full source rebuild; tested only on Pixel 6 Pro and Pixel Tablet. Verified verbatim." },
-  { text = "The keys are written to /adb_keys, which is one of the only two paths adbd reads keys from; the other one is in /data, which is wiped along with the user data and can only be written by a device that boots.", label = "adbd authorizes from a /data key store (outside verity)", note = "Same README, 'ADB at boot' section. Verified verbatim via host curl of the raw file at the pinned commit. Supports [^t4-adb]: the adbd authorized-key store sits in /data, outside the verity hashtree." },
+  { text = "The keys are written to /adb_keys, which is one of the only two paths adbd reads keys from; the other one is in /data, which is wiped along with the user data and can only be written by a device that boots.", label = "Config key baked into the verified /adb_keys; /data is the other path adbd reads", note = "Same README, 'ADB at boot' section. Verified verbatim via host curl of the raw file at the pinned commit. Supports [^t4-adb]: the config's authorizing key is baked into /adb_keys inside the verity hashtree (verified), while /data/misc/adb/adb_keys is the separate writable path adbd also reads." },
   { text = "Security impact: an exploit can potentially become persistent by enabling network ADB and whitelisting their own keys; exploits that somehow allow unauthorized ADB access will now give root to the attacker", label = "Project names key-whitelisting as a persistence route", note = "Same README, 'ADB root' section. Verified verbatim. Documents that an added adb_key in /data persists across reboot and re-authorizes root ADB -- the point [^t4-adb] addresses as access-authorization state, not state that modifies the verity-covered system." },
 ]
 
@@ -425,13 +415,10 @@ quotes = [
 label = "Project Zero -- CVE-2019-2215 Binder use-after-free: in-the-wild kernel LPE on a running signed kernel (Pegasus chain)"
 claims = [
   { section = "Sec. 8", text = "A use-after-free in the Android kernel's Binder driver (CVE-2019-2215) gave a runtime, in-memory local privilege escalation to full compromise of an already-booted device, exploited in the wild in a Pegasus attack chain -- a compromise of the signed, running kernel that boot-time verification does not catch." },
-  { section = "Sec. 13", text = "Table 4's kernel-exploit row cites CVE-2019-2215 as a documented in-the-wild kernel LPE giving a runtime full compromise of an already-booted device, later closed by patching; the row's locked-device, SELinux-confined, and non-persistent properties are argued separately (Section 3), not claimed from this source." },
 ]
 quotes = [
   { text = "On October 3, 2019, we disclosed issue 1942 (CVE-2019-2215), which is a use-after-free in Binder in the Android kernel. The bug is a local privilege escalation vulnerability that allows for a full compromise of a vulnerable device.", label = "Kernel UAF -> full runtime compromise", note = "Google Project Zero, Bad Binder; verified verbatim." },
   { text = "Google's Threat Analysis Group (TAG), Android Security, and Project Zero team received information suggesting that NSO had a 0-day exploit for Android that was part of an attack chain that installed Pegasus spyware on target devices.", label = "Exploited in the wild (Pegasus chain)" },
-  { text = "This bug was originally found and reported in November 2017 and patched in February 2018.", label = "Transient: closed by patching", note = "Google Project Zero, Bad Binder (projectzero.google/2019/11/bad-binder-android-in-wild-exploit.html). Verified verbatim. Supports Table 4's kernel-exploit row: the vulnerability is transient and closes with patching." },
-  { text = "It was patched in the Linux kernel >= 4.14 without a CVE.", label = "Patched upstream", note = "Same source. Verified verbatim." },
 ]
 
 [talos-predator]
