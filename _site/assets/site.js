@@ -214,14 +214,25 @@
   }
 
   // Back-to-top: reveal past 400px of scroll, auto-hide 2s after scrolling stops,
-  // smooth-scroll on click. Progressive -- the <a href="#top"> works with no JS.
+  // smooth-scroll on click. Shown/hidden via an eased opacity fade (.btt-hidden)
+  // mirroring the production wiki control, not a binary display snap. Progressive --
+  // the <a href="#top"> works with no JS.
   (function () {
     var btn = document.querySelector(".back-to-top");
     if (!btn) { return; }
-    btn.hidden = true;
+    // Hide instantly on load, then enable the fade. Forcing a reflow between the two
+    // commits the hidden state under the base (no-opacity) transition, so opacity snaps
+    // to 0 with no fade; .btt-anim then enables the fade for later toggles only. (A lone
+    // requestAnimationFrame batches both class adds into one style pass, so with the
+    // deferred site.js the initial hide would still play as a 300ms fade-out on load.)
+    btn.classList.add("btt-hidden");
+    void btn.offsetHeight;
+    btn.classList.add("btt-anim");
+    function show() { btn.classList.remove("btt-hidden"); }
     // Never hide the control while it holds keyboard focus (a hide-timer or a
-    // scroll-to-top must not steal focus from a keyboard user mid-activation).
-    function hide() { if (document.activeElement !== btn) { btn.hidden = true; } }
+    // scroll-to-top must not steal focus from a keyboard user mid-activation, and
+    // the fade-out's visibility:hidden would drop focus).
+    function hide() { if (document.activeElement !== btn) { btn.classList.add("btt-hidden"); } }
     btn.addEventListener("click", function (e) {
       e.preventDefault();
       var reduce = window.matchMedia
@@ -232,12 +243,12 @@
     // Tabs AWAY near the top nothing re-hides it until the next scroll. Re-run the
     // threshold check on blur so it does not linger once focus leaves.
     btn.addEventListener("blur", function () {
-      if (window.scrollY < 400) { btn.hidden = true; }
+      if (window.scrollY < 400) { hide(); }
     });
     var idle = null;
     window.addEventListener("scroll", function () {
       if (window.scrollY < 400) { hide(); return; }
-      btn.hidden = false;
+      show();
       clearTimeout(idle);
       idle = setTimeout(hide, 2000);
     }, { passive: true });
