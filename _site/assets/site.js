@@ -107,6 +107,14 @@
       cprev.hidden = single; cnext.hidden = single; cpos.hidden = single;
       cprev.disabled = idx === 0;
       cnext.disabled = idx === order.length - 1;
+      // If a pointer click just disabled the button that held focus (stepping to an
+      // end), move focus to the still-enabled sibling instead of letting the browser
+      // drop it to <body> -- keeps keyboard arrow stepping working, and keeps focus
+      // inside the card. At order >= 2 the opposite end is always enabled; decorative
+      // cards never focus their buttons (mousedown is prevented), so this is dialog-only.
+      var ae = document.activeElement;
+      if (ae === cprev && cprev.disabled) { cnext.focus({ preventScroll: true }); }
+      else if (ae === cnext && cnext.disabled) { cprev.focus({ preventScroll: true }); }
     }
     function place(anchor) {
       var rect = anchor.getBoundingClientRect();
@@ -186,12 +194,13 @@
       cnav.addEventListener("pointerup", endDrag);
       cnav.addEventListener("pointercancel", endDrag);
     })();
-    // Keyboard: Escape dismisses; a plain Left/Right steps prev/next while the card is
-    // open AND the focus is on one of this card's markers or inside the card itself.
-    // Scoped to focus (not merely `pinned`) so one arrow never advances a second,
-    // pinned-but-unfocused card elsewhere on the page; modified arrows are left to the
-    // browser (text selection, history, word jump); arrows are otherwise not hijacked
-    // from ordinary page scrolling.
+    // Keyboard: Escape dismisses; a plain Left/Right steps prev/next ONLY while the
+    // focus is on one of this card's markers or inside the card itself. Scoping to
+    // focus (populate() keeps focus inside the card across a boundary) means one arrow
+    // never advances a second card on the page, a pinned-but-unfocused card never
+    // hijacks arrows from another focused control, and an unpinned hover-only card
+    // never hijacks page scrolling. Modified arrows are left to the browser (text
+    // selection, history, word jump).
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") { dismiss(); return; }
       if (card.hidden) { return; }
