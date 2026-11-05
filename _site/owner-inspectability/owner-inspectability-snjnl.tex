@@ -1934,6 +1934,37 @@ Non-persistent special-boot-mode root\footnote{A special-boot-mode
   restores the verified boot chain and system image (writable user data,
   outside verified boot, is a separate matter).} & Yes & No & No &
 Yes \\
+Root via kernel exploit, locked device (temporary)\footnote{Root reached
+  by exploiting a kernel vulnerability on the locked, verified-boot
+  device without unlocking the bootloader -\/- the exploit-gained root
+  of Section 3, and the one-shot or temp-root technique the commercial
+  one-click-root ecosystem shipped \citep{zhang-root-providers}; a
+  documented in-the-wild instance is the Binder use-after-free
+  CVE-2019-2215, "a local privilege escalation vulnerability that allows
+  for a full compromise of a vulnerable device"
+  \citep{projectzero-badbinder}. Not a full superuser in this
+  paper\textquotesingle s sense: uid-0 is a discretionary identity,
+  while SELinux is a separate mandatory layer the kernel enforces over
+  every process, "even processes running with root/superuser privileges
+  (Linux capabilities)" \citep{aosp-selinux}, so reaching uid-0 does not
+  by itself lift the attacker out of its policy domain, and on a
+  production build that domain cannot simply be switched off -\/-
+  "Permissive mode isn\textquotesingle t supported on production
+  devices" \citep{aosp-selinux-validate}. Defeating mandatory access
+  control takes a further kernel-memory write, the arbitrary kernel read
+  and write that was the stated objective of the cited in-the-wild chain
+  \citep{projectzero-badbinder}; an exploit reaching that primitive can
+  disable SELinux and compromise the running kernel outright, but that
+  is the kernel-rootkit case of Sections 8 and 14, whereas this row is
+  the baseline exploit-gained root -\/- uid-0 that mandatory access
+  control still confines -\/- and is classed No on that basis, not on a
+  claim that real exploit chains stop there. It persists nothing: the
+  exploit mutates only running state, so a reboot reloads the signed
+  image \citep{aosp-verified-boot} and the privilege is lost until
+  re-exploited, and the hole closes with patching. Listed for
+  comparison, not as an owner option: it is an attack technique -\/-
+  unreliable, device- and version-specific, patched, and not
+  owner-invocable.} & No & No & No & Yes \\
 Signed, verified extension (Android APEX)\footnote{Android APEX
   \citep{aosp-apex} (the Linux analogue, under a verity-and-signature
   image policy, is systemd-sysext \citep{systemd-sysext}); a bounded,
@@ -1943,20 +1974,30 @@ Signed, verified extension (Android APEX)\footnote{Android APEX
 ADB-root in a re-signed image\footnote{\texttt{adbd} patched to run as
   root, reachable only over ADB, with no on-device \texttt{su}
   (resign-android-image \citep{resign-android-image}). The root path
-  ships inside the owner-signed, verity-covered image, so tampering
-  remains detectable and a reboot restores the verified state; it keeps
-  no unverified persistent state that can modify the running system,
-  because \texttt{/system} stays mounted read-only under verity
-  (device-authorization state such as the \texttt{adbd} key store sits
-  in \texttt{/data}, outside verified boot, as other user data does).} &
-Yes & Yes & No & Yes \\
+  ships inside the owner-signed, verity-covered image, so tampering of
+  the running system remains detectable and a reboot restores the
+  verified state; \texttt{/system} stays mounted read-only under verity,
+  so no persistent write can modify the running system. The
+  \texttt{adbd} authorized-key store does sit in writable \texttt{/data}
+  (\texttt{/data/misc/adb/adb\_keys}, outside verified boot as all user
+  data is \citep{aosp-file-based-encryption}), and a root session can
+  add a key there that persists across reboot and re-authorizes the root
+  ADB interface -\/- the project names this persistence route
+  \citep{resign-android-image}. But this is access-authorization state,
+  not state that modifies the verity-covered system: the key gates who
+  may reach a root interface the owner-signed image already ships, it
+  cannot alter \texttt{/system}, and verified boot still certifies the
+  running system as untampered -\/- the same position as the stock
+  \texttt{adbd} key store and every other credential in \texttt{/data},
+  which verified boot does not and never did cover.} & Yes & Yes & No &
+Yes \\
 ADB-shell broker (Shizuku)\footnote{ADB-shell brokering (Shizuku)
   \citep{shizuku}; capped at the ADB shell permission set via an
   app-broker API, not root. The stock image is unmodified.} & No & Yes &
 No & Yes \\
 \end{longtable}
 
-Three qualifications attach to Table 4. The non-persistent row can be
+Four qualifications attach to Table 4. The non-persistent row can be
 realized by a RAM-backed overlay, but an overlay\textquotesingle s upper
 layer lies outside the verified-boot hashtree \citep{aosp-dm-verity},
 \citep{kernel-dm-verity}, so the content it serves is unverified
@@ -1988,8 +2029,8 @@ hashtree-disabled flag, or a \texttt{vbmeta} without
 verified boot still covers the boot chain but no longer
 \texttt{/system}. Disabling the hashtree only removes the integrity
 check, though: where \texttt{/system} ships as EROFS -\/- the Enhanced
-Read-Only File System \citep{kernel-erofs} that modern Android selects
-for read-only partitions at build time
+Read-Only File System \citep{kernel-erofs} that modern Android can
+select for read-only partitions at build time
 (\texttt{BOARD\_SYSTEMIMAGE\_FILE\_SYSTEM\_TYPE\ :=\ erofs})
 \citep{aosp-erofs} -\/- it is read-only by design and cannot be
 remounted read-write at all, so a persistently writable \texttt{/system}
@@ -1998,7 +2039,15 @@ filesystem (ext4 or f2fs) in place of EROFS \citep{aosp-erofs}. The
 bootloader stays locked, because it verifies the \texttt{vbmeta}
 signature, not the verity policy the signed \texttt{vbmeta} declares
 \citep{aosp-avb-readme} (the AVB reference behavior; a specific
-vendor\textquotesingle s firmware may differ).
+vendor\textquotesingle s firmware may differ). Fourth, one row is
+included only for comparison: root obtained by exploiting a kernel
+vulnerability is not an owner-chosen option but an attack technique -\/-
+unreliable, device- and version-specific, closed by patching, and not
+owner-invocable -\/- listed because locating it against these options
+shows that even a successful temporary root yields a bounded,
+SELinux-confined, non-persistent privilege (Section 3), not the
+owner-driven verification this paper seeks \citep{zhang-root-providers},
+\citep{projectzero-badbinder}.
 
 A concrete form illustrates the persistent-root row. An owner could bake
 a root-accessible SSH daemon into the owner-signed image and authorize
@@ -2116,6 +2165,17 @@ binds the owner is not reaching it but the attestation penalty that
 reaching it exacts. The other goals owners pursue -\/- debloating,
 system-wide ad-blocking, firewall control, and more -\/- divide across
 these configurations less uniformly, as Appendix B maps.
+
+One configuration deserves explicit mention as the most readily usable
+on a stock device. The shell-tier broker (Shizuku) grants an
+owner\textquotesingle s apps privileged system-API access with no root,
+no bootloader unlock, and the stock image left unmodified -\/- after a
+one-time setup it is started on the device itself from the ADB-shell
+identity -\/- which the project frames as serving a "root required app
+{[}that{]} only needs adb permission" \citep{shizuku}. Its ceiling is
+exactly that tier, so it does not reach the whole-system inspection this
+paper centers; but it is the clearest shipped case that a useful
+privileged capability need not forfeit verified boot or the stock image.
 
 No approach in this design space, then, delivers all three of persistent
 owner administrative control, the verified-boot security model, and a
@@ -2919,15 +2979,15 @@ forfeits the hardware-backed verdict \citep{resign-android-image}.
 Finally, the ad-blocking and custom-CA goals are not met by a bounded
 verified extension: an APEX activates only its own signed namespace and
 does not overlay arbitrary \texttt{/system} paths \citep{aosp-apex}, and
-the custom-CA store, on Android 14 and later, is the vendor-signed
-Conscrypt APEX (\texttt{/apex/com.android.conscrypt/cacerts}) that an
-owner cannot inject into, with the legacy
-\texttt{/system/etc/security/cacerts} path applying on earlier releases
-\citep{aosp-conscrypt} -\/- so these goals need a persistent
-\texttt{/system} write (or, on recent Android, an overlay of the APEX
-store), which keeps the verified-boot model only when it is an
-owner-signed image rebuild rather than a \texttt{/data} overlay or a
-verity-disabled \texttt{/system}.
+the custom-CA store, on Android 14 and later, is the vendor-signed,
+updatable Conscrypt module APEX that an owner cannot inject into -\/- a
+signed, verity-checked image, not a writable \texttt{/system} directory
+-\/- with the legacy \texttt{/system/etc/security/cacerts} path applying
+on earlier releases \citep{aosp-conscrypt}, \citep{aosp-apex} -\/- so
+these goals need a persistent \texttt{/system} write (or, on recent
+Android, an overlay of the APEX store), which keeps the verified-boot
+model only when it is an owner-signed image rebuild rather than a
+\texttt{/data} overlay or a verity-disabled \texttt{/system}.
 
   \bibliography{refs}
 
