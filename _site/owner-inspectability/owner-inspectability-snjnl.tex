@@ -243,6 +243,27 @@ encryption, mandatory since Android 10, protects user data at rest, with
 the principal encryption key bound to dedicated hardware
 \citep{aosp-file-based-encryption}.
 
+The first of these is three distinct layers worth separating, because
+later sections lean on the distinction. Android Verified Boot is the
+signature-and-hash machinery that establishes the chain of trust
+\citep{aosp-verified-boot}, \citep{aosp-avb-readme}; dm-verity is an
+optional, generic Linux block-integrity target that AVB uses to protect
+a read-only partition against a signed root hash carried in the
+\texttt{vbmeta} image \citep{aosp-dm-verity}, \citep{kernel-dm-verity},
+and that can also run independently of AVB; and the locked bootloader is
+the enforcement switch that makes verification refuse an unsigned or
+foreign image rather than merely report its state
+\citep{aosp-bootloader-locking}. The verification runs regardless of
+lock state, but only a locked device refuses a failing image -\/- an
+unlocked device computes the same result and boots anyway
+\citep{aosp-avb-readme} -\/- so verified boot without a locked
+bootloader is a check the owner can read, not an enforced barrier.
+Conversely dm-verity can guard a partition\textquotesingle s integrity
+without full AVB or a locked bootloader, its root hash then anchored
+elsewhere; such a configuration gives partition integrity without
+boot-chain enforcement -\/- not a useful owner goal, but a reminder that
+the three layers are separable.
+
 By design, these mechanisms constrain what ordinary software, including
 most malicious software, can do once it is running on the device
 \citep{mayrhofer-android-security-model}. That constraint is real but
@@ -418,7 +439,7 @@ Root access denotes uid-0 authority within the running operating system:
 the ability, in principle, to read and write files, inspect processes,
 and alter system components that an ordinary user cannot. The term is
 inherited from Unix, where "root" is the superuser account; Android,
-however, exposes no such login account. uid 0 exists as a kernel
+however, exposes no such login account. uid-0 exists as a kernel
 identity held by \texttt{init} and a deliberately shrinking set of
 system daemons \citep{aosp-root-process-isolation}, but a stock
 production ("user") build ships no owner-accessible \texttt{su} and
@@ -1847,24 +1868,25 @@ trivially bypass" \citep{grapheneos-attestation-compat}.
 Restricting attention to what an owner can do while keeping the
 bootloader locked and verified boot engaged, the approaches differ on
 four things (Table 4): whether it grants a full superuser, whether it
-persists across reboot, whether it modifies the system through a
-persistent overlay in unverified \texttt{/data}, and whether they
-preserve the verified-boot security model under which the owner can
-still detect tampering. A full superuser here is unrestricted uid-0 over
-the running system -\/- reading and writing any file, inspecting or
-altering any process, and reaching a raw block device or kernel memory,
-unbounded by the SELinux domains that confine exploit-gained root
-(Section 3) -\/- as distinct from a privilege capped below it (the
-ADB-shell permission tier) or confined to a signed, policy-bounded
-capability (a verified extension); it is in every case an in-system
-privilege short of the administrative control defined in Section 3,
-which none of these approaches confer, and the configurations that hold
-it are equal in privilege, differing only in how it is reached and
-whether it persists. The pattern is that the model is forfeited in two
-cases, both leaving unverified persistent state the owner cannot detect
-tampering in: a persistent, fully-trusted superuser that modifies the
-running system through a module store in \texttt{/data} re-applied at
-every boot, and a persistently writable \texttt{/system} reached by
+persists across reboot, how it modifies the running \texttt{/system}, if
+at all -\/- through a persistent \texttt{/data} overlay, through a
+direct write to a verity-disabled \texttt{/system}, or not at all -\/-
+and whether they preserve the verified-boot security model under which
+the owner can still detect tampering. A full superuser here is
+unrestricted uid-0 over the running system -\/- reading and writing any
+file, inspecting or altering any process, and reaching a raw block
+device or kernel memory, unbounded by the SELinux domains that confine
+exploit-gained root (Section 3) -\/- as distinct from a privilege capped
+below it (the ADB-shell permission tier) or confined to a signed,
+policy-bounded capability (a verified extension); it is in every case an
+in-system privilege short of the administrative control defined in
+Section 3, which none of these approaches confer, and the configurations
+that hold it are equal in privilege, differing only in how it is reached
+and whether it persists. The pattern is that the model is forfeited in
+two cases, both leaving unverified persistent state the owner cannot
+detect tampering in: a persistent, fully-trusted superuser that modifies
+the running system through a module store in \texttt{/data} re-applied
+at every boot, and a persistently writable \texttt{/system} reached by
 disabling its dm-verity hashtree in the owner-signed image. A
 configuration keeps the model when it breaks that chain at any link: by
 not granting a full superuser (a bounded verified extension, or
@@ -1891,7 +1913,7 @@ Full superuser?
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Persists?
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{/system} overlay from \texttt{/data}?
+Running \texttt{/system} modified? (how)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Verified-boot model preserved?
 \end{minipage} \\
@@ -1908,8 +1930,8 @@ Magisk-style systemless patch, relocked under an owner key\footnote{Root
   system depends on it, yet it lives in \texttt{/data}, the writable
   user-data partition \citep{aosp-file-based-encryption}, outside the
   read-only verity hashtree that covers \texttt{/system}
-  \citep{aosp-dm-verity}, \citep{kernel-dm-verity}.} & Yes & Yes & Yes &
-No \\
+  \citep{aosp-dm-verity}, \citep{kernel-dm-verity}.} & Yes & Yes & via
+\texttt{/data} overlay & No \\
 Scoped kernel root: KernelSU\footnote{Scoped kernel root, with per-app
   profiles \citep{kernelsu} (per-app gating narrows the surface, not a
   security boundary); the superuser sits in the kernel rather than in
@@ -1917,7 +1939,7 @@ Scoped kernel root: KernelSU\footnote{Scoped kernel root, with per-app
   \texttt{/data/adb/modules} store is overlaid onto \texttt{/system} via
   OverlayFS at every boot \citep{kernelsu-modules}, outside the verity
   hashtree \citep{aosp-dm-verity}, \citep{kernel-dm-verity}.} & Yes &
-Yes & Yes & No \\
+Yes & via \texttt{/data} overlay & No \\
 Verity-disabled \texttt{/system}\footnote{dm-verity for \texttt{/system}
   disabled in the owner-signed image (\texttt{vbmeta} hashtree-disabled
   flag, or \texttt{vbmeta} without \texttt{/system}\textquotesingle s
@@ -1927,20 +1949,20 @@ Verity-disabled \texttt{/system}\footnote{dm-verity for \texttt{/system}
   \texttt{vbmeta} still verifies, so the device boots locked in the
   yellow state \citep{aosp-avb-readme}, but with dm-verity disabled
   \texttt{/system} falls outside the hashtree \citep{aosp-dm-verity}, so
-  tampering of \texttt{/system} is undetectable.} & Yes & Yes & No &
-No \\
+  tampering of \texttt{/system} is undetectable.} & Yes & Yes & direct
+write & No \\
 Non-persistent special-boot-mode root\footnote{A special-boot-mode
   terminal not retained across reboot \citep{grapheneos-root-statement};
   no app-facing \texttt{su}. The root does not persist, so a reboot
   restores the verified boot chain and system image (writable user data,
-  outside verified boot, is a separate matter).} & Yes & No & No &
+  outside verified boot, is a separate matter).} & Yes & No & no &
 Yes \\
 Signed, verified extension (Android APEX)\footnote{Android APEX
   \citep{aosp-apex} (the Linux analogue, under a verity-and-signature
   image policy, is systemd-sysext \citep{systemd-sysext}); a bounded,
   policy-confined verified capability rather than a superuser. Shipped
   as a signed, verity-checked image, so its contents are verified rather
-  than arbitrary mutable state.} & No & Yes & No & Yes \\
+  than arbitrary mutable state.} & No & Yes & no & Yes \\
 ADB-root in a re-signed image\footnote{\texttt{adbd} patched to run as
   root, reachable only over ADB, with no on-device \texttt{su}
   (resign-android-image \citep{resign-android-image}). The
@@ -1958,11 +1980,11 @@ ADB-root in a re-signed image\footnote{\texttt{adbd} patched to run as
   reports the image intact \citep{resign-android-image} -\/- the
   unverified-\texttt{/data} exposure every root configuration shares,
   not a defect of the owner-signed image\textquotesingle s integrity.} &
-Yes & Yes & No & Yes \\
+Yes & Yes & no & Yes \\
 ADB-shell broker (Shizuku)\footnote{ADB-shell brokering (Shizuku)
   \citep{shizuku}; capped at the ADB shell permission set via an
   app-broker API, not root. The stock image is unmodified.} & No & Yes &
-No & Yes \\
+no & Yes \\
 \end{longtable}
 
 Three qualifications attach to Table 4. The non-persistent row can be
@@ -2037,27 +2059,27 @@ least privilege \citep{saltzer-schroeder} and separation of duty
 privileged path. This arrangement is also richer than the single-axis
 non-persistent root of Table 4, where privilege is simply transient and
 lost on reboot: a role-separated design can offer, as a boot-time
-choice, either an administrative session or an ordinary unprivileged
-one, and can make each independently persistent -\/- changes retained
-across reboot -\/- or non-persistent -\/- changes discarded on reboot
--\/- a matrix of role against persistence rather than a single transient
-mode. But the added options do not change the verified-persistence crux,
-and most of the matrix reduces to cases already analysed. Persistence of
-the unprivileged session is unremarkable, since its writes land in
+choice, either a privileged session or an ordinary unprivileged one, and
+can make each independently persistent -\/- changes retained across
+reboot -\/- or non-persistent -\/- changes discarded on reboot -\/- a
+matrix of role against persistence rather than a single transient mode.
+But the added options do not change the verified-persistence crux, and
+most of the matrix reduces to cases already analysed. Persistence of the
+unprivileged session is unremarkable, since its writes land in
 \texttt{/data}, the user-data partition already outside verified boot (a
-separate matter, as above). A non-persistent administrative session
+separate matter, as above). A non-persistent privileged session
 collapses onto the non-persistent row: its mutations are discarded on
 reboot, which restores the verified system. The one cell that is
-genuinely distinct is a persistent administrative session, and it fares
-no better than any other persistent root. The account boundary alone
-does not preserve the verified-boot model: a persistent, writable
-administrative role is offline persistent root, so the model survives
-only if that maintenance context is itself re-sealed on exit -\/- its
-integrity re-measured against the owner\textquotesingle s own key. In
-the owner-signed configuration the owner does hold that key and can
-re-seal \citep{avbroot}; the constraint is operational: secure practice
-keeps the private half off the device (only the public key is enrolled),
-so re-sealing is an off-device re-sign and reflash from a trusted
+genuinely distinct is a persistent privileged session, and it fares no
+better than any other persistent root. The account boundary alone does
+not preserve the verified-boot model: a persistent, writable privileged
+role is offline persistent root, so the model survives only if that
+maintenance context is itself re-sealed on exit -\/- its integrity
+re-measured against the owner\textquotesingle s own key. In the
+owner-signed configuration the owner does hold that key and can re-seal
+\citep{avbroot}; the constraint is operational: secure practice keeps
+the private half off the device (only the public key is enrolled), so
+re-sealing is an off-device re-sign and reflash from a trusted
 workstation rather than an in-situ maintenance step, and keeping the key
 on the device to make it in-situ would reintroduce the persistent
 trusted secret the locked chain exists to avoid. Such a re-seal restores
@@ -2113,18 +2135,19 @@ configurations are not equivalent, but for the goal this paper centers
 they converge. Owner-inspection -\/- reading the system logs, reading
 every file on disk, imaging a partition, or snapshotting memory -\/- is
 a read-only, one-time act that needs neither persistence, nor an
-app-facing superuser, nor any write to the system, so every full-root
-configuration in Table 4 satisfies it: the Magisk and KernelSU rows, the
-verity-disabled \texttt{/system} row, the non-persistent
-special-boot-mode root, and even the ADB-only root. The two that are not
-a full superuser do not -\/- the bounded verified extension reaches none
-of it, and the shell-tier broker reaches the log buffer but not another
-application\textquotesingle s private storage, a raw block device, or
-kernel memory. Inspection is thus the easy half of the capability; what
-binds the owner is not reaching it but the attestation penalty that
-reaching it exacts. The other goals owners pursue -\/- debloating,
-system-wide ad-blocking, firewall control, and more -\/- divide across
-these configurations less uniformly, as Appendix B maps.
+app-facing superuser, nor any write to the system, so every
+full-superuser configuration in Table 4 satisfies it: the Magisk and
+KernelSU rows, the verity-disabled \texttt{/system} row, the
+non-persistent special-boot-mode root, and even the ADB-only root. The
+two that are not a full superuser do not -\/- the bounded verified
+extension reaches none of it, and the shell-tier broker reaches the log
+buffer but not another application\textquotesingle s private storage, a
+raw block device, or kernel memory. Inspection is thus the easy half of
+the capability; what binds the owner is not reaching it but the
+attestation penalty that reaching it exacts. The other goals owners
+pursue -\/- debloating, system-wide ad-blocking, firewall control, and
+more -\/- divide across these configurations less uniformly, as Appendix
+B maps.
 
 One configuration deserves explicit mention as the most readily usable
 on a stock device. The shell-tier broker (Shizuku) grants an
@@ -2836,8 +2859,8 @@ capability each requires -\/- in the terms of Section 3 and Table 4 -\/-
 and to the configurations that supply it. Owner-inspection (reading
 logs, reading all files, imaging storage, snapshotting memory, and full
 device backup) is treated in the body (Sections 7, 9, 10, 11) and, as
-Section 13 notes, is met by every full-root configuration; the remaining
-goals map less uniformly.
+Section 13 notes, is met by every full-superuser configuration; the
+remaining goals map less uniformly.
 
 Table 6. Owner goals, the capability each requires, and the Table 4
 configurations that supply it.
@@ -2859,12 +2882,13 @@ Satisfied by
 \bottomrule\noalign{}
 \endlastfoot
 Owner-inspection: read logs and all files, image a partition, snapshot
-memory, full backup & Full-root read, one-shot (no persistence or write)
-& Any full-root configuration\footnote{Magisk, KernelSU, verity-disabled
-  \texttt{/system}, non-persistent root, or ADB-root -\/- not the
-  bounded verified extension or the shell-tier broker, which reaches the
-  log buffer but not another application\textquotesingle s private
-  storage, a raw block device, or kernel memory.} \\
+memory, full backup & Full-superuser read, one-shot (no persistence or
+write) & Any full-superuser configuration\footnote{Magisk, KernelSU,
+  verity-disabled \texttt{/system}, non-persistent root, or ADB-root
+  -\/- not the bounded verified extension or the shell-tier broker,
+  which reaches the log buffer but not another
+  application\textquotesingle s private storage, a raw block device, or
+  kernel memory.} \\
 Disable or uninstall a preinstalled app for the current user & ADB-shell
 tier & Any of the above, plus the shell-tier broker and plain stock ADB
 -\/- no root required \\
@@ -2938,18 +2962,25 @@ unlocking the bootloader to flash the patched image
 key -\/- the locked, owner-keyed yellow state Table 4 assumes
 \citep{aosp-boot-flow}, not the stock vendor-keyed one -\/- which still
 forfeits the hardware-backed verdict \citep{resign-android-image}.
-Finally, the ad-blocking and custom-CA goals are not met by a bounded
-verified extension: an APEX activates only its own signed namespace and
-does not overlay arbitrary \texttt{/system} paths \citep{aosp-apex}, and
-the custom-CA store, on Android 14 and later, is the vendor-signed,
-updatable Conscrypt module APEX that an owner cannot inject into -\/- a
-signed, verity-checked image, not a writable \texttt{/system} directory
--\/- with the legacy \texttt{/system/etc/security/cacerts} path applying
-on earlier releases \citep{aosp-conscrypt}, \citep{aosp-apex} -\/- so
-these goals need a persistent \texttt{/system} write (or, on recent
-Android, an overlay of the APEX store), which keeps the verified-boot
-model only when it is an owner-signed image rebuild rather than a
-\texttt{/data} overlay or a verity-disabled \texttt{/system}.
+Finally, a general-purpose bounded verified extension does not meet
+these goals directly, since an APEX activates only its own signed
+namespace and does not overlay arbitrary \texttt{/system} paths
+\citep{aosp-apex}: system-wide ad-blocking through the hosts file
+therefore needs a persistent \texttt{/system} write (or, on recent
+Android, an overlay), which keeps the verified-boot model only when it
+is an owner-signed image rebuild rather than a \texttt{/data} overlay or
+a verity-disabled \texttt{/system}. The custom-CA goal is more nuanced
+on Android 14 and later, where the system trust store moved into the
+updatable Conscrypt module APEX, with the legacy
+\texttt{/system/etc/security/cacerts} path applying on earlier releases
+\citep{aosp-conscrypt}: on a re-signed image the Conscrypt APEX stays
+vendor-signed and the owner cannot inject a certificate into it, but a
+from-source owner build that holds the module\textquotesingle s own
+signing key can instead ship the certificate as a higher-version, signed
+Conscrypt APEX that \texttt{apexd} stores in \texttt{/data}, verifies,
+and activates over the built-in copy at the next boot \citep{aosp-apex}
+-\/- a signed, verity-covered extension that adds the CA with no
+\texttt{/system} write and keeps the model intact.
 
   \bibliography{refs}
 
