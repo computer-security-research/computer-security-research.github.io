@@ -12,7 +12,7 @@ The same constraints bear on malware investigation, though their force depends o
 
 This paper treats these properties not as implementation accidents but as consequences of a design in which administrative capability is deliberately withheld from the owner. It catalogs the resulting verification limits, grounds its claims in the available technical and forensic literature where such sources exist, and distinguishes claims supported by cited evidence from claims that remain asserted without a specific source.
 
-This is a systematization-and-position paper: it introduces no new experiment or dataset and instead organizes existing technical, forensic, and legal evidence around a single owner-centric criterion, applies that criterion to a documented real-world surveillance case, and argues a defensible position on how the gap it identifies could be narrowed. Its contributions are:
+This paper introduces no new experiment or dataset; instead it systematizes existing technical, forensic, and legal evidence around a single owner-centric criterion, applies that criterion to a documented real-world surveillance case, and argues a defensible position on how the gap it identifies could be narrowed. Its contributions are:
 
 - it names and defines owner-inspectability as the property an owner needs in order to audit a device, and distinguishes it from the related but distinct notion of organizational forensic readiness;
 - it catalogs, against that criterion, the specific verification limits of stock Android and traces each to the same deliberate design choice rather than to isolated implementation defects;
