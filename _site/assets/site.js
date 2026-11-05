@@ -233,19 +233,25 @@
     // scroll-to-top must not steal focus from a keyboard user mid-activation, and
     // the fade-out's visibility:hidden would drop focus).
     function hide() { if (document.activeElement !== btn) { btn.classList.add("btt-hidden"); } }
+    var idle = null;
     btn.addEventListener("click", function (e) {
       e.preventDefault();
+      // "instant" forces the jump a reduced-motion user asked for ("auto" would honor a CSS
+      // scroll-behavior:smooth if one were ever set). Then release focus so the scroll-to-top's
+      // own hide() is not suppressed by the focus-guard, which would otherwise leave the control
+      // at the top catching clicks over the content; moving focus on activation is WCAG-fine.
       var reduce = window.matchMedia
         && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+      window.scrollTo({ top: 0, behavior: reduce ? "instant" : "smooth" });
+      btn.blur();
     });
-    // hide() is skipped while the control holds focus, so after a keyboard user
-    // Tabs AWAY near the top nothing re-hides it until the next scroll. Re-run the
-    // threshold check on blur so it does not linger once focus leaves.
+    // On blur, re-check the threshold: hide at once near the top, else resume the idle-hide (a
+    // focused control's idle timer no-ops, so without this it would linger once focus leaves).
     btn.addEventListener("blur", function () {
-      if (window.scrollY < 400) { hide(); }
+      if (window.scrollY < 400) { hide(); return; }
+      clearTimeout(idle);
+      idle = setTimeout(hide, 2000);
     });
-    var idle = null;
     window.addEventListener("scroll", function () {
       if (window.scrollY < 400) { hide(); return; }
       show();
