@@ -259,16 +259,15 @@ a read-only partition against a signed root hash carried in the
 and that can also run independently of AVB; and the locked bootloader is
 the enforcement switch that makes verification refuse an unsigned or
 foreign image rather than merely report its state
-\citep{aosp-bootloader-locking}. The verification runs regardless of
-lock state, but only a locked device refuses a failing image -\/- an
-unlocked device computes the same result and boots anyway
-\citep{aosp-avb-readme} -\/- so verified boot without a locked
-bootloader is a check the owner can read, not an enforced barrier.
-Conversely dm-verity can guard a partition\textquotesingle s integrity
-without full AVB or a locked bootloader, its root hash then anchored
-elsewhere; such a configuration gives partition integrity without
-boot-chain enforcement -\/- not a useful owner goal, but a reminder that
-the three layers are separable.
+\citep{aosp-bootloader-locking}. Only a locked device refuses an image
+that fails verification; an unlocked device is not required to verify
+the signing key at all and boots with an on-screen warning in the orange
+state \citep{aosp-avb-readme} -\/- so without a locked bootloader
+verified boot is not an enforced barrier. Conversely dm-verity can guard
+a partition\textquotesingle s integrity without full AVB or a locked
+bootloader, its root hash then anchored elsewhere; such a configuration
+gives partition integrity without boot-chain enforcement -\/- not a
+useful owner goal, but a reminder that the three layers are separable.
 
 By design, these mechanisms constrain what ordinary software, including
 most malicious software, can do once it is running on the device
@@ -1874,9 +1873,9 @@ trivially bypass" \citep{grapheneos-attestation-compat}.
 Restricting attention to what an owner can do while keeping the
 bootloader locked and verified boot engaged, the approaches differ on
 four things (Table 4): whether it grants a full superuser, whether it
-persists across reboot, how it modifies the running \texttt{/system}, if
-at all -\/- through a persistent \texttt{/data} overlay, through a
-direct write to a verity-disabled \texttt{/system}, or not at all -\/-
+persists across reboot, how it modifies the running system, if at all
+-\/- through the \texttt{/data} module store re-applied at boot, through
+a direct write to a verity-disabled \texttt{/system}, or not at all -\/-
 and whether they preserve the verified-boot security model under which
 the owner can still detect tampering. A full superuser here is
 unrestricted uid-0 over the running system -\/- reading and writing any
@@ -1919,7 +1918,7 @@ Full superuser?
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Persists?
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Running \texttt{/system} modified? (how)
+Running system modified? (how)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Verified-boot model preserved?
 \end{minipage} \\
@@ -1937,7 +1936,7 @@ Magisk-style systemless patch, relocked under an owner key\footnote{Root
   user-data partition \citep{aosp-file-based-encryption}, outside the
   read-only verity hashtree that covers \texttt{/system}
   \citep{aosp-dm-verity}, \citep{kernel-dm-verity}.} & Yes & Yes & via
-\texttt{/data} overlay & No \\
+the \texttt{/data} module store & No \\
 Scoped kernel root: KernelSU\footnote{Scoped kernel root, with per-app
   profiles \citep{kernelsu} (per-app gating narrows the surface, not a
   security boundary); the superuser sits in the kernel rather than in
@@ -1945,7 +1944,7 @@ Scoped kernel root: KernelSU\footnote{Scoped kernel root, with per-app
   \texttt{/data/adb/modules} store is overlaid onto \texttt{/system} via
   OverlayFS at every boot \citep{kernelsu-modules}, outside the verity
   hashtree \citep{aosp-dm-verity}, \citep{kernel-dm-verity}.} & Yes &
-Yes & via \texttt{/data} overlay & No \\
+Yes & via the \texttt{/data} module store & No \\
 Verity-disabled \texttt{/system}\footnote{dm-verity for \texttt{/system}
   disabled in the owner-signed image (\texttt{vbmeta} hashtree-disabled
   flag, or \texttt{vbmeta} without \texttt{/system}\textquotesingle s
@@ -1956,7 +1955,7 @@ Verity-disabled \texttt{/system}\footnote{dm-verity for \texttt{/system}
   yellow state \citep{aosp-avb-readme}, but with dm-verity disabled
   \texttt{/system} falls outside the hashtree \citep{aosp-dm-verity}, so
   tampering of \texttt{/system} is undetectable.} & Yes & Yes & direct
-write & No \\
+\texttt{/system} write & No \\
 Non-persistent special-boot-mode root\footnote{A special-boot-mode
   terminal not retained across reboot \citep{grapheneos-root-statement};
   no app-facing \texttt{su}. The root does not persist, so a reboot
@@ -2178,14 +2177,14 @@ even a full, persistent superuser entirely inside the owner-signed,
 verity-covered image with no unverified \texttt{/data} state that can
 modify the running system (the ADB-root re-sign). What forfeits the
 model is unverified persistent state the owner cannot check, in either
-of two forms: a mutable \texttt{/data} module store overlaid on
-\texttt{/system}, or a persistently writable \texttt{/system} with its
-dm-verity hashtree disabled. Relying-party attestation is in any case
-given up by every one of these owner-keyed configurations, which no
-longer carry the vendor\textquotesingle s key. A capability that closed
-the gap would have to assemble three things the shipped approaches reach
-only in pairs: privileged inspection the owner can invoke; an integrity
-state the owner, and ideally an independent verifier, can still check
+of two forms: a mutable \texttt{/data} module store re-applied at boot,
+or a persistently writable \texttt{/system} with its dm-verity hashtree
+disabled. Relying-party attestation is in any case given up by every one
+of these owner-keyed configurations, which no longer carry the
+vendor\textquotesingle s key. A capability that closed the gap would
+have to assemble three things the shipped approaches reach only in
+pairs: privileged inspection the owner can invoke; an integrity state
+the owner, and ideally an independent verifier, can still check
 afterward -\/- which means privilege that either does not survive a
 reboot or arrives as a signed, verity-covered extension, and, where a
 change is meant to persist, a system re-signed under the
@@ -2904,9 +2903,11 @@ the \texttt{/data} overlay), or the verity-disabled \texttt{/system}
 configuration (direct write) \\
 System-wide ad and tracker blocking via the hosts file; install a custom
 CA into the system trust store & Persistent \texttt{/system} write (a
-\texttt{/data} overlay suffices) & Magisk, KernelSU, verity-disabled
-\texttt{/system}, or baked into the owner-signed, verity-covered image
-(the avbroot or resign-android-image row) \citep{adaway} \\
+\texttt{/data} overlay suffices); for the custom CA, also a signed
+Conscrypt APEX update on a from-source build & Magisk, KernelSU,
+verity-disabled \texttt{/system}, or baked into the owner-signed,
+verity-covered image (the avbroot or resign-android-image row)
+\citep{adaway} \\
 Firewall or DNS control without consuming the single VPN slot
 \citep{aosp-vpnservice} & Full root running netfilter \citep{netfilter},
 \citep{aosp-kernel}, persistent & Magisk, KernelSU, verity-disabled
@@ -2981,12 +2982,14 @@ updatable Conscrypt module APEX, with the legacy
 \texttt{/system/etc/security/cacerts} path applying on earlier releases
 \citep{aosp-conscrypt}: on a re-signed image the Conscrypt APEX stays
 vendor-signed and the owner cannot inject a certificate into it, but a
-from-source owner build that holds the module\textquotesingle s own
-signing key can instead ship the certificate as a higher-version, signed
-Conscrypt APEX that \texttt{apexd} stores in \texttt{/data}, verifies,
-and activates over the built-in copy at the next boot \citep{aosp-apex}
--\/- a signed, verity-covered extension that adds the CA with no
-\texttt{/system} write and keeps the model intact.
+from-source owner build that re-signs the Conscrypt module with its own
+key (not the public AOSP test key) can instead ship the certificate as a
+higher-version, signed Conscrypt APEX that \texttt{apexd} stores in
+\texttt{/data}, verifies against that key, and activates over the
+built-in copy at the next boot \citep{aosp-apex} -\/- adding the CA with
+no \texttt{/system} write, though the update, living in \texttt{/data},
+is itself outside what verified boot authenticates, as all
+\texttt{/data} state is.
 
   \bibliography{refs}
 
