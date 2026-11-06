@@ -11,6 +11,7 @@ date = "2026-10-24"
 online_date = "2026-10-24"
 language = "en"
 keywords = [
+  "owner-inspectability",
   "Android security",
   "independent verification",
   "mobile forensics",

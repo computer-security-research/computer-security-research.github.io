@@ -1,4 +1,4 @@
-# Limits of Independent Security Verification on Vendor-Locked Devices
+# Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices
 
 ## Abstract
 
