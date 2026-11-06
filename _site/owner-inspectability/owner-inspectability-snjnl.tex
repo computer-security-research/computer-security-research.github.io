@@ -2398,6 +2398,33 @@ what the left column has and the right column lacks; root, where a phone
 owner reaches it, adds only the single "in-system superuser" row and
 leaves every other row unchanged.
 
+This owner freedom over the boot and operating-system stack has a flip
+side worth stating, lest the contrast read as a ranking. Most
+general-purpose desktop systems do not enforce an equivalent of the
+phone\textquotesingle s locked, vendor-anchored verified boot: they ship
+no whole-system integrity enforcement over the root filesystem by
+default, and UEFI Secure Boot, which many ship, authenticates the
+boot-chain executables image by image -\/- firmware drivers, the
+bootloader, and the operating-system loader, up to the hand-off to the
+operating system \citep{uefi-secure-boot}, \citep{ms-secure-boot} -\/-
+rather than the operating system\textquotesingle s own filesystem, and
+remains owner-controllable, since a physically present owner can replace
+its keys from the firmware menus or turn it off \citep{ms-secure-boot}
+-\/- so, unlike the phone\textquotesingle s locked chain, it is a
+barrier the owner can lift, not the locked, whole-image verification AVB
+performs \citep{aosp-verified-boot}, \citep{aosp-avb-readme}. The same
+absence is two-edged: it is what leaves the host freely inspectable, and
+it is also why a software adversary that reaches kernel or root can
+persist in the host\textquotesingle s own bootloader, kernel, or init
+-\/- the operating-system-level persistence a locked
+phone\textquotesingle s verified boot is built to refuse. The immutable,
+image-based desktop systems are the exception, verifying the root
+filesystem block by block against a signed reference much as the phone
+does \citep{kernel-dm-verity}, \citep{chromeos-verified-boot}. The
+firmware residual discussed above sits beneath this and is shared by
+both platforms; the point here is one layer up, at the operating-system
+and boot stack itself.
+
 The ease of this recourse may be overstated. Rooting presumes an act
 that retail devices are configured to resist: they ship with the
 bootloader locked, and unlocking it -\/- where the vendor permits it at
