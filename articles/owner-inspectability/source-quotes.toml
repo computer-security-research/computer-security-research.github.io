@@ -3,6 +3,7 @@
 # is pulled from refs.bib by journal-maker. Quotes are verbatim.
 
 [aosp-selinux]
+archive = { memento = "https://web.archive.org/web/20261021225813/https://source.android.com/docs/security/features/selinux" }
 label = "SELinux -- MAC binds even root; confinement limits a compromise's reach"
 claims = [
   { section = "Sec. 3", text = "SELinux confines even uid-0 processes to permitted domains." },
@@ -14,6 +15,7 @@ quotes = [
 ]
 
 [kernel-lockdown]
+archive = { memento = "https://web.archive.org/web/20261020001610/https://man7.org/linux/man-pages/man7/kernel_lockdown.7.html" }
 label = "Kernel lockdown -- withdraws root-accessible interfaces"
 claims = [
   { section = "Sec. 3", text = "lockdown withdraws otherwise root-accessible interfaces used to modify the running kernel." },
@@ -23,6 +25,7 @@ quotes = [
 ]
 
 [kernel-module-signing]
+archive = { memento = "https://web.archive.org/web/20261019015410/https://docs.kernel.org/admin-guide/module-signing.html" }
 label = "Module-signature enforcement -- no unsigned module load"
 claims = [
   { section = "Sec. 3", text = "enforcement can require a valid signature on loaded code, so root cannot insert an arbitrary module." },
@@ -32,6 +35,7 @@ quotes = [
 ]
 
 [kernel-modules-disabled]
+archive = { memento = "https://web.archive.org/web/20261102195221/https://docs.kernel.org/admin-guide/sysctl/kernel.html" }
 label = "kernel.modules_disabled -- one-way, even root cannot reverse"
 claims = [
   { section = "Sec. 3", text = "once set, blocks all further module loading in a one-way fashion." },
@@ -41,6 +45,7 @@ quotes = [
 ]
 
 [aosp-verified-boot]
+archive = { memento = "https://web.archive.org/web/20261024052456/https://source.android.com/docs/security/features/verifiedboot" }
 label = "Verified Boot -- hardware root of trust, refuse unsigned"
 claims = [
   { section = "Sec. 3", text = "AVB anchors the boot chain to a hardware root of trust." },
@@ -50,6 +55,7 @@ quotes = [
 ]
 
 [play-integrity-improvements]
+archive = { memento = "https://web.archive.org/web/20260607171011/https://developer.android.com/google/play/integrity/improvements" }
 label = "Play Integrity -- verdict tiers are hardware-backed"
 claims = [
   { section = "Sec. 8", text = "verdicts are tiered (basic / device-integrity / stronger hardware-backed), tied to a certified configuration." },
@@ -59,6 +65,7 @@ quotes = [
 ]
 
 [aosp-auto-backup]
+archive = { memento = "https://web.archive.org/web/20260918072210/https://developer.android.com/identity/data/autobackup" }
 label = "Auto Backup -- OS-mediated, app-configured, size-capped; covers only apps that permit it"
 claims = [
   { section = "Sec. 5", text = "the backup is mediated by the operating system -- Auto Backup includes only system-assigned app directories, apps include and exclude files, and it is capped per app, so it is partial, not a full device image." },
@@ -69,6 +76,7 @@ quotes = [
 ]
 
 [aosp-file-based-encryption]
+archive = { memento = "https://web.archive.org/web/20220907132848/https://source.android.com/docs/security/encryption/file-based" }
 label = "File-based encryption -- mandatory since Android 10; keys protected in hardware (TEE)"
 claims = [
   { section = "Sec. 7, 11", text = "FBE mandatory on devices launched with Android 10+, available since Android 7." },
@@ -80,6 +88,7 @@ quotes = [
 ]
 
 [play-integrity-overview]
+archive = { memento = "https://web.archive.org/web/20261025125007/https://developer.android.com/google/play/integrity/overview" }
 label = "Play Integrity overview -- separate app- and account-integrity fields"
 claims = [
   { section = "Sec. 8", text = "the API additionally returns app-integrity and account-integrity fields, not reproduced in the paper's device-state table." },
@@ -89,6 +98,7 @@ quotes = [
 ]
 
 [aosp-key-id-attestation]
+archive = { memento = "https://web.archive.org/web/20261022101910/https://source.android.com/docs/security/features/keystore/attestation" }
 label = "Key attestation -- hardware-backed key storage"
 claims = [
   { section = "Sec. 8", text = "attestation is backed by hardware-backed key storage." },
@@ -98,6 +108,7 @@ quotes = [
 ]
 
 [owasp-mastg-play-integrity]
+archive = { memento = "https://web.archive.org/web/20260813101000/https://mas.owasp.org/MASTG/knowledge/android/MASVS-RESILIENCE/MASTG-KNOW-0035/" }
 label = "OWASP MASTG -- device-integrity verdict verifies the environment"
 claims = [
   { section = "Sec. 8, 12", text = "apps gate on the hardware-backed device-integrity verdict." },
@@ -107,6 +118,7 @@ quotes = [
 ]
 
 [grapheneos-attestation-compat]
+archive = { memento = "https://web.archive.org/web/20261023161435/https://grapheneos.org/articles/attestation-compatibility-guide" }
 label = "GrapheneOS -- apps ban it; strong tier == hardware key attestation"
 claims = [
   { section = "Sec. 8", text = "owner-controlled configs fail device/strong verdicts; a catalog of apps refuse to run. (The no-spoofing stance is GrapheneOS-specific -- see [grapheneos-usage]; it does not hold for all aftermarket projects, since CalyxOS and /e/OS ship microG, which signature-spoofs.)" },
@@ -117,6 +129,7 @@ quotes = [
 ]
 
 [aosp-full-disk-encryption]
+archive = { memento = "https://web.archive.org/web/20220801180046/https://source.android.com/security/encryption/full-disk" }
 label = "Full-disk encryption -- master key bound to hardware"
 claims = [
   { section = "Sec. 11", text = "the FDE master key is bound to hardware (TEE), not a copyable file." },
@@ -126,6 +139,7 @@ quotes = [
 ]
 
 [google-play-protect-remove]
+archive = { memento = "https://web.archive.org/web/20261022190940/https://developers.google.com/android/play-protect/client-protections" }
 label = "Play Protect -- a privileged GMS component that disables/removes other apps"
 claims = [
   { section = "Sec. 12", text = "Unlike an ordinary sandboxed third-party app, Play Protect ships as a privileged part of Google Mobile Services and can disable or automatically remove other apps on the device -- yet it still runs inside the running OS." },
@@ -136,6 +150,7 @@ quotes = [
 ]
 
 [grapheneos-auditor]
+archive = { memento = "https://web.archive.org/web/20261022064723/https://attestation.app/about" }
 label = "GrapheneOS Auditor -- hardware-backed remote attestation from a second device"
 claims = [
   { section = "Sec. 12", text = "GrapheneOS provides hardware-backed remote attestation an owner can verify from a second device." },
@@ -147,6 +162,7 @@ quotes = [
 ]
 
 [grapheneos-attestation-server]
+archive = { memento = "https://web.archive.org/web/20260607114658/https://github.com/GrapheneOS/AttestationServer" }
 label = "Owner can self-host the attestation server"
 claims = [
   { section = "Sec. 12", text = "The attestation server is Open Source, so an owner can run their own instance for remote verification rather than rely on the public service." },
@@ -156,12 +172,14 @@ quotes = [
 ]
 
 [grapheneos-attestation-400]
+archive = { memento = "https://web.archive.org/web/20261106120653/https://discuss.grapheneos.org/d/24128" }
 label = "Forum report -- owner-AVB-key device rejected (HTTP 400) by the official attestation service"
 quotes = [
   { text = "My bootloader is locked with my AVB key. When I try to enable remote attestation, I am greeted with a response code: 400 notification.", label = "Owner key -> HTTP 400 from attestation.app", note = "discuss.grapheneos.org discussion 24128 (2025-07-17), user cancername; the sole reply offers generic troubleshooting and the report is left unresolved. Verified via sandbox render of the forum page." },
 ]
 
 [resign-android-image]
+archive = { memento = "https://web.archive.org/web/20261106124846/https://github.com/chriswoope/resign-android-image/tree/aca8607e8421708107a324736f0d79facd399676" }
 label = "resign-android-image -- owner re-signs GrapheneOS OTAs with own keys; cannot pass Play Integrity"
 quotes = [
   { text = "Currently no bypass for Play Integrity is included, the best solution is to modify the specific applications to remove the Play Integrity-related checks (if they aren't fully server-side) or failing that to install Magisk and a module that spoofs the Play Integrity verdict.", label = "Owner-signed build cannot satisfy Play Integrity", note = "chriswoope/resign-android-image README (pinned aca8607e, MIT). The tool re-signs GrapheneOS OTA updates with the owner's own AVB + APK keys for a bootloader re-locked to the owner key, without a full source rebuild; tested only on Pixel 6 Pro and Pixel Tablet. Verified verbatim." },
@@ -170,36 +188,42 @@ quotes = [
 ]
 
 [grapheneos-auditor-domain]
+archive = { memento = "https://web.archive.org/web/20261106124941/https://github.com/GrapheneOS/Auditor/blob/d5d326453e6e3b328d7a11198d9f99174ac7f4f3/app/src/main/java/app/attestation/auditor/RemoteVerifyJob.java" }
 label = "Auditor source -- the attestation server domain is hardcoded"
 quotes = [
   { text = 'static final String DOMAIN = "attestation.app";', label = "Released Auditor pins attestation.app", note = "GrapheneOS/Auditor RemoteVerifyJob.java (pinned d5d3264); BASE_URL derives from it and AttestationActivity rejects a remote-verify QR whose domain is not DOMAIN, so remote verification against a self-hosted server needs the app rebuilt with a changed domain. Verified verbatim." },
 ]
 
 [grapheneos-auditor-issue140]
+archive = { memento = "https://web.archive.org/web/20220407052121/https://github.com/GrapheneOS/AttestationServer/issues/140" }
 label = "AttestationServer issue 140 -- official Auditor pins its server; both trees must be modified"
 quotes = [
   { text = "Yes, you will need to substitute values in both AttestationServer and Auditor to accommodate your setup.", label = "Both app and server must be modified", note = "GrapheneOS/AttestationServer issue 140; GrapheneOS maintainer flawedworld (2022-01-21). Maintainer thestinger adds the official Auditor 'could eventually support other servers but it doesn't at the moment.' The report is the 'Scanned invalid account QR code' a self-hosted server triggers. Verified via the GitHub API." },
 ]
 
 [grapheneos-auditor-usecase]
+archive = { memento = "https://web.archive.org/web/20261106121626/https://discuss.grapheneos.org/d/8235-can-someone-explain-to-me-the-use-case-for-the-auditor-app-with-avb-enabled/4" }
 label = "GrapheneOS maintainer -- Auditor enforces a whitelisted verified-boot key, never arbitrary yellow-state keys"
 quotes = [
   { text = "Auditor enforces that the device has a locked bootloader, green or yellow verified boot state and a whitelisted verified boot key among the other things it enforces. It determines the OS based on the verified boot key.", label = "Only whitelisted keys accepted", note = "discuss.grapheneos.org d/8235 post 4, the official GrapheneOS account (forum moderator), 2023-10-17; the same post adds the Auditor 'never allows arbitrary yellow boot state key fingerprints.' Verified via sandbox render." },
 ]
 
 [robotnix-attestation]
+archive = { memento = "https://web.archive.org/web/20261106125053/https://github.com/nix-community/robotnix/blob/b731f1aa2bfd26763714495a12ad50f6a9bd12ca/docs/src/modules/attestation.md" }
 label = "robotnix -- build system that keys the Auditor app + AttestationServer to owner-created keys"
 quotes = [
   { text = "Robotnix patches the Auditor app and Remote Attestation service to allow for using the user-created keys.", label = "Owner-key Auditor + server", note = "nix-community/robotnix docs/src/modules/attestation.md (pinned b731f1a, MIT). The signing module supplies owner keys; apps.auditor and services.attestation-server rebuild the app and server keyed to the owner's Auditor-signature and AVB fingerprints. Third-party tooling, not GrapheneOS; documented limit of one custom device per attestation service. Verified verbatim." },
 ]
 
 [diamaneos-attestation]
+archive = { memento = "https://web.archive.org/web/20261106120829/https://github.com/DiamaneOS/AttestationServer/blob/0308fc1e2be2188441c17db907d84bdda2578951/DOWNSTREAM.md" }
 label = "DiamaneOS -- downstream fork accepting an owner-rooted (self-signed, no manufacturer root) key"
 quotes = [
   { text = "Some phones attest only with keys that chain to no manufacturer root. A second trust profile accepts their first pairing under these conditions: [...] The phone is locked, boots with a configured OS key and reports self-signed verified boot.", label = "Second trust profile -- self-signed, no manufacturer root", note = "DiamaneOS/AttestationServer DOWNSTREAM.md (pinned 0308fc1). DiamaneOS forks both Auditor and AttestationServer; trusted keys live in src/main/resources/.../diamaneos-trust.json, overridable via -Ddiamaneos.trust, and a profile-2 pairing waits for the account holder's approval. Verified verbatim." },
 ]
 
 [grapheneos-root-statement]
+archive = { memento = "https://web.archive.org/web/20240318050738/https://news.ycombinator.com/item?id=39675220" }
 label = "GrapheneOS lead developer -- a constrained root is theoretically possible but unbuilt; persistent-state root ruins verified boot"
 quotes = [
   { text = "an on-device root terminal which requires a special boot mode and isn't persistent", label = "Constrained root terminal", note = "Hacker News item 39675220; user strcat = Daniel Micay (GrapheneOS founder and lead developer), 2024-03-12. Describes the form said to be theoretically possible without much security loss. Verified verbatim via host curl of the raw HTML." },
@@ -209,12 +233,14 @@ quotes = [
 ]
 
 [grapheneos-root-forum]
+archive = { memento = "https://web.archive.org/web/20250429225717/https://discuss.grapheneos.org/d/2275-will-gos-and-root-related-issues/8" }
 label = "GrapheneOS (official account) -- root destroys the verified-boot and attestation security model"
 quotes = [
   { text = "A minor vulnerability in an app is now a complete persistent compromise of the OS and the security model for verified boot and attestation are not intact to detect that.", label = "Verified boot + attestation cannot detect it", note = "discuss.grapheneos.org d/2275 post 8, the official GrapheneOS project account, 2022-12-09, answering whether Magisk-style root can be added while keeping the security model. Verified verbatim via the Flarum JSON API." },
 ]
 
 [calyxos-root-faq]
+archive = { memento = "https://web.archive.org/web/20261023050200/https://calyxos.org/docs/guide/security/security-faq/" }
 label = "CalyxOS -- does not support or recommend rooted operation"
 quotes = [
   { text = "CalyxOS does not support running in rooted mode, nor do we recommend this.", label = "Unsupported", note = "CalyxOS Security FAQ, section 'Is it possible to root CalyxOS?'. Verified verbatim via WebFetch." },
@@ -267,6 +293,7 @@ quotes = [
 ]
 
 [poettering-developer-mode]
+archive = { memento = "https://web.archive.org/web/20261008020411/https://0pointer.net/blog/fitting-everything-together.html" }
 label = "Poettering 'Developer Mode' -- proposed owner-code-on-immutable-signed-OS mode (unshipped)"
 claims = [
   { section = "Sec. 13", text = "An owner-facing developer mode has been proposed to reconcile locally built or signed code with an immutable, cryptographically validated system, but it remains a design proposal rather than a shipping feature." },
@@ -276,6 +303,7 @@ quotes = [
 ]
 
 [aosp-apex]
+archive = { memento = "https://web.archive.org/web/20261025190840/https://source.android.com/docs/core/ota/apex" }
 label = "Android APEX -- signed, dm-verity-verified, read-only modular system component"
 claims = [
   { section = "Sec. 13", text = "APEX is a signed, dm-verity-verified container for modular system components; its payload is surfaced under its own path and AOSP deliberately does not overlay files on /system, so it is a bounded, policy-confined extension rather than an arbitrary /system overlay." },
@@ -287,6 +315,7 @@ quotes = [
 ]
 
 [aosp-conscrypt]
+archive = { memento = "https://web.archive.org/web/20261017101700/https://source.android.com/docs/core/ota/modular-system/conscrypt" }
 label = "Conscrypt module -- Android 14 updatable root trust store, delivered as a vendor-signed APEX"
 quotes = [
   { text = "Android 14 introduces an updatable root trust store within Conscrypt.", label = "Updatable root trust store (Android 14)", note = "Android Open Source Project, Conscrypt module (source.android.com/docs/core/ota/modular-system/conscrypt). Verified verbatim. Cited in Appendix B: the CA store is now updatable but ships in the vendor-signed com.android.conscrypt APEX, whose runtime signature check an owner cannot substitute into." },
@@ -294,6 +323,7 @@ quotes = [
 ]
 
 [systemd-sysext]
+archive = { memento = "https://web.archive.org/web/20261025004315/https://www.freedesktop.org/software/systemd/man/latest/systemd-sysext.html" }
 label = "systemd-sysext -- signed, verity-authenticated, read-only system-extension images (Linux)"
 claims = [
   { section = "Sec. 13", text = "The Linux analogue of APEX: systemd-sysext extends the base system with strictly read-only images that may optionally carry dm-verity authentication, under an image policy." },
@@ -304,6 +334,7 @@ quotes = [
 ]
 
 [avbroot]
+archive = { memento = "https://web.archive.org/web/20261023051058/https://github.com/chenxiaolong/avbroot" }
 label = "avbroot -- owner re-signs + relocks, with optional baked-in root"
 claims = [
   { section = "Sec. 13", text = "avbroot re-signs Android OTA images with the owner's own keys, enabling a relocked bootloader with optionally baked-in root." },
@@ -315,6 +346,7 @@ quotes = [
 ]
 
 [kernelsu]
+archive = { no_memento = "no Wayback snapshot available" }
 label = "KernelSU -- kernel-level Android root with per-app (app-profile) scoping"
 claims = [
   { section = "Sec. 13", text = "KernelSU is a kernel-based root solution for Android with per-app (app-profile) scoping of root." },
@@ -325,6 +357,7 @@ quotes = [
 ]
 
 [kernelsu-modules]
+archive = { memento = "https://web.archive.org/web/20261018193514/https://kernelsu.org/guide/module.html" }
 label = "KernelSU module -- store in /data/adb/modules, overlaid on /system each boot via OverlayFS (systemless)"
 claims = [
   { section = "Sec. 13", text = "A KernelSU module's store lives in /data/adb/modules and is overlaid on /system each boot via OverlayFS, so the superuser's modifications sit above the verified layer in unverified /data -- the system partition is left byte-intact (systemless)." },
@@ -337,6 +370,7 @@ quotes = [
 ]
 
 [shizuku]
+archive = { memento = "https://web.archive.org/web/20261020143655/https://github.com/RikkaApps/Shizuku" }
 label = "Shizuku/Sui -- privilege brokering at ADB shell or root, per start mode; the paper's row and honorable mention are the ADB-shell (no-root) mode"
 claims = [
   { section = "Sec. 13", text = "Shizuku lets ordinary apps call privileged system APIs through a brokered server process whose privilege is that of whatever started it -- ADB/shell, or root where the owner starts it with root -- without the client app itself holding root; Table 4's row is the ADB-shell start mode." },
@@ -350,12 +384,14 @@ quotes = [
 ]
 
 [aosp-cdd]
+archive = { memento = "https://web.archive.org/web/20261023120815/https://source.android.com/docs/compatibility/cdd" }
 label = "Android CDD -- the compatibility requirements a device must meet to be Android"
 quotes = [
   { text = "To be considered compatible with Android, device implementations MUST meet the requirements presented in this Compatibility Definition, including any documents incorporated via reference.", label = "Compatibility requirement", note = "Android Compatibility Definition Document, source.android.com/docs/compatibility/cdd. Verified verbatim via host curl." },
 ]
 
 [google-play-protect]
+archive = { memento = "https://web.archive.org/web/20261023120822/https://developers.google.com/android/play-protect" }
 label = "Google Play Protect -- the built-in app scanner"
 quotes = [
   { text = "Every day, Google Play Protect automatically scans all of the apps on Android phones and works to prevent the installation of harmful apps, making it the most widely deployed mobile threat protection service in the world.", label = "Ubiquity", note = "Google Play Protect developer documentation; verified verbatim." },
@@ -363,18 +399,21 @@ quotes = [
 ]
 
 [avast-mobile-faq]
+archive = { memento = "https://web.archive.org/web/20260616151730/https://support.avast.com/en-ww/article/mobile-security-faq/" }
 label = "Avast Mobile Security -- bounded by the OS it runs inside"
 quotes = [
   { text = "Like all applications on the Android market, it is subject to limitations imposed by the operating system version running on the device. It cannot protect against exploits targeting specific vulnerabilities in the OS kernel, the network stack and other fundamental parts of the system.", label = "Cannot reach the kernel", note = "Avast Mobile Security FAQ (vendor's own statement)." },
 ]
 
 [kaspersky-android]
+archive = { no_memento = "no Wayback snapshot available" }
 label = "Kaspersky for Android -- scans within the OS as an app"
 quotes = [
   { text = "The Kaspersky app scans the device's entire file system.", label = "Full-scan scope", note = "Kaspersky for Android online help, About page." },
 ]
 
 [aosp-app-sandbox]
+archive = { memento = "https://web.archive.org/web/20261018101653/https://source.android.com/docs/security/app-sandbox" }
 label = "Android Application Sandbox -- per-app UID isolation"
 claims = [
   { section = "Sec. 2", text = "Each app gets a distinct kernel-level user identity and is isolated so apps cannot read each other's data by default." },
@@ -385,6 +424,7 @@ quotes = [
 ]
 
 [aosp-root-process-isolation]
+archive = { memento = "https://web.archive.org/web/20261012104046/https://source.android.com/docs/security/overview/implement" }
 label = "Android policy -- minimize root (uid-0) processes"
 claims = [
   { section = "Sec. 3", text = "Android deliberately reduces the number of root processes to cut privilege-escalation risk." },
@@ -394,24 +434,28 @@ quotes = [
 ]
 
 [tag-buying-spying]
+archive = { memento = "https://web.archive.org/web/20261024040915/https://blog.google/threat-analysis-group/commercial-surveillance-vendors-google-tag-report/" }
 label = "Google TAG -- commercial spyware drives Android 0-day exploitation"
 quotes = [
   { text = "CSVs are behind half of known 0-day exploits targeting Google products as well as Android ecosystem devices.", label = "Half of Android 0-days", note = "Google Threat Analysis Group, Buying Spying (2024). CSV = commercial surveillance vendor." },
 ]
 
 [tag-cytrox]
+archive = { memento = "https://web.archive.org/web/20260927055820/https://blog.google/threat-analysis-group/protecting-android-users-from-0-day-attacks/" }
 label = "Google TAG -- full exploit chain against an up-to-date device"
 quotes = [
   { text = "In October 2021, we detected a full chain exploit from an up-to-date Samsung phone running the latest version of Chrome.", label = "Up-to-date device compromised at runtime", note = "Google Threat Analysis Group, Protecting Android users from 0-Day attacks (2022)." },
 ]
 
 [projectzero-itw]
+archive = { memento = "https://web.archive.org/web/20261103090608/https://projectzero.google/0day.html" }
 label = "Project Zero -- in-the-wild 0-day tracker (the list)"
 quotes = [
   { text = "our tracking spreadsheet for publicly known cases of detected zero-day exploits, in the hope that this can be a useful community resource", label = "The in-the-wild record", note = "Google Project Zero, 0day In the Wild." },
 ]
 
 [projectzero-badbinder]
+archive = { memento = "https://web.archive.org/web/20251115055515/https://googleprojectzero.blogspot.com/2019/11/bad-binder-android-in-wild-exploit.html" }
 label = "Project Zero -- CVE-2019-2215 Binder use-after-free: in-the-wild kernel LPE on a running signed kernel (Pegasus chain)"
 claims = [
   { section = "Sec. 8", text = "A use-after-free in the Android kernel's Binder driver (CVE-2019-2215) gave a runtime, in-memory local privilege escalation to full compromise of an already-booted device, exploited in the wild in a Pegasus attack chain -- a compromise of the signed, running kernel that boot-time verification does not catch." },
@@ -422,12 +466,14 @@ quotes = [
 ]
 
 [talos-predator]
+archive = { memento = "https://web.archive.org/web/20261003134941/https://blog.talosintelligence.com/mercenary-intellexa-predator/" }
 label = "Cisco Talos -- Predator defeats in-OS confinement at runtime"
 quotes = [
   { text = "ALIEN is injected into the zygote address space to pivot into specialized privileged processes inside the Android permission model. Since zygote is the parent process of most of the Android processes, it can change to most UIDs and transition into other SELinux contexts that possess different privileges.", label = "zygote injection, SELinux transition", note = "Cisco Talos, technical analysis of Intellexa's PREDATOR (2023)." },
 ]
 
 [hegel-modifiedelephant-2022]
+archive = { memento = "https://web.archive.org/web/20261003131254/https://www.sentinelone.com/labs/modifiedelephant-apt-and-a-decade-of-fabricating-evidence/" }
 label = "SentinelOne -- ModifiedElephant planted evidence via commodity RATs; Pegasus kept separate"
 quotes = [
   { text = "The objective of ModifiedElephant is long-term surveillance that at times concludes with the delivery of 'evidence'", label = "objective: surveillance concluding in planted 'evidence'", note = "SentinelOne Labs, Tom Hegel (2022). Source typographic quotes normalized to ASCII." },
@@ -450,16 +496,19 @@ label = "Spitzner -- deception/honeypots presuppose administrative control"
 no_quote = "Cited in Sec. 14 as a standard-practice anchor: deploying honeypots/deception presupposes administrative control of the deploying systems. Standard reference (Addison-Wesley, 2002); not quoted verbatim."
 
 [raymond-cathedral-bazaar]
+archive = { memento = "https://web.archive.org/web/20261021191333/http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/" }
 label = "Raymond -- origin of the CONTESTED 'many eyes' (Linus's Law) position"
 no_quote = "Cited in Sec. 14 as the source of the 'many eyes' position (Linus's Law), presented as a CONTESTED claim, not endorsed. Not quoted verbatim: the primary host (catb.org) currently serves a mismatched TLS certificate, so the page could not be byte-verified against a secondary copy; paired with [[wheeler-heartbleed]] as the counterweight."
 
 [wheeler-heartbleed]
+archive = { memento = "https://web.archive.org/web/20260415131800/https://dwheeler.com/essays/heartbleed" }
 label = "Wheeler -- Heartbleed qualifies the 'many eyes' claim"
 quotes = [
   { text = "The vulnerable code was reviewed by a human, so merely having a single human reviewer was obviously not enough.", label = "single reviewer not enough (many-eyes qualifier)", note = "David A. Wheeler, How to Prevent the Next Heartbleed (2014, rev. 2024); verified verbatim from dwheeler.com/essays/heartbleed. Source italics on 'was'/'not' rendered as plain ASCII." },
 ]
 
 [petroni-copilot]
+archive = { memento = "https://web.archive.org/web/20260202201459/https://www.usenix.org/legacy/publications/library/proceedings/sec04/tech/full_papers/petroni/petroni.pdf" }
 label = "Petroni et al. -- coprocessor-based below-OS kernel integrity monitor"
 claims = [
   { section = "Sec. 14", text = "A coprocessor on a PCI add-in card DMA-reads host RAM to detect kernel modification; detection is by hashing kernel text and data -- a measurement/detection signal, not an arbitrary owner image." },
@@ -491,10 +540,12 @@ quotes = [
 ]
 
 [tcg-tpm-library]
+archive = { memento = "https://web.archive.org/web/20261013191859/https://trustedcomputinggroup.org/resource/tpm-library-specification/" }
 label = "TCG TPM 2.0 -- measurement/attestation primitive, not a readable store"
 no_quote = "Cited in Sec. 14 for the 'measure, not dump' distinction: the TPM emits measurement digests and signed quotes (PCRs are extend-only), never the measured bytes. TCG TPM 2.0 Library Specification (2019); cited for the architectural property, not quoted verbatim."
 
 [amd-sev-snp]
+archive = { memento = "https://web.archive.org/web/20250719060208/https://www.amd.com/content/dam/amd/en/documents/epyc-business-docs/white-papers/SEV-SNP-strengthening-vm-isolation-with-integrity-protection-and-more.pdf" }
 label = "AMD SEV-SNP -- VM memory encryption bars even a privileged reader (owner included)"
 claims = [
   { section = "Sec. 14", text = "Guest VM memory is encrypted under a per-VM key the hypervisor does not hold, so a privileged component reading guest memory sees only ciphertext -- a protection against a malicious host that, in the owner-inspection framing, equally bars the owner." },
@@ -505,6 +556,7 @@ quotes = [
 ]
 
 [aosp-adb-root]
+archive = { memento = "https://web.archive.org/web/20251027100423/https://android.googlesource.com/platform/packages/modules/adb/+/refs/heads/main/docs/dev/root.md" }
 label = "AOSP adb -- a stock user build never lets adbd stay root"
 claims = [
   { section = "Sec. 3", text = "On a stock user build, adbd drops to the shell user and cannot run as root without modifying the device." },
@@ -515,6 +567,7 @@ quotes = [
 ]
 
 [luks-cryptsetup-faq]
+archive = { memento = "https://web.archive.org/web/20261027022606/https://gitlab.com/cryptsetup/cryptsetup/-/wikis/FrequentlyAskedQuestions" }
 label = "LUKS -- one volume key wrapped by multiple user-key slots on disk"
 claims = [
   { section = "Sec. 11", text = "LUKS stores one volume key wrapped by passphrase key-slots on disk, so a passphrase change re-wraps the key rather than re-encrypting the volume." },
@@ -524,6 +577,7 @@ quotes = [
 ]
 
 [nist-sp800-86]
+archive = { memento = "https://web.archive.org/web/20261011013720/https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-86.pdf" }
 label = "NIST SP 800-86 -- examine a hashed copy on a forensic workstation; reproducible proof"
 claims = [
   { section = "Sec. 1", text = "Standard forensic practice is to examine the device from a separate trusted system and work from a copy, not the live original." },
@@ -537,6 +591,7 @@ quotes = [
 ]
 
 [aosp-open-source]
+archive = { memento = "https://web.archive.org/web/20261104100628/https://source.android.com/license" }
 label = "AOSP -- Android's code is released under the Apache 2.0 open-source license"
 claims = [
   { section = "Sec. 3", text = "Android's system software is released as the Android Open Source Project under the open-source-friendly Apache 2.0 license, making it unusually openly specified for a vendor-locked platform." },
@@ -546,6 +601,7 @@ quotes = [
 ]
 
 [google-driver-binaries]
+archive = { memento = "https://web.archive.org/web/20261028153008/https://developers.google.com/android/drivers" }
 label = "AOSP needs vendor proprietary driver binaries (non-open license)"
 claims = [
   { section = "Sec. 3", text = "Running AOSP on real hardware requires device-specific proprietary binary drivers the vendor distributes under a non-open, personal-use license." },
@@ -556,6 +612,7 @@ quotes = [
 ]
 
 [google-gms]
+archive = { memento = "https://web.archive.org/web/20261027055212/https://www.android.com/gms/" }
 label = "Google Mobile Services is proprietary and not part of AOSP"
 claims = [
   { section = "Sec. 3", text = "The mainstream Google Android experience adds Google Mobile Services, which is proprietary, not part of AOSP, and licensed from Google." },
@@ -566,6 +623,7 @@ quotes = [
 ]
 
 [nistSP800124r2]
+archive = { memento = "https://web.archive.org/web/20261024055525/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-124r2.pdf" }
 label = "NIST SP 800-124r2 -- install-source restriction + store vetting (independent of Google)"
 claims = [
   { section = "Sec. 2", text = "An independent standards body treats the official-store restriction and the unknown-sources gate as recognized controls; sideloaded apps bypass store vetting." },
@@ -575,18 +633,21 @@ quotes = [
 ]
 
 [hill2007antifeatures]
+archive = { memento = "https://web.archive.org/web/20261020203702/https://www.fsf.org/bulletin/2007/fall/antifeatures/" }
 label = "Anti-feature -- functionality a developer charges you to NOT have (Hill)"
 quotes = [
   { text = "An antifeature, in the way I use the term, is functionality that a technology developer will charge users to not include.", label = "Definition", note = "Benjamin Mako Hill, FSF Bulletin, Fall 2007. A free-software-community concept, not a peer-reviewed scientific term." },
 ]
 
 [fdroid-antifeatures]
+archive = { memento = "https://web.archive.org/web/20261020055317/https://f-droid.org/docs/Anti-Features/" }
 label = "F-Droid Anti-Features -- flags for owner-adverse behaviour"
 quotes = [
   { text = "warning of possibly undesirable behaviour from the user's perspective, often serving the interest of the developer or a third party.", label = "Owner-adverse behaviour", note = "F-Droid Documentation, Anti-Features (community taxonomy)." },
 ]
 
 [gamba2020preinstalled]
+archive = { memento = "https://web.archive.org/web/20260217165600/https://arxiv.org/abs/1905.02713" }
 label = "Gamba et al. -- preinstalled bloatware/adware/tracking the owner cannot remove"
 claims = [
   { section = "Sec. 2", text = "Preinstalled Android software includes bloatware, adware, and tracking the owner often cannot uninstall without root." },
@@ -596,6 +657,7 @@ quotes = [
 ]
 
 [eckersley-carrieriq]
+archive = { memento = "https://web.archive.org/web/20261019155513/https://www.eff.org/deeplinks/2011/12/carrier-iq-architecture" }
 label = "Eckersley/EFF -- Carrier IQ wrote keypresses/SMS to system logs"
 claims = [
   { section = "Sec. 2", text = "Carrier IQ, preinstalled carrier diagnostic software, wrote dialer keypresses and SMS text to system logs on some devices." },
@@ -605,6 +667,7 @@ quotes = [
 ]
 
 [avcomparatives-mobile-2024]
+archive = { memento = "https://web.archive.org/web/20260712181042/https://www.av-comparatives.org/wp-content/uploads/2024/06/avc_mob_2024.pdf" }
 label = "AV-Comparatives Mobile Security Review 2024 -- independent measurement of Play Protect (May 2024)"
 claims = [
   { section = "Sec. 2", text = "Independent testing, not the vendor, measures app-layer malware screening: in the May 2024 AV-Comparatives round Google Play Protect reached a 99.3% protection rate, clearing the 99% certification threshold but trailing the leading third-party scanners (99.9%) and logging more false positives (10 vs 0)." },
@@ -616,6 +679,7 @@ quotes = [
 ]
 
 [avtest-android-endurance-2018]
+archive = { memento = "https://web.archive.org/web/20260410194056/https://www.av-test.org/en/news/16-android-security-apps-vs-google-play-protect-in-an-endurance-test/" }
 label = "AV-TEST endurance test -- Play Protect dead last historically (Nov 2017-Mar 2018)"
 claims = [
   { section = "Sec. 2", text = "Earlier independent rounds rated Play Protect dead last, at well below 70% detection." },
@@ -626,6 +690,7 @@ quotes = [
 ]
 
 [aosp-drm]
+archive = { memento = "https://web.archive.org/web/20260807092056/https://source.android.com/docs/core/media/drm" }
 label = "Android DRM framework -- hardware-backed content protection bound to the boot chain of trust"
 claims = [
   { section = "Sec. 2", text = "On devices with the requisite hardware support, hardware-backed digital-rights-management can bind decryption and the decoded video frames to the same hardware chain of trust as verified boot, routing protected content through a trusted output path so the owner may play licensed media but cannot directly extract the decoded stream, which is released only on the content provider's terms -- the content-protection objective the paper names and places out of scope." },
@@ -640,6 +705,7 @@ quotes = [
 ]
 
 [grapheneos-usage]
+archive = { memento = "https://web.archive.org/web/20261024115531/https://grapheneos.org/usage" }
 label = "GrapheneOS -- stated position: will not spoof/bypass attestation checks"
 claims = [
   { section = "Sec. 12", text = "GrapheneOS's stated position is that it will not spoof or circumvent attestation/integrity checks to impersonate a stock device. (Narrowed from a broader claim: CalyxOS and /e/OS ship microG, which uses signature spoofing, so a no-spoofing stance does not hold for all aftermarket projects; LineageOS also states a no-circumvention position but was not independently re-verified this pass.)" },
@@ -649,6 +715,7 @@ quotes = [
 ]
 
 [grapheneos-install-locking]
+archive = { memento = "https://web.archive.org/web/20261027023029/https://grapheneos.org/install/web" }
 label = "GrapheneOS -- re-locking anchors verified boot to GrapheneOS's own key"
 claims = [
   { section = "Sec. 12", text = "re-locking restores verified boot, but on official builds the root of trust is GrapheneOS's key (not Google's, not the owner's) -- a different vendor, not owner control." },
@@ -658,6 +725,7 @@ quotes = [
 ]
 
 [grapheneos-setup-wizard]
+archive = { memento = "https://web.archive.org/web/20261024062759/https://grapheneos.org/features" }
 label = "GrapheneOS -- first-run flow detects an unlocked bootloader and assists locking"
 claims = [
   { section = "Sec. 12", text = "re-locking is part of the supported install/first-run flow." },
@@ -667,6 +735,7 @@ quotes = [
 ]
 
 [grapheneos-build]
+archive = { memento = "https://web.archive.org/web/20261101212727/https://grapheneos.org/build" }
 label = "GrapheneOS -- owner-signed builds: the owner generates and holds the keys"
 claims = [
   { section = "Sec. 12", text = "the owner-inspectable configuration is the owner-signed build re-locked to the owner's own enrolled key; the owner generates and keeps the signing keys." },
@@ -677,12 +746,14 @@ quotes = [
 ]
 
 [owasp-mastg-repackaging]
+archive = { memento = "https://web.archive.org/web/20261019162605/https://mas.owasp.org/MASTG/techniques/android/MASTG-TECH-0038/" }
 label = "OWASP MASTG -- bypass pinning by patching and repackaging the app (no root)"
 quotes = [
   { text = "In most cases, both issues can be fixed by making minor changes to the app (aka. patching) and then re-signing and repackaging it.", label = "Patch and repackage to bypass pinning", note = "OWASP Mobile Application Security Testing Guide (mas.owasp.org/MASTG/techniques/android/MASTG-TECH-0038). Verified verbatim. Cited in Appendix B: bypassing pinning in a repackageable app is an ADB-shell-tier route needing no root, and fails against an app that verifies its own signature or server-backed integrity." },
 ]
 
 [aosp-loadable-kernel-modules]
+archive = { memento = "https://web.archive.org/web/20261011105530/https://source.android.com/docs/core/architecture/kernel/loadable-kernel-modules" }
 label = "Loadable kernel modules -- GKI module signing not supported; dm-verity instead"
 claims = [
   { section = "Sec. 3", text = "module signing is not supported for GKI vendor modules; authenticity rests on dm-verity over the read-only partitions." },
@@ -692,6 +763,7 @@ quotes = [
 ]
 
 [aosp-bootloader-locking]
+archive = { memento = "https://web.archive.org/web/20261104170836/https://source.android.com/docs/core/architecture/bootloader/locking_unlocking" }
 label = "Bootloader locking -- locked refuses a foreign image; unlocking wipes user data"
 claims = [
   { section = "Sec. 2", text = "A locked bootloader prevents installing/booting a non-vendor system or boot image." },
@@ -703,6 +775,7 @@ quotes = [
 ]
 
 [rowlingson-forensic-readiness]
+archive = { memento = "https://web.archive.org/web/20260929200436/https://www.utica.edu/academic/institutes/ecii/publications/articles/A0B13342-B4E0-1F6A-156F501C49CF5F51.pdf" }
 label = "Forensic readiness -- an institutional posture, distinct from owner-inspectability"
 claims = [
   { section = "Sec. 3", text = "forensic readiness is an organization's advance preparation for investigators, not a property a device affords its owner." },
@@ -727,6 +800,7 @@ quotes = [
 ]
 
 [rfc3227]
+archive = { memento = "https://web.archive.org/web/20261001033613/https://www.rfc-editor.org/rfc/rfc3227.txt" }
 label = "RFC 3227 -- do not trust the suspect system's own programs"
 claims = [
   { section = "Sec. 7", text = "a device suspected of compromise should not be relied upon to examine itself using its own programs; run evidence-gathering tools from trusted, protected media." },
@@ -750,6 +824,7 @@ quotes = [
 ]
 
 [magisk-install]
+archive = { memento = "https://web.archive.org/web/20261019013752/https://topjohnwu.github.io/Magisk/install.html" }
 label = "Magisk -- systemless root needs an unlocked bootloader; patches the ramdisk, not /system"
 claims = [
   { section = "Sec. 8", text = "modern rooting is systemless, patching the partition image that holds the ramdisk (and the init it carries) rather than /system, and still requires an unlocked bootloader to reflash that image, so it still forfeits the verified-boot state and hardware-backed verdicts. (Which partition holds the ramdisk varies by device -- boot, init_boot on Android 13+, or vendor_boot/recovery -- but it is never /system; the Magisk docs phrase it as \"the partition image that contains the ramdisk\".)" },
@@ -759,6 +834,7 @@ quotes = [
 ]
 
 [magisk-details]
+archive = { memento = "https://web.archive.org/web/20261011153329/https://topjohnwu.github.io/Magisk/details.html" }
 label = "Magisk -- patched init runs first and shapes the SELinux policy it then runs under"
 claims = [
   { section = "Sec. 8", text = "modern root is control of init: the patched init runs before the SELinux policy is loaded (init loads it in userspace via security_load_policy, which magiskinit LD_PRELOAD-hooks), so the installer authors the policy its own daemon runs under (an unconstrained, permissive domain) rather than being confined by it -- an administrative-tier initramfs modification, not an enlargement of in-system root." },
@@ -768,6 +844,7 @@ quotes = [
 ]
 
 [magisk-ota]
+archive = { memento = "https://web.archive.org/web/20261104073922/https://topjohnwu.github.io/Magisk/ota.html" }
 label = "Magisk OTA -- leaving read-only partitions intact keeps OTAs applicable; root re-applied after"
 claims = [
   { section = "Sec. 8", text = "leaving /system byte-identical keeps official OTAs applicable (not blocked as a modified /system would be); an OTA overwrites boot/init_boot, so root does not survive it automatically -- Magisk is restored to stock before the OTA and re-installed to the updated slot after." },
@@ -777,6 +854,7 @@ quotes = [
 ]
 
 [aosp-partitions]
+archive = { memento = "https://web.archive.org/web/20261020114604/https://source.android.com/docs/core/architecture/partitions" }
 label = "AOSP -- the ramdisk lives in boot (<=A12) or the init_boot partition (A13+)"
 claims = [
   { section = "Sec. 8", text = "the partition that holds the ramdisk Magisk patches is named: the boot partition on devices launched with Android 12 or lower, and the dedicated init_boot partition on devices launched with Android 13 or later. (Not exhaustive: some devices use vendor_boot, and devices with no boot ramdisk are patched in recovery; it is never /system.)" },
@@ -786,6 +864,7 @@ quotes = [
 ]
 
 [aosp-dm-verity]
+archive = { memento = "https://web.archive.org/web/20261011030140/https://source.android.com/docs/security/features/verifiedboot/dm-verity" }
 label = "AOSP dm-verity -- editing /system fails verification (why systemless)"
 claims = [
   { section = "Sec. 8", text = "dm-verity is the integrity mechanism protecting /system (a hashtree); verified boot covers /system and boot/init_boot alike, so neither is editable on a locked device. dm-verity plus read-only EROFS/super make /system a harder, read-only target than the single flashable boot image -- a secondary reason the method patches boot, not because boot is unprotected." },
@@ -795,6 +874,7 @@ quotes = [
 ]
 
 [aosp-hal]
+archive = { memento = "https://web.archive.org/web/20261012104813/https://source.android.com/docs/core/architecture/hal" }
 label = "AOSP HAL -- hardware-specific code is vendor-implemented in the vendor partition"
 claims = [
   { section = "Sec. 12", text = "working hardware is reached through vendor-implemented HALs, so an owner-built kernel cannot drive the device without the vendor's own hardware code." },
@@ -804,6 +884,7 @@ quotes = [
 ]
 
 [aosp-gki]
+archive = { memento = "https://web.archive.org/web/20261020010012/https://source.android.com/docs/core/architecture/kernel/generic-kernel-image" }
 label = "AOSP GKI -- hardware support lives in loadable vendor modules, not the generic kernel"
 claims = [
   { section = "Sec. 12", text = "the generic kernel contains no SoC/board code; hardware enablement is in loadable vendor modules bound through the KMI, so a vendor-free kernel cannot drive the device." },
@@ -813,6 +894,7 @@ quotes = [
 ]
 
 [playintegrityfork]
+archive = { memento = "https://web.archive.org/web/20261104090431/https://github.com/osm0sis/PlayIntegrityFork" }
 label = "Play Integrity Fork -- pre-13 device verdict is build-field-spoofable; A13+ device/strong need hardware key material"
 claims = [
   { section = "Sec. 8, 12", text = "integrity-masking modules spoof software-visible signals. On Android <13 they can pass the device-integrity verdict (the weaker ctsProfileMatch successor) by rewriting android.os.Build fields and properties, with NO keybox. The hardware-backed A13+ device verdict (locked-bootloader-anchored) and the strong verdict yield only to genuine certified hardware or a leaked, unrevoked hardware keybox, not to software spoofing." },
@@ -823,6 +905,7 @@ quotes = [
 ]
 
 [microg-gmscore]
+archive = { memento = "https://web.archive.org/web/20261103012355/https://github.com/microg/GmsCore/wiki" }
 label = "microG -- reimplements Play Services; depends on signature spoofing to impersonate them"
 claims = [
   { section = "Sec. 12", text = "microG is a free reimplementation of Google Play Services that requires signature spoofing so it can present itself as the official Play Services to apps calling Google APIs." },
@@ -832,6 +915,7 @@ quotes = [
 ]
 
 [calyxos-microg]
+archive = { memento = "https://web.archive.org/web/20261003162049/https://calyxos.org/docs/guide/microg/" }
 label = "CalyxOS -- bundles microG"
 claims = [
   { section = "Sec. 12", text = "CalyxOS ships microG built in (and thus relies on signature spoofing)." },
@@ -841,6 +925,7 @@ quotes = [
 ]
 
 [calyxos-banking]
+archive = { memento = "https://web.archive.org/web/20260806092618/https://calyx.org/help/phones/calyxos-banking-app-compatibility" }
 label = "CalyxOS -- banking-app compatibility is app-by-app; full-Play-Services apps (Google Pay) still fail"
 claims = [
   { section = "Sec. 12", text = "signature spoofing does not make banking/payment apps pass: compatibility depends on the specific app, and apps needing full Play Services integration (e.g. Google Pay) still do not work." },
@@ -850,6 +935,7 @@ quotes = [
 ]
 
 [eos-microg]
+archive = { memento = "https://web.archive.org/web/20261106122742/https://doc.e.foundation/os/apps/microg/" }
 label = "/e/OS -- ships microG pre-installed; microG passes only Basic, not Device/Strong"
 claims = [
   { section = "Sec. 12", text = "/e/OS ships microG pre-installed; it passes only the Basic integrity verdict, while Device and Strong require certified hardware -- corroborating the A13+ hardware-backed boundary." },
@@ -859,6 +945,7 @@ quotes = [
 ]
 
 [safetynet-fix]
+archive = { memento = "https://web.archive.org/web/20260929102353/https://github.com/kdrag0n/safetynet-fix/" }
 label = "Universal SafetyNet Fix -- Magisk module that works around SafetyNet / Play Integrity"
 claims = [
   { section = "Sec. 12", text = "a rooted-device module that works around SafetyNet / Play Integrity CTS-profile checks, supported only through Android 13 and unmaintained since 2023 (GitHub: last push 2023-06-22, archived=false) -- a marker that the software-spoofing path is version-capped and declining." },
@@ -868,6 +955,7 @@ quotes = [
 ]
 
 [tricky-store]
+archive = { memento = "https://web.archive.org/web/20261104144444/https://github.com/5ec1cff/TrickyStore" }
 label = "Tricky Store -- keystore trick; keybox provider for device/strong verdicts"
 claims = [
   { section = "Sec. 12", text = "a keystore-hooking module (Android 12+); with an unrevoked hardware keybox.xml it reaches beyond device integrity -- the keybox-provider path the paper describes." },
@@ -877,6 +965,7 @@ quotes = [
 ]
 
 [amnesty-pegasus-methodology]
+archive = { memento = "https://web.archive.org/web/20261028081313/https://www.amnesty.org/en/latest/research/2021/07/forensic-methodology-report-how-to-catch-nso-groups-pegasus/" }
 label = "Amnesty International -- fewer forensic traces on Android than iOS"
 claims = [
   { section = "Sec. 12", text = "significantly more forensic traces are accessible on iOS than stock Android, so the methodology focused on iOS; most confirmed Pegasus infections were iPhones." },
@@ -890,6 +979,7 @@ quotes = [
 ]
 
 [mvt-android-methodology]
+archive = { memento = "https://web.archive.org/web/20261014094059/https://docs.mvt.re/en/latest/android/methodology/" }
 label = "MVT -- limited Android diagnostic information"
 claims = [
   { section = "Sec. 12", text = "Android stores little diagnostic information useful for triaging compromises and the toolkit's Android capabilities are correspondingly limited." },
@@ -910,6 +1000,7 @@ quotes = [
 ]
 
 [brodbeck-covert-rootkit-detection]
+archive = { memento = "https://web.archive.org/web/20260611125249/https://scholar.afit.edu/etd/1083/" }
 label = "Brodbeck thesis -- OS-level Android rootkits demonstrated"
 claims = [
   { section = "Sec. 9", text = "rootkits running at the OS level of mobile devices have been demonstrated despite integrated MAC." },
@@ -938,6 +1029,7 @@ quotes = [
 ]
 
 [garfinkel-anti-forensics]
+archive = { memento = "https://web.archive.org/web/20231216002825/https://simson.net/clips/academic/2007.ICIW.AntiForensics.pdf" }
 label = "Garfinkel -- anti-forensics taxonomy (wiping, chaff, planting)"
 claims = [
   { section = "Sec. 1, 14", text = "the anti-forensics literature names artifact wiping, trail obfuscation, and self-removal." },
@@ -947,6 +1039,7 @@ quotes = [
 ]
 
 [leith-handset-privacy]
+archive = { no_memento = "no Wayback snapshot available" }
 label = "Leith -- persistent hardware identifiers shared with Google/Apple"
 claims = [
   { section = "Sec. 6", text = "Google Play services transmits persistent hardware identifiers (IMEI, serial, etc.) associated with the signed-in account." },
@@ -956,6 +1049,7 @@ quotes = [
 ]
 
 [liu-android-oem-snooping]
+archive = { memento = "https://web.archive.org/web/20261106122941/https://www.scss.tcd.ie/Doug.Leith/Android_privacy_report.pdf" }
 label = "Liu/Patras/Leith -- GMS Play Services telemetry to Google has no opt-out, confirmed by Google"
 claims = [
   { section = "Sec. 6", text = "On GMS-certified handsets Google Play services and the Play store transmit a considerable volume of data to Google even when idle and with privacy settings enabled; Google confirmed there is no opt-out." },
@@ -966,6 +1060,7 @@ quotes = [
 ]
 
 [google-device-config-service]
+archive = { memento = "https://web.archive.org/web/20261026201157/https://support.google.com/android/answer/9021432" }
 label = "Device Configuration Service -- device sends data to Google"
 claims = [
   { section = "Sec. 6", text = "Google documents persistent-identifier check-ins associated with the account and used for update eligibility." },
@@ -975,6 +1070,7 @@ quotes = [
 ]
 
 [aosp-sepolicy-gmscore]
+archive = { memento = "https://web.archive.org/web/20261106120519/https://android.googlesource.com/platform/system/sepolicy/+/refs/heads/main/private/gmscore_app.te" }
 label = "sepolicy gmscore_app.te -- GMS core granted update-path access"
 claims = [
   { section = "Sec. 6", text = "the AOSP security policy grants Google Play services access to the system-update service and the A/B update engine." },
@@ -984,6 +1080,7 @@ quotes = [
 ]
 
 [safetynet-attestation-deprecation]
+archive = { memento = "https://web.archive.org/web/20261021230103/https://developer.android.com/privacy-and-security/safetynet/deprecation-timeline" }
 label = "SafetyNet Attestation -- deprecated 2022, turned down January 2025"
 claims = [
   { section = "Sec. 8", text = "Google deprecated SafetyNet in 2022 and withdrew it in January 2025, replaced by Play Integrity." },
@@ -993,6 +1090,7 @@ quotes = [
 ]
 
 [macdonald-attestlens]
+archive = { memento = "https://web.archive.org/web/20260420064853/https://vsgc.odu.edu/wp-content/uploads/2026/04/MacDonald_Collin_Paper.pdf" }
 label = "AttestLens -- ~90% of apps reference neither attestation framework"
 claims = [
   { section = "Sec. 8", text = "most apps contain no reference to Play Integrity or SafetyNet; a floor on lock-out, not a measure of it." },
@@ -1011,6 +1109,7 @@ quotes = [
 ]
 
 [privsecdev-banking-grapheneos]
+archive = { memento = "https://web.archive.org/web/20261030155309/https://privsec.dev/posts/android/banking-applications-compatibility-with-grapheneos/" }
 label = "PrivSec.dev -- crowd-sourced banking-app compatibility list"
 claims = [
   { section = "Sec. 8", text = "crowd-sourced lists catalog banking/payment apps that refuse to run on owner-controlled OSes." },
@@ -1020,6 +1119,7 @@ quotes = [
 ]
 
 [patent-secure-jtag]
+archive = { memento = "https://web.archive.org/web/20260112202105/https://patents.google.com/patent/US9633185B2/en" }
 label = "Secure-JTAG patent -- debug access gated behind authentication"
 claims = [
   { section = "Sec. 9", text = "manufacturers may lock or disable JTAG on production hardware." },
@@ -1029,6 +1129,7 @@ quotes = [
 ]
 
 [mitre-attack-evasion]
+archive = { memento = "https://web.archive.org/web/20261023090818/https://attack.mitre.org/techniques/T1497/" }
 label = "MITRE ATT&CK -- Sandbox Evasion (T1497) and Indicator Removal (T1070)"
 claims = [
   { section = "Sec. 14", text = "the matching evasion/anti-forensic capabilities (checking for analysis environments; removing indicators) are catalogued." },
@@ -1039,6 +1140,7 @@ quotes = [
 ]
 
 [lookout-chrysaor]
+archive = { memento = "https://web.archive.org/web/20261004013546/https://info.lookout.com/rs/051-ESQ-475/images/lookout-pegasus-android-technical-analysis.pdf" }
 label = "Lookout -- Pegasus for Android self-removal"
 claims = [
   { section = "Sec. 14", text = "Pegasus for Android shipped suicide functionality to remove itself." },
@@ -1048,6 +1150,7 @@ quotes = [
 ]
 
 [marczak-million-dollar-dissident]
+archive = { memento = "https://web.archive.org/web/20260112222311/https://citizenlab.ca/2016/08/million-dollar-dissident-iphone-zero-day-nso-group-uae/" }
 label = "Citizen Lab -- iOS Pegasus self-destructs to avoid exposure"
 claims = [
   { section = "Sec. 14", text = "the iOS variant self-destructs when exposure is likely." },
@@ -1057,6 +1160,7 @@ quotes = [
 ]
 
 [lookout-pegasus-technical-analysis]
+archive = { memento = "https://web.archive.org/web/20261023130507/https://info.lookout.com/rs/051-ESQ-475/images/lookout-pegasus-technical-analysis.pdf" }
 label = "Lookout 2016 -- Pegasus the most sophisticated privately-developed mobile attack; in the wild since ~2013"
 claims = [
   { section = "Sec. 15", text = "Pegasus is a sophisticated, privately-developed attack that was in the wild for years before its 2016 disclosure." },
@@ -1067,6 +1171,7 @@ quotes = [
 ]
 
 [projectzero-forcedentry]
+archive = { memento = "https://web.archive.org/web/20261011113631/https://projectzero.google/2021/12/a-deep-dive-into-nso-zero-click.html" }
 label = "Project Zero FORCEDENTRY -- among the most sophisticated exploits seen; rivals a handful of nation states"
 claims = [
   { section = "Sec. 15", text = "Pegasus is the product of an advanced adversary: its exploit chain is among the most sophisticated observed, rivaling capability once thought limited to a few nation states." },
@@ -1086,6 +1191,7 @@ quotes = [
 ]
 
 [rutkowska-state-harmful]
+archive = { memento = "https://web.archive.org/web/20260308100348/https://blog.invisiblethings.org/2015/12/23/state_harmful.html" }
 label = "Rutkowska -- firmware self-report is only as trustworthy as the (possibly compromised) firmware (chicken-and-egg)"
 claims = [
   { section = "Sec. 14", text = "a device asked to report on its own firmware state can be only as trustworthy as that possibly-compromised firmware -- the same self-report problem, applied to firmware." },
@@ -1095,6 +1201,7 @@ quotes = [
 ]
 
 [rfc4949]
+archive = { memento = "https://web.archive.org/web/20261023090634/https://www.rfc-editor.org/rfc/rfc4949.txt" }
 label = "RFC 4949 -- standard definition of a back door"
 claims = [
   { section = "Sec. 6", text = "a backdoor is an undocumented or hidden means of access bypassing normal authentication or security controls -- which may be an unintentional flaw, deliberately installed by the creator, or surreptitiously installed by an intruder." },
@@ -1104,6 +1211,7 @@ quotes = [
 ]
 
 [flame-collision]
+archive = { memento = "https://web.archive.org/web/20260929103600/https://www.microsoft.com/en-us/msrc/blog/2012/06/flame-malware-collision-attack-explained" }
 label = "Flame -- forged certificate chaining to the Microsoft root authority (signing-channel abuse)"
 claims = [
   { section = "Sec. 6", text = "the trusted code-signing channel is abusable: Flame obtained a certificate chaining to the Microsoft root authority, able to sign code trusted across Windows -- a third-party forgery, not a vendor-planted trapdoor." },
@@ -1113,6 +1221,7 @@ quotes = [
 ]
 
 [juniper-dual-ec]
+archive = { memento = "https://web.archive.org/web/20260715194106/https://eprint.iacr.org/2016/376" }
 label = "Juniper ScreenOS Dual EC -- passive VPN-decryption capability via a changed curve point"
 claims = [
   { section = "Sec. 6", text = "a signed-firmware parameter change planted a passive VPN-decryption capability in Juniper ScreenOS -- introduced by an unknown third party, not planted by the vendor." },
@@ -1122,6 +1231,7 @@ quotes = [
 ]
 
 [apple-order-2016]
+archive = { memento = "https://web.archive.org/web/20250507134154/https://www.justice.gov/usao-cdca/file/825001/dl" }
 label = "US court order compelling a vendor to sign custom firmware (later mooted)"
 claims = [
   { section = "Sec. 6", text = "a court ordered a vendor to produce and cryptographically sign custom firmware loadable onto a specific device -- the signed-firmware capability as a compelled vector; the order was later withdrawn when the government obtained access by other means." },
@@ -1131,6 +1241,7 @@ quotes = [
 ]
 
 [tola-2018]
+archive = { memento = "https://web.archive.org/web/20260228205641/https://www.legislation.gov.au/C2018A00148/asmade/text" }
 label = "Australia TOLA 2018 -- compulsory technical-capability notices (contested systemic-weakness carve-out)"
 claims = [
   { section = "Sec. 6", text = "a national legislature has made the compelled-capability vector law: a technical capability notice can require a provider to build a new capability (including a new decryption capability); the bar on a systemic weakness is contested, because it excludes a weakness selectively introduced to target technologies connected with a particular person." },
@@ -1149,6 +1260,7 @@ quotes = [
 ]
 
 [usc-50-1881a]
+archive = { memento = "https://web.archive.org/web/20261021194637/https://www.law.cornell.edu/uscode/text/50/1881a" }
 label = "FISA 702 directive -- provider must furnish all information, facilities, or assistance"
 claims = [
   { section = "Sec. 6", text = "under FISA Section 702 a provider can be directed to provide all information, facilities, or assistance necessary to accomplish an acquisition, enforceable by an order to compel and contempt." },
@@ -1158,6 +1270,7 @@ quotes = [
 ]
 
 [usc-18-2709]
+archive = { memento = "https://web.archive.org/web/20260816125921/https://www.law.cornell.edu/uscode/text/18/2709" }
 label = "NSL -- non-content records only; cannot compel a capability; carries a gag"
 claims = [
   { section = "Sec. 6", text = "a National Security Letter compels only non-content subscriber and transactional records and cannot compel a technical capability; it carries a nondisclosure obligation." },
@@ -1167,6 +1280,7 @@ quotes = [
 ]
 
 [usc-47-1002]
+archive = { memento = "https://web.archive.org/web/20260825151238/https://www.law.cornell.edu/uscode/text/47/1002" }
 label = "CALEA -- no government mandate of equipment/system design"
 claims = [
   { section = "Sec. 6", text = "CALEA forbids the government to require any specific design of equipment, facilities, services, features, or system configurations." },
@@ -1176,6 +1290,7 @@ quotes = [
 ]
 
 [lavabit-4cir-2014]
+archive = { memento = "https://web.archive.org/web/20261106121937/https://www.ca4.uscourts.gov/opinions/134625.P.pdf" }
 label = "Lavabit -- compelled disclosure of SSL/TLS private keys (decided on waiver, not merits)"
 claims = [
   { section = "Sec. 6", text = "a provider was compelled to produce all information necessary to decrypt communications, including its SSL/TLS private keys, enforced by a daily sanction; the appeal was decided on waiver, not on whether compelled key disclosure is lawful." },
@@ -1186,6 +1301,7 @@ quotes = [
 ]
 
 [inre-directives-2008]
+archive = { memento = "https://web.archive.org/web/20260608021413/https://upload.wikimedia.org/wikipedia/commons/0/0b/In_re_Directives.pdf" }
 label = "In re Directives -- provider (Yahoo) compelled to assist warrantless acquisition; directives upheld"
 claims = [
   { section = "Sec. 6", text = "The FISA Court of Review affirmed the order compelling the provider's assistance with warrantless acquisition and denied its petition for review -- compelled assistance upheld over the provider's objection." },
@@ -1195,6 +1311,7 @@ quotes = [
 ]
 
 [kerr-schneier-2018]
+archive = { memento = "https://web.archive.org/web/20240422201049/https://www.law.georgetown.edu/georgetown-law-journal/wp-content/uploads/sites/26/2018/07/Encryption-Workarounds.pdf" }
 label = "Kerr & Schneier -- compelled assistance/key disclosure established; compelled product redesign unresolved"
 claims = [
   { section = "Sec. 6", text = "legal scholarship treats compelled provider assistance and key disclosure as established, court-sanctioned mechanisms, while the authority to compel a manufacturer to weaken or redesign its own product is largely unresolved." },
@@ -1216,6 +1333,7 @@ quotes = [
 ]
 
 [garfinkel-vmi]
+archive = { memento = "https://web.archive.org/web/20260127073235/https://suif.stanford.edu/papers/vmi-ndss03.pdf" }
 label = "Garfinkel & Rosenblum VMI -- isolate the monitor, retain visibility"
 claims = [
   { section = "Sec. 14", text = "subversion-resistant detection must observe the system from outside the running OS." },
@@ -1225,6 +1343,7 @@ quotes = [
 ]
 
 [talos-rombertik]
+archive = { memento = "https://web.archive.org/web/20261003034744/https://blogs.cisco.com/security/talos/rombertik" }
 label = "Talos -- Rombertik destroys the host on detecting analysis"
 claims = [
   { section = "Sec. 14", text = "the nearest realized detect-then-destroy case wrecks the host rather than quietly erasing the implant." },
@@ -1243,6 +1362,7 @@ quotes = [
 ]
 
 [aosp-boot-flow]
+archive = { memento = "https://web.archive.org/web/20261020224934/https://source.android.com/docs/security/features/verifiedboot/boot-flow" }
 label = "Verified Boot flow -- UNLOCKED devices show a warning screen"
 claims = [
   { section = "Sec. 14", text = "unlocking is gated behind an explicit warning (and wipe)." },
@@ -1252,6 +1372,7 @@ quotes = [
 ]
 
 [aosp-fastboot-protocol]
+archive = { memento = "https://web.archive.org/web/20260501095042/https://android.googlesource.com/platform/system/core/+/refs/heads/main/fastboot/README.md" }
 label = "Fastboot protocol -- RAM-boots a supplied image, but a locked (secure) bootloader refuses an unsigned one"
 claims = [
   { section = "Sec. 10", text = "The bootloader can start a supplied boot image from memory without flashing it, but a locked (secure) bootloader requires a valid signature before it will boot or install any image, so an external, unsigned system cannot be started until the bootloader is unlocked." },
@@ -1263,6 +1384,7 @@ quotes = [
 ]
 
 [bootloader-wall-of-shame]
+archive = { memento = "https://web.archive.org/web/20261102054859/https://github.com/zenfyrdev/bootloader-unlock-wall-of-shame/" }
 label = "Wall of Shame -- crowd-sourced list of non-unlockable devices"
 claims = [
   { section = "Sec. 10, 14", text = "a large class of carrier/vendor-locked devices cannot be unlocked by their owners, so external boot is not a universal capability." },
@@ -1272,6 +1394,7 @@ quotes = [
 ]
 
 [magnuson-moss-act]
+archive = { no_memento = "no Wayback snapshot available" }
 label = "Magnuson-Moss Warranty Act -- anti-tying (no brand-conditioned warranty)"
 claims = [
   { section = "Sec. 14", text = "U.S. consumer-protection law limits blanket warranty voiding." },
@@ -1281,6 +1404,7 @@ quotes = [
 ]
 
 [eu-directive-2019-771]
+archive = { memento = "https://web.archive.org/web/20261012202347/https://eur-lex.europa.eu/eli/dir/2019/771/oj" }
 label = "EU Directive 2019/771 -- seller liability for lack of conformity"
 claims = [
   { section = "Sec. 14", text = "EU consumer law limits blanket voiding and ties refusal to a defect causally linked to the modification." },
@@ -1290,6 +1414,7 @@ quotes = [
 ]
 
 [samsung-knox-hw-security]
+archive = { memento = "https://web.archive.org/web/20260921104300/https://docs.samsungknox.com/admin/fundamentals/whitepaper/samsung-knox-mobile-security/system-security/hw-backed-security/" }
 label = "Samsung Knox -- one-time e-fuse (Warranty Bit) is irreversible"
 claims = [
   { section = "Sec. 14", text = "unlocking permanently trips a one-time-programmable e-fuse disabling hardware-backed attestation, not resettable." },
@@ -1299,6 +1424,7 @@ quotes = [
 ]
 
 [sony-unlock-bootloader]
+archive = { memento = "https://web.archive.org/web/20260508000510/https://developer.sony.com/open-source/aosp-on-xperia-open-devices/get-started/unlock-bootloader" }
 label = "Sony -- unlocking removes DRM security keys"
 claims = [
   { section = "Sec. 14", text = "unlocking irrevocably erases device-unique keys that relocking does not restore." },
@@ -1308,6 +1434,7 @@ quotes = [
 ]
 
 [qualcomm-secure-boot]
+archive = { memento = "https://web.archive.org/web/20261106122152/https://dragonwingdocs.qualcomm.com/System/Security/enable-secure-boot" }
 label = "Qualcomm -- secure boot enabled by blowing a one-time eFuse"
 claims = [
   { section = "Sec. 14", text = "one-time-programmable eFuse hardware is the standard SoC primitive for secure-boot enablement and anti-rollback, a one-way operation." },
@@ -1335,6 +1462,7 @@ quotes = [
 ]
 
 [kaspersky-equation]
+archive = { memento = "https://web.archive.org/web/20261011094535/https://securelist.com/equation-the-death-star-of-malware-galaxy/68750/" }
 label = "Equation nls_933w -- in-the-wild drive-firmware reprogramming"
 claims = [
   { section = "Sec. 14", text = "in-the-wild drive-firmware implants (the Equation group) reprogram the drive's firmware." },
@@ -1344,6 +1472,7 @@ quotes = [
 ]
 
 [kaspersky-equation-qa]
+archive = { memento = "https://web.archive.org/web/20261023165819/https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/08064459/Equation_group_questions_and_answers.pdf" }
 label = "Equation Q and A -- firmware implant survives formatting and OS reinstall"
 claims = [
   { section = "Sec. 14", text = "the drive-firmware implant persists across disk formatting and a full operating-system reinstall." },
@@ -1353,6 +1482,7 @@ quotes = [
 ]
 
 [eset-lojax]
+archive = { memento = "https://web.archive.org/web/20261021101940/https://www.welivesecurity.com/2018/09/27/lojax-first-uefi-rootkit-found-wild-courtesy-sednit-group/" }
 label = "LoJax -- first in-the-wild UEFI rootkit, survives reinstall and disk swap"
 claims = [
   { section = "Sec. 14", text = "a UEFI implant in the motherboard's SPI flash persists across a full OS reinstall and even a storage replacement, because it does not reside on the storage." },
@@ -1362,6 +1492,7 @@ quotes = [
 ]
 
 [ermolov-intel-me]
+archive = { no_memento = "no Wayback snapshot available" }
 label = "Intel ME -- chipset co-processor with privileged platform access, owner cannot inspect"
 claims = [
   { section = "Sec. 14, Table 5", text = "the Intel Management Engine is a co-processor embedded in the chipset, running Intel-signed firmware with privileged access to platform data, that the owner cannot inspect." },
@@ -1384,6 +1515,7 @@ quotes = [
 ]
 
 [rfc9334-rats]
+archive = { memento = "https://web.archive.org/web/20261001213421/https://www.rfc-editor.org/rfc/rfc9334.html" }
 label = "RATS architecture -- Attester proves, Relying Party depends (direction of trust)"
 claims = [
   { section = "Sec. 8", text = "remote attestation is a relying-party protocol; the device is the Attester that must produce evidence, a Verifier appraises it, and the Relying Party (app, service, or platform) is the party that depends on the result, so the guarantee runs to the relying party, not the owner." },
@@ -1394,6 +1526,7 @@ quotes = [
 ]
 
 [doctorow-general-computation]
+archive = { memento = "https://web.archive.org/web/20261021154106/https://boingboing.net/2012/01/10/lockdown.html" }
 label = "War on general-purpose computing -- owner control is the stake"
 claims = [
   { section = "Sec. 8", text = "the attestation-driven loss of owner control -- software running on the owner's device beyond the owner's inspection -- is the phenomenon Doctorow named the coming war on general-purpose computing." },
@@ -1403,6 +1536,7 @@ quotes = [
 ]
 
 [play-integrity-verdicts]
+archive = { memento = "https://web.archive.org/web/20261103082941/https://developer.android.com/google/play/integrity/verdicts" }
 label = "Play Integrity device verdict -- locked bootloader + certified image, not malware-freeness"
 claims = [
   { section = "Sec. 8", text = "the device-integrity verdict attests boot and configuration state (a locked bootloader and a vendor-certified OS image), not runtime malware-freeness, so a stock, certified, locked device can still be compromised and pass." },
@@ -1418,6 +1552,7 @@ quotes = [
 ]
 
 [play-protect-certification]
+archive = { memento = "https://web.archive.org/web/20261022151946/https://support.google.com/googleplay/answer/7165974" }
 label = "Play Protect certification -- user-facing status, separate from malware protection"
 claims = [
   { section = "Sec. 8", text = "Android surfaces a Play Protect certification status to the owner in the Play Store, but it reports compatibility and vendor-approval and is explicitly separate from malware protection." },
@@ -1436,6 +1571,7 @@ quotes = [
 ]
 
 [google-triada]
+archive = { memento = "https://web.archive.org/web/20261023170016/https://security.googleblog.com/2019/06/pha-family-highlights-triada.html" }
 label = "Triada -- malware built into OEM system images at manufacture"
 claims = [
   { section = "Sec. 8", text = "pre-installed vendor code baked into the certified image is attested as approved regardless of behavior; Triada was built into manufacturers' system images during production." },
@@ -1445,6 +1581,7 @@ quotes = [
 ]
 
 [apvi-platform-certs]
+archive = { memento = "https://web.archive.org/web/20260503155042/https://bugs.chromium.org/p/apvi/issues/detail?id=100" }
 label = "Android platform certificates leaked, used to sign malware"
 claims = [
   { section = "Sec. 12", text = "platform signing keys have leaked and been used to sign malware in the wild, so the secret-key assumption behind verified boot can fail in practice." },
@@ -1454,6 +1591,7 @@ quotes = [
 ]
 
 [bootstomp]
+archive = { memento = "https://web.archive.org/web/20260218175831/https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/redini" }
 label = "BootStomp -- bootloader vulnerabilities subvert the chain of trust"
 claims = [
   { section = "Sec. 12", text = "bootloader compromises that would subvert the verified-boot chain of trust have been demonstrated in research." },
@@ -1463,6 +1601,7 @@ quotes = [
 ]
 
 [shakevsky-trustzone]
+archive = { memento = "https://web.archive.org/web/20260607173527/https://www.usenix.org/conference/usenixsecurity22/presentation/shakevsky" }
 label = "Samsung TrustZone Keymaster -- hardware key material extracted"
 claims = [
   { section = "Sec. 12", text = "a trusted-execution-environment compromise can extract the hardware key material underpinning the keystore and attestation (demonstrated on ~100 million Samsung devices, since patched)." },
@@ -1472,6 +1611,7 @@ quotes = [
 ]
 
 [ncc-mediatek-bootrom]
+archive = { memento = "https://web.archive.org/web/20260618143550/https://www.nccgroup.com/research/there-s-a-hole-in-your-soc-glitching-the-mediatek-bootrom/" }
 label = "MediaTek BootROM glitch -- unpatchable mask ROM, secure-boot bypass"
 claims = [
   { section = "Sec. 12", text = "the boot ROM is the immutable hardware root of trust; a flaw in it is unpatchable, and voltage glitching can bypass secure-boot signature verification (physical access)." },
@@ -1481,6 +1621,7 @@ quotes = [
 ]
 
 [checkm8-vu]
+archive = { memento = "https://web.archive.org/web/20261106122315/https://kb.cert.org/vuls/id/941987/" }
 label = "checkm8 -- unpatchable Boot ROM (SecureROM) exploit, physical, non-persistent"
 claims = [
   { section = "Sec. 12", text = "boot-ROM flaws are permanent and unpatchable (read-only mask) and not specific to one vendor; the exploit needs physical access and is non-persistent." },
@@ -1490,6 +1631,7 @@ quotes = [
 ]
 
 [ioactive-antifuse]
+archive = { memento = "https://web.archive.org/web/20261027070530/https://arxiv.org/abs/2501.13276" }
 label = "Antifuse key extraction -- fused root keys readable by invasive FIB"
 claims = [
   { section = "Sec. 12", text = "hardware-fused/OTP root keys can be read out by an invasive silicon attack, so \"fused keys are unreadable\" is an assumption, not an absolute (invasive, destructive, lab-grade)." },
@@ -1499,6 +1641,7 @@ quotes = [
 ]
 
 [opentitan-rom-patch]
+archive = { memento = "https://web.archive.org/web/20260517090841/https://opentitan.org/book/hw/top_earlgrey/ip_autogen/rv_core_ibex/doc/boot-rom-patching.html" }
 label = "OpenTitan -- vendor-signed ROM-patch path (boot ROM not always immutable)"
 claims = [
   { section = "Sec. 12", text = "some SoCs expose a vendor-signed, fuse-gated ROM-patch path, so boot-ROM immutability is a vendor design choice, not a constant; the patch mechanism is vendor-controlled, never owner-controlled." },
@@ -1508,6 +1651,7 @@ quotes = [
 ]
 
 [aosp-device-state]
+archive = { memento = "https://web.archive.org/web/20261102060133/https://source.android.com/docs/security/features/verifiedboot/device-state" }
 label = "AOSP Device state -- user-settable root of trust (avb_custom_key), Pixel"
 claims = [
   { section = "Sec. 12", text = "on supported devices (Pixel) the owner can enroll a custom AVB signing key and re-lock to it; the custom root of trust is owner-set, physically confirmed, and held in tamper-evident storage." },
@@ -1517,6 +1661,7 @@ quotes = [
 ]
 
 [nist-hwb-spec]
+archive = { memento = "https://web.archive.org/web/20261106122405/https://www.nist.gov/itl/ssd/cs/cftt/upload/hwb-posted.pdf" }
 label = "NIST hardware write blocker -- read-only acquisition does not modify evidence"
 claims = [
   { section = "Sec. 14", text = "a write blocker passes read commands while blocking any that would alter the drive, so disk imaging does not modify the evidence." },
@@ -1526,6 +1671,7 @@ quotes = [
 ]
 
 [halderman-coldboot]
+archive = { memento = "https://web.archive.org/web/20261001140019/https://www.usenix.org/conference/17th-usenix-security-symposium/lest-we-remember-cold-boot-attacks-encryption-keys" }
 label = "Cold-boot attack -- DRAM retains contents after power loss"
 claims = [
   { section = "Sec. 14", text = "RAM can be captured from outside the running OS by exploiting DRAM remanence after a cold reboot." },
@@ -1535,6 +1681,7 @@ quotes = [
 ]
 
 [markettos-thunderclap]
+archive = { memento = "https://web.archive.org/web/20261003234927/https://www.ndss-symposium.org/ndss-paper/thunderclap-exploring-vulnerabilities-in-operating-system-iommu-protection-via-dma-from-untrustworthy-peripherals/" }
 label = "Thunderclap -- DMA peripherals can read all memory; the IOMMU now resists"
 claims = [
   { section = "Sec. 14", text = "a DMA-capable peripheral can read system memory from outside the OS, but modern platforms increasingly block it with an IOMMU." },
@@ -1544,6 +1691,7 @@ quotes = [
 ]
 
 [frisk-pcileech]
+archive = { memento = "https://web.archive.org/web/20261106122616/https://github.com/ufrisk/PCILeech" }
 label = "PCILeech -- PCIe DMA reads target memory with no target driver"
 claims = [
   { section = "Sec. 14", text = "DMA over an expansion bus can capture RAM with no software on the target." },
@@ -1562,6 +1710,7 @@ quotes = [
 ]
 
 [android-allowbackup]
+archive = { memento = "https://web.archive.org/web/20261014170750/https://developer.android.com/guide/topics/manifest/application-element" }
 label = "android:allowBackup -- an app can exclude its data from any backup"
 claims = [
   { section = "Sec. 5", text = "a \"full backup\" on a non-rooted device is partial and mediated by individual applications, which can opt their data out via the android:allowBackup flag." },
@@ -1571,9 +1720,11 @@ quotes = [
 ]
 
 [iso-27043]
+archive = { memento = "https://web.archive.org/web/20261017090619/https://www.iso.org/standard/44407.html" }
 quotes = [{ text = "This includes processes from pre-incident preparation through investigation closure, as well as any general advice and caveats on such processes.", label = "Scope", note = "Scope text retrieved from a public national-adoption reproduction; iso.org Cloudflare-blocks automated fetch." }]
 
 [son-android-data-integrity]
+archive = { memento = "https://web.archive.org/web/20251013161237/https://dfrws.org/sites/default/files/session-files/2013_USA_paper-a_study_of_user_data_integrity_during_acquisition_of_android_devices.pdf" }
 label = "Android acquisition -- imaging requires root; recovery-mode privilege minimizes data alteration"
 quotes = [
   { text = "For data partition imaging that includes user data or for file/folder copying, the device must first be \"rooted\", that is, administrative privilege must be gained.", label = "Imaging requires root", note = "DFRWS 2013 open-access proceedings PDF (dfrws.org)." },
@@ -1583,6 +1734,7 @@ quotes = [
 ]
 
 [vidas-android-collection]
+archive = { memento = "https://web.archive.org/web/20240811192543/https://www.andrew.cmu.edu/user/nicolasc/publications/VZC-DFRWS11.pdf" }
 label = "Android collection methodology -- rooting exploits a vulnerability and undermines the security model"
 quotes = [
   { text = "Rooting a device typically involves exploiting a security vulnerability (which is typically device and software version dependent) with the intention of installing unsupported software on the device.", label = "Rooting via exploit", note = "DFRWS 2011 open-access proceedings PDF (authors' CMU page)." },
@@ -1594,6 +1746,7 @@ quotes = [
 quotes = [{ text = "We use three example rootkits to show that smart phones are just as vulnerable to rootkits as desktop operating systems.", label = "Abstract" }]
 
 [google-play-help]
+archive = { memento = "https://web.archive.org/web/20261022151940/https://support.google.com/googleplay/answer/2521798" }
 quotes = [{ text = "You can add a Google Account on your device to start downloading and buying items on the Google Play Store app.", label = "Google Play Help", note = "Page body loads via JS; retrieved with a headless chromium render, not a raw fetch." }]
 
 [sguigna-jtag-attack-surface]
@@ -1606,6 +1759,7 @@ quotes = [{ text = "The method described in this paper uses a JTAG test access p
 quotes = [{ text = "Existing Android main memory forensics techniques are hardly being adopted in practical forensic investigations because they often require solving several usability constraints, such as requiring root privilege escalation, custom kernel replacement, or screen lock bypass.", label = "Abstract" }]
 
 [weinmann-baseband]
+archive = { memento = "https://web.archive.org/web/20251109110535/https://www.usenix.org/conference/woot12/workshop-program/presentation/weinmann" }
 label = "Weinmann, WOOT 2012 -- remotely exploitable memory corruptions in baseband stacks on a separate, less-hardened processor"
 claims = [
   { section = "Sec. 12", text = "the cellular baseband runs vendor firmware on a separate, less-hardened processor and carries remotely exploitable memory corruptions, triggerable over the air." },
@@ -1615,6 +1769,7 @@ quotes = [
 ]
 
 [replicant-samsung-backdoor]
+archive = { memento = "https://web.archive.org/web/20261020211930/https://www.fsf.org/blogs/community/replicant-developers-find-and-close-samsung-galaxy-backdoor" }
 label = "Samsung Galaxy back-door -- AP-side vendor RIL library with modem-driven file I/O into phone storage (intent disputed)"
 claims = [
   { section = "Sec. 12", text = "On several Samsung Galaxy models the proprietary radio-interface-layer software on the application processor (the vendor library that mediates the modem) implements a protocol through which the modem can read, write, and delete files on that storage; its finders called it a backdoor, while whether the capability was deliberate rather than an incidental modem file-service feature is not established." },
@@ -1626,6 +1781,7 @@ quotes = [
 ]
 
 [eu-computer-programs-directive]
+archive = { memento = "https://web.archive.org/web/20261013090118/https://eur-lex.europa.eu/eli/dir/2009/24/oj" }
 label = "EU Computer Programs Directive -- Art. 6 permits decompilation for interoperability"
 claims = [
   { section = "Sec. 12", text = "EU law permits reproduction/translation of program code where indispensable to achieve interoperability of an independently created program; the Replicant finders invoked this (Art. 6 of the 1991 directive, codified as 2009/24/EC) as the legal basis for reverse-engineering that vendor RIL library." },
@@ -1635,6 +1791,7 @@ quotes = [
 ]
 
 [replicant-samsung-backdoor-wiki]
+archive = { memento = "https://web.archive.org/web/20261020211854/https://redmine.replicant.us/projects/replicant/wiki/SamsungGalaxyBackdoor" }
 label = "Replicant wiki -- RE of proprietary vendor RIL library + legal disclaimer (EU art. 6 interoperability defense)"
 claims = [
   { section = "Sec. 12", text = "The Samsung finding was obtained by reverse-engineering the proprietary vendor radio-interface-layer library (application-processor software, not modem firmware); the finders published a legal disclaimer resting the lawfulness of their decompilation on the EU Computer Programs Directive's interoperability exception." },
@@ -1646,6 +1803,7 @@ quotes = [
 ]
 
 [li-basemirror]
+archive = { memento = "https://web.archive.org/web/20251209132646/https://arxiv.org/abs/2409.00475" }
 label = "Li et al., CCS 2024 -- baseband is a separate processor exposing undisclosed commands; vendor-confirmed zero-days reach the AP file system on current hardware"
 claims = [
   { section = "Sec. 12", text = "the baseband runs on its own processor separated from the application processor, exposes undisclosed command interfaces, and carries vendor-confirmed vulnerabilities that cause denial of cellular service and arbitrary access to the application processor's file system." },
@@ -1656,6 +1814,7 @@ quotes = [
 ]
 
 [google-verify-account]
+archive = { memento = "https://web.archive.org/web/20261004181859/https://support.google.com/accounts/answer/114129" }
 label = "Google account creation can require phone verification to confirm a real person"
 claims = [
   { section = "Sec. 6", text = "account creation commonly requires phone verification, which Google documents as a check that the holder is a real person." },
@@ -1665,6 +1824,7 @@ quotes = [
 ]
 
 [donovan-sim-registration]
+archive = { memento = "https://web.archive.org/web/20260222151302/https://firstmonday.org/ojs/index.php/fm/article/view/4351" }
 label = "Mandatory SIM registration binds a phone number to a registered identity"
 claims = [
   { section = "Sec. 6", text = "a phone number is bound to a registered identity under near-ubiquitous mandatory SIM-registration regimes." },
@@ -1674,6 +1834,7 @@ quotes = [
 ]
 
 [schmidt-google-data-collection]
+archive = { memento = "https://web.archive.org/web/20261015103745/https://digitalcontentnext.org/wp-content/uploads/2018/08/DCN-Google-Data-Collection-Paper.pdf" }
 label = "Google account is the identity gateway accumulating an identity-linked activity record"
 claims = [
   { section = "Sec. 6", text = "the Google account accumulates an extensive, identity-linked record of activity and device identifiers over time." },
@@ -1684,6 +1845,7 @@ quotes = [
 ]
 
 [eu-data-retention-directive]
+archive = { memento = "https://web.archive.org/web/20261106123027/https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32006L0024" }
 label = "EU Data Retention Directive -- mandated retention of communications data"
 claims = [
   { section = "Sec. 6", text = "Many jurisdictions have mandated retention of provider-side communications data; Directive 2006/24/EC is cited as one example of such a mandate." },
@@ -1693,6 +1855,7 @@ quotes = [
 ]
 
 [thalium-rkchk]
+archive = { memento = "https://web.archive.org/web/20260223005455/https://github.com/thalium/rkchk" }
 label = "rkchk -- in-system Linux kernel module for LKM-rootkit detection"
 claims = [
   { section = "Sec. 9", text = "anti-malware kernel modules designed to detect loadable-kernel-module rootkits can run on a non-Android Linux system." },
@@ -1702,6 +1865,7 @@ quotes = [
 ]
 
 [openwall-lkrg]
+archive = { memento = "https://web.archive.org/web/20261012072217/https://lkrg.org/" }
 label = "LKRG -- runtime kernel integrity guard (Linux)"
 claims = [
   { section = "Sec. 9", text = "runtime integrity guards can run on a non-Android Linux system." },
@@ -1711,6 +1875,7 @@ quotes = [
 ]
 
 [elstel-debcheckroot]
+archive = { memento = "https://web.archive.org/web/20260902043302/https://www.elstel.org/debcheckroot/" }
 label = "debcheckroot -- offline boot-media integrity check of installed files vs package content"
 claims = [
   { section = "Sec. 9", text = "a system can be booted from external media and subjected to an offline integrity check that verifies installed files against a trusted manifest." },
@@ -1721,6 +1886,7 @@ quotes = [
 ]
 
 [socialtic-log-forensics]
+archive = { memento = "https://web.archive.org/web/20260413230255/https://forensics.socialtic.org/en/explainers/03-explainer-log-forensics-android/index.html" }
 label = "SocialTIC -- absence of log traces is not proof of a clean device; combine methods"
 claims = [
   { section = "Sec. 10", text = "absence of traces after thorough manual analysis does not establish that a device was not compromised, and log-based methods may need to be combined with other forensic techniques where compromise is strongly suspected." },
@@ -1732,6 +1898,7 @@ quotes = [
 ]
 
 [grapheneos-auditor-source]
+archive = { memento = "https://web.archive.org/web/20261106121742/https://github.com/GrapheneOS/Auditor/blob/d5d326453e6e3b328d7a11198d9f99174ac7f4f3/app/src/main/java/app/attestation/auditor/AttestationProtocol.java" }
 label = "Auditor source -- an unlisted verified-boot key is rejected, not attested"
 claims = [
   { section = "Sec. 12", text = "the released GrapheneOS Auditor accepts only verified-boot keys compiled into it; an attested key absent from its fixed tables -- including an owner self-signed build of otherwise unmodified GrapheneOS -- is refused rather than attested." },
@@ -1742,6 +1909,7 @@ quotes = [
 ]
 
 [aosp-avb-readme]
+archive = { memento = "https://web.archive.org/web/20261011191259/https://android.googlesource.com/platform/external/avb/+/master/README.md" }
 label = "Android Verified Boot 2.0 -- vbmeta-signature check, hashtree-disabled flag, owner-key YELLOW"
 claims = [
   { section = "Sec. 13", text = "a vbmeta hashtree-disabled flag turns off dm-verity while the vbmeta still verifies under the owner's key, so the device boots locked (YELLOW state); the bootloader verifies the vbmeta signature, not the verity policy the signed vbmeta declares." },
@@ -1754,6 +1922,7 @@ quotes = [
 ]
 
 [aosp-dynamic-partitions]
+archive = { memento = "https://web.archive.org/web/20261012153110/https://source.android.com/docs/core/ota/dynamic_partitions/implement" }
 label = "AOSP dynamic partitions -- /system mounted read-only"
 claims = [
   { section = "Sec. 13", text = "/system is mounted read-only, so even a full in-image root cannot persistently write it (a write returns a read-only-filesystem error)." },
@@ -1763,6 +1932,7 @@ quotes = [
 ]
 
 [aosp-set-verity-service]
+archive = { memento = "https://web.archive.org/web/20261106123419/https://android.googlesource.com/platform/packages/modules/adb/+/ca205c96/set_verity_enable_state_service.cpp" }
 label = "adb verity service -- disabling dm-verity is compiled out and refused on user (production) builds"
 claims = [
   { section = "Sec. 13", text = "a read-write remount of /system is refused on a production (user) build, because clearing dm-verity (which a read-write remount requires) is compiled out via ALLOW_ADBD_DISABLE_VERITY and runtime-refused on user builds." },
@@ -1773,6 +1943,7 @@ quotes = [
 ]
 
 [kernel-dm-verity]
+archive = { memento = "https://web.archive.org/web/20261024011649/https://docs.kernel.org/admin-guide/device-mapper/verity.html" }
 label = "Linux dm-verity -- transparent, read-only block integrity via a cryptographic hash tree"
 claims = [
   { section = "Sec. 13", text = "dm-verity provides read-only, transparent block-level integrity over the verified partitions via a cryptographic hash tree, so any data outside that tree (a /data overlay, or /system with verity disabled) is unverified." },
@@ -1784,6 +1955,7 @@ quotes = [
 ]
 
 [magisk-guides]
+archive = { memento = "https://web.archive.org/web/20261023034352/https://topjohnwu.github.io/Magisk/guides.html" }
 label = "Magisk -- module store lives in /data/adb/modules, merged onto /system"
 claims = [
   { section = "Sec. 13", text = "a Magisk-style module store lives in /data/adb/modules and is merged onto /system at boot." },
@@ -1795,6 +1967,7 @@ quotes = [
 ]
 
 [patat-widevine]
+archive = { memento = "https://web.archive.org/web/20261024064425/https://arxiv.org/abs/2204.09298" }
 label = "Widevine for Fun and Profit -- L1 (HD/UHD) content protection depends on the hardware TEE"
 claims = [
   { section = "Sec. 13", text = "hardware-backed content protection (Widevine's top security level) depends on the device's trusted execution environment, a precondition that rests on the verified device state." },
@@ -1806,6 +1979,7 @@ quotes = [
 ]
 
 [rafi-drm-mobile]
+archive = { memento = "https://web.archive.org/web/20260902165030/https://arxiv.org/abs/2308.00437" }
 label = "A First Look at Mobile DRM -- every Widevine level requires a signed image via a secure bootloader; L1/L2 need TEE in the chain of trust"
 claims = [
   { section = "Sec. 13", text = "the same verified device state is a precondition for hardware-backed content protection: all Widevine levels require a signed system image loaded by a secure bootloader, and the hardware levels require the TEE components in the bootloader chain of trust." },
@@ -1817,6 +1991,7 @@ quotes = [
 ]
 
 [grapheneos-auditor-tutorial]
+archive = { memento = "https://web.archive.org/web/20261015180414/https://attestation.app/tutorial" }
 label = "GrapheneOS Auditor Tutorial -- local second-device check; new (stock) device support via submitted sample"
 quotes = [
   { text = "The device performing verification (Auditor) just needs to be any Android 13 or higher device with a camera.", label = "Local verification from a second device", note = "GrapheneOS Auditor Tutorial (attestation.app/tutorial). Cited only in Appendix A (unnumbered heading -> no section pill). Verified via WebFetch." },
@@ -1824,12 +1999,14 @@ quotes = [
 ]
 
 [adaway]
+archive = { memento = "https://web.archive.org/web/20261005043413/https://github.com/AdAway/AdAway" }
 label = "AdAway -- hosts-file ad/tracker blocker (systemless via Magisk)"
 quotes = [
   { text = "ad blocker for Android using the hosts file and local vpn.", label = "Hosts-file ad blocker", note = "AdAway README, verbatim sub-span of the project's one-line self-description (github.com/AdAway/AdAway); quoted to the clause relevant to the citation (hosts-file ad blocking). Cited in Appendix B." },
 ]
 
 [afwall]
+archive = { memento = "https://web.archive.org/web/20261031040224/https://github.com/ukanth/afwall/" }
 label = "AFWall+ -- root-requiring iptables firewall for Android"
 quotes = [
   { text = "AFWall+ (Android Firewall+) is a powerful, open-source firewall application for rooted Android devices.", label = "Root-requiring firewall", note = "AFWall+ README, opening sentence (github.com/ukanth/afwall). Verified verbatim. Cited in Appendix B." },
@@ -1837,12 +2014,14 @@ quotes = [
 ]
 
 [lsposed]
+archive = { memento = "https://web.archive.org/web/20261009120946/https://github.com/LSPosed/LSPosed" }
 label = "LSPosed -- Zygisk/Xposed framework-injection module"
 quotes = [
   { text = "A Riru / Zygisk module trying to provide an ART hooking framework which delivers consistent APIs with the OG Xposed, leveraging LSPlant hooking framework.", label = "Zygisk-based Xposed-API framework hooking", note = "LSPosed README, Introduction (github.com/LSPosed/LSPosed). Verified verbatim; the source says 'ART hooking framework'. Cited in Appendix B." },
 ]
 
 [universal-android-debloater]
+archive = { memento = "https://web.archive.org/web/20261002050916/https://github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation/" }
 label = "Universal Android Debloater NG -- ADB-based system-app removal (pm uninstall --user 0)"
 quotes = [
   { text = "This aims to improve privacy and efficiency (energy, speed, memory) by removing unnecessary and obscure system apps.", label = "Removes system apps", note = "Universal Android Debloater Next Generation README, opening paragraph (github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation). Verified verbatim. Cited in Appendix B as a tool automating the per-user pm uninstall --user 0 operation; the ADB/no-root detail is sourced in-text via aosp-shell-manifest, as the README itself does not state it." },
@@ -1853,6 +2032,7 @@ label = "Sun et al. -- Android rooting: methods, detection, and evasion (CCS/SPS
 no_quote = "Cited in Appendix B for its rooting-motivations/methods taxonomy. No verbatim quote: the paper is closed-access (ACM DL returns HTTP 403; no open-access copy via Unpaywall or Semantic Scholar; the authors' pages host no PDF), so the body text could not be obtained to quote without fabrication. The same motivations (bloatware removal, apps requiring root, bypassing carrier/vendor restrictions) are quoted from an accessible primary source under zhang-root-providers."
 
 [kernel-erofs]
+archive = { memento = "https://web.archive.org/web/20261023125917/https://docs.kernel.org/filesystems/erofs.html" }
 label = "EROFS -- Enhanced Read-Only File System, read-only by design"
 claims = [
   { section = "Sec. 13", text = "where a build selects EROFS for /system (the read-only filesystem modern Android selects at build time via BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE), it is read-only by design and cannot be remounted read-write in place." },
@@ -1862,6 +2042,7 @@ quotes = [
 ]
 
 [aosp-erofs]
+archive = { memento = "https://web.archive.org/web/20260916024527/https://source.android.com/docs/core/architecture/kernel/erofs" }
 label = "AOSP -- EROFS selected as the system-image filesystem at build time"
 claims = [
   { section = "Sec. 13", text = "Android can select EROFS for the read-only system image at build time via BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs; a persistently writable /system then requires rebuilding the image with a writable filesystem (ext4 or f2fs)." },
@@ -1872,6 +2053,7 @@ quotes = [
 ]
 
 [aosp-shell-manifest]
+archive = { memento = "https://web.archive.org/web/20261106125350/https://android.googlesource.com/platform/frameworks/base/+/refs/heads/main/packages/Shell/AndroidManifest.xml" }
 label = "com.android.shell manifest -- the shell UID holds DELETE_PACKAGES / CHANGE_COMPONENT_ENABLED_STATE (no root)"
 quotes = [
   { text = '<uses-permission android:name="android.permission.DELETE_PACKAGES" />', label = "Shell UID may delete packages, no root", note = "AOSP com.android.shell AndroidManifest.xml (frameworks/base, branch main); the adb shell package runs as android.uid.shell (uid 2000) and holds the platform permissions that gate pm uninstall/disable. Cited in Appendix B (unnumbered heading -> no section pill). Verified verbatim against the AOSP source tree." },
@@ -1879,18 +2061,21 @@ quotes = [
 ]
 
 [aosp-packagemanager-flags]
+archive = { memento = "https://web.archive.org/web/20261106125701/https://android.googlesource.com/platform/frameworks/base/+/refs/heads/main/core/java/android/content/pm/PackageManager.java" }
 label = "PackageManager.DELETE_SYSTEM_APP -- mark a system app uninstalled for the current user, not removed from /system"
 quotes = [
   { text = "just mark the app as uninstalled for the current user", label = "Per-user uninstall mark; /system APK untouched", note = "AOSP PackageManager.java DELETE_SYSTEM_APP javadoc (frameworks/base, branch main): uninstalling a system app for a single user sets this flag so the app is marked uninstalled for that user rather than removing or reverting the /system APK. Cited in Appendix B (unnumbered heading -> no section pill). Verified verbatim against the AOSP source tree." },
 ]
 
 [aosp-vpnservice]
+archive = { memento = "https://web.archive.org/web/20261023164019/https://developer.android.com/reference/android/net/VpnService" }
 label = "VpnService -- only one VPN connection at a time (the single VPN slot)"
 quotes = [
   { text = "There can be only one VPN connection running at the same time. The existing interface is deactivated when a new one is created.", label = "One VPN connection at a time", note = "Android Developers, VpnService reference (developer.android.com/reference/android/net/VpnService). Cited in Appendix B. Verified verbatim via WebFetch." },
 ]
 
 [aosp-vpn-guide]
+archive = { memento = "https://web.archive.org/web/20261025155606/https://developer.android.com/develop/connectivity/vpn" }
 label = "Create a VPN client -- one active VPN service; a non-root capture app must occupy it"
 quotes = [
   { text = "There's only one active service per user or profile. Starting a new service, automatically stops an existing service.", label = "One active VPN service", note = "Android Developers, Create a VPN client (developer.android.com/develop/connectivity/vpn). Source comma retained verbatim. Cited in Appendix B and the Section 7 comparison table. Verified via WebFetch." },
@@ -1898,24 +2083,28 @@ quotes = [
 ]
 
 [netfilter]
+archive = { no_memento = "no Wayback snapshot available" }
 label = "netfilter -- the in-kernel packet-filter framework"
 quotes = [
   { text = "The netfilter hooks are a framework inside the Linux kernel that allows kernel modules to register callback functions", label = "In-kernel packet-filter framework", note = "The netfilter.org project homepage (netfilter.org). Cited in Appendix B. Verified verbatim via WebFetch." },
 ]
 
 [aosp-kernel]
+archive = { memento = "https://web.archive.org/web/20261020004234/https://source.android.com/docs/core/architecture/kernel" }
 label = "Android kernel is a Linux kernel (so the Linux capability and netfilter model applies)"
 quotes = [
   { text = "The Android kernel is based on an upstream Linux Long Term Supported (LTS) kernel.", label = "Android kernel is upstream Linux LTS", note = "Android Open Source Project, Android kernel overview (source.android.com/docs/core/architecture/kernel). Cited in Appendix B and the Section 7 comparison table. Verified verbatim via WebFetch." },
 ]
 
 [aosp-zygote]
+archive = { memento = "https://web.archive.org/web/20261013073309/https://source.android.com/docs/core/runtime/zygote" }
 label = "Zygote -- root of all app processes (framework injection forks from it)"
 quotes = [
   { text = "The Zygote is a process in the Android operating system that acts as the root of all system and app processes", label = "Root of all app processes", note = "Android Open Source Project, About the Zygote processes (source.android.com/docs/core/runtime/zygote). Cited in Appendix B. Verified verbatim via WebFetch." },
 ]
 
 [frida]
+archive = { memento = "https://web.archive.org/web/20261103190538/https://frida.re/docs/home/" }
 label = "Frida -- runtime hooking works by injecting into the target process"
 quotes = [
   { text = "It lets you inject snippets of JavaScript or your own library into native apps", label = "Injects into the target app", note = "Frida documentation (frida.re/docs/home). Cited in Appendix B as the mechanism: defeating in-process certificate pinning requires in-process injection. Verified verbatim via WebFetch." },
@@ -1923,12 +2112,14 @@ quotes = [
 ]
 
 [linux-capabilities]
+archive = { memento = "https://web.archive.org/web/20261015060329/https://man7.org/linux/man-pages/man7/capabilities.7.html" }
 label = "CAP_NET_RAW -- raw/packet sockets need a capability app UIDs lack (so full capture needs root)"
 quotes = [
   { text = "Use RAW and PACKET sockets;", label = "CAP_NET_RAW governs raw/packet sockets", note = "Linux man-pages, capabilities(7) (man7.org/linux/man-pages/man7/capabilities.7.html); the CAP_NET_RAW capability, held by root and not by app UIDs, gates raw packet capture. Cited in the Section 7 comparison table. Verified verbatim via WebFetch." },
 ]
 
 [aosp-build-variants]
+archive = { memento = "https://web.archive.org/web/20261027004626/https://source.android.com/docs/setup/build/building" }
 label = "Android build variants -- user (production) vs userdebug/eng (developer)"
 claims = [
   { section = "Sec. 13", text = "Android is built in three variants selected by TARGET_BUILD_VARIANT: the production user build and the userdebug and eng developer builds; the user build provides limited access and is suited for production." },
@@ -1938,6 +2129,7 @@ quotes = [
 ]
 
 [aosp-sysprop-config]
+archive = { memento = "https://web.archive.org/web/20261106124237/https://android.googlesource.com/platform/build/+/2867f02a3a/core/sysprop_config.mk" }
 label = "ro.debuggable=1 on userdebug/eng; ro.secure/ro.debuggable set per build variant"
 claims = [
   { section = "Sec. 13", text = "A userdebug or eng build sets ro.debuggable=1 (eng additionally sets ro.secure=0), whereas a user build sets ro.secure=1 and ro.debuggable=0." },
@@ -1948,6 +2140,7 @@ quotes = [
 ]
 
 [aosp-adbd-main]
+archive = { memento = "https://web.archive.org/web/20251102195032/https://android.googlesource.com/platform/packages/modules/adb/+/refs/heads/main/daemon/main.cpp" }
 label = "adbd keeps uid-0 only on a debuggable build (adb root gated on ro.debuggable)"
 claims = [
   { section = "Sec. 13", text = "adbd drops privileges by default (ro.secure); adb root keeps uid-0 only when the build is debuggable (ro.debuggable), so adb root yields root only on userdebug/eng." },
@@ -1958,6 +2151,7 @@ quotes = [
 ]
 
 [aosp-su]
+archive = { memento = "https://web.archive.org/web/20261106124335/https://android.googlesource.com/platform/system/extras/+/refs/heads/main/su/su.cpp" }
 label = "AOSP su (system/extras) -- trivial su callable only by the root and shell UIDs"
 claims = [
   { section = "Sec. 13", text = "AOSP's own su is a trivial program callable only from the root and shell UIDs (any other caller is refused)." },
@@ -1967,6 +2161,7 @@ quotes = [
 ]
 
 [aosp-sepolicy-su-te]
+archive = { memento = "https://web.archive.org/web/20261106124431/https://android.googlesource.com/platform/system/sepolicy/+/refs/heads/main/private/su.te" }
 label = "su SELinux domain exists only under userdebug_or_eng and is permissive; SELinux otherwise stays enforcing"
 claims = [
   { section = "Sec. 13", text = "The su SELinux domain is compiled in only under a userdebug_or_eng guard and is marked permissive; SELinux is not disabled on a developer build -- the HALs and other domains remain enforcing." },
@@ -1977,6 +2172,7 @@ quotes = [
 ]
 
 [uefi-secure-boot]
+archive = { memento = "https://web.archive.org/web/20261103163355/https://uefi.org/specs/UEFI/2.10/32_Secure_Boot_and_Driver_Signing.html" }
 label = "UEFI Secure Boot -- authenticates boot-chain images (OS loader, option ROMs) up to the OS hand-off"
 claims = [
   { section = "Sec. 14", text = "Secure Boot authenticates the UEFI executable images loaded during boot -- the OS loader, option ROMs, and drivers -- image by image, bounded at the hand-off to the operating system; it does not verify the operating system's own filesystem." },
@@ -1987,6 +2183,7 @@ quotes = [
 ]
 
 [ms-secure-boot]
+archive = { memento = "https://web.archive.org/web/20261019015958/https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-secure-boot" }
 label = "UEFI Secure Boot -- verifies the boot chain only, and the owner can re-key or disable it"
 claims = [
   { section = "Sec. 14", text = "UEFI Secure Boot verifies the boot-chain executables (firmware drivers, bootloader, OS loader), not the root filesystem." },
@@ -2000,6 +2197,7 @@ quotes = [
 ]
 
 [chromeos-verified-boot]
+archive = { memento = "https://web.archive.org/web/20261013171321/https://www.chromium.org/chromium-os/chromiumos-design-docs/verified-boot/" }
 label = "ChromeOS verified boot -- block-level cryptographic verification of a read-only root filesystem"
 claims = [
   { section = "Sec. 14", text = "Immutable, image-based desktop systems verify the root filesystem block by block against a signed reference, as the phone does." },
