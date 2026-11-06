@@ -2418,13 +2418,17 @@ barrier the owner can lift, not the locked, whole-image verification AVB
 performs \citep{aosp-verified-boot}, \citep{aosp-avb-readme}. The same
 absence is two-edged: it is what leaves the host freely inspectable, and
 it is also why a software adversary that reaches kernel or root can
-persist in the host\textquotesingle s own bootloader, kernel, or init
--\/- the operating-system-level persistence a locked
-phone\textquotesingle s verified boot is built to refuse. The immutable,
-image-based desktop systems are the exception, verifying the root
-filesystem block by block against a signed reference much as the phone
-does \citep{kernel-dm-verity}, \citep{chromeos-verified-boot}. The
-firmware residual discussed above sits beneath this and is shared by
+persist in the host\textquotesingle s own root filesystem -\/- the init
+that starts the system, the system binaries on that filesystem, and,
+where it is left unsigned, the initramfs -\/- the operating-system-level
+persistence a locked phone\textquotesingle s verified boot is built to
+refuse. On a desktop that keeps UEFI Secure Boot enabled the bootloader
+and kernel are themselves signature-checked and so are not this open
+surface; the unverified root filesystem and its startup components are.
+The immutable, image-based desktop systems are the exception, verifying
+the root filesystem block by block against a signed reference much as
+the phone does \citep{kernel-dm-verity}, \citep{chromeos-verified-boot}.
+The firmware residual discussed above sits beneath this and is shared by
 both platforms; the point here is one layer up, at the operating-system
 and boot stack itself.
 
