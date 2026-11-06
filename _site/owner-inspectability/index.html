@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
 <meta name="robots" content="noindex">
-<title>Limits of Independent Security Verification on Vendor-Locked Devices -- Computer Security Research</title>
+<title>Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices -- Computer Security Research</title>
 <meta name="description" content="Vendor-locked devices -- most prominently stock Android phones, which come with a locked bootloader and no administrative rights -- are general-purpose computers whose owners cannot fully inspect, control, or verify the software they run. This paper introduces the concept of owner-inspectability: th">
 <link rel="canonical" href="https://computer-security-research.github.io/owner-inspectability/">
 <link rel="alternate" type="application/rss+xml" title="Computer Security Research" href="../feed.xml">
-<meta name="citation_title" content="Limits of Independent Security Verification on Vendor-Locked Devices">
+<meta name="citation_title" content="Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices">
 <meta name="citation_author" content="Patrick Schleizer">
 <meta name="citation_publication_date" content="2026/10/24">
 <meta name="citation_online_date" content="2026/10/24">
 <meta name="citation_technical_report_institution" content="Computer Security Research">
 <meta name="citation_language" content="en">
+<meta name="citation_keywords" content="owner-inspectability">
 <meta name="citation_keywords" content="Android security">
 <meta name="citation_keywords" content="independent verification">
 <meta name="citation_keywords" content="mobile forensics">
@@ -26,7 +27,7 @@
 <meta name="citation_pdf_url" content="https://computer-security-research.github.io/owner-inspectability/owner-inspectability.pdf">
 <meta name="article_status" content="draft">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Limits of Independent Security Verification on Vendor-Locked Devices">
+<meta property="og:title" content="Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices">
 <meta property="og:description" content="Vendor-locked devices -- most prominently stock Android phones, which come with a locked bootloader and no administrative rights -- are general-purpose computers whose owners cannot fully inspect, control, or verify the software they run. This paper introduces the concept of owner-inspectability: th">
 <meta property="og:url" content="https://computer-security-research.github.io/owner-inspectability/">
 <meta property="og:site_name" content="Computer Security Research">
@@ -36,11 +37,11 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Computer Security Research">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Limits of Independent Security Verification on Vendor-Locked Devices">
+<meta name="twitter:title" content="Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices">
 <meta name="twitter:description" content="Vendor-locked devices -- most prominently stock Android phones, which come with a locked bootloader and no administrative rights -- are general-purpose computers whose owners cannot fully inspect, control, or verify the software they run. This paper introduces the concept of owner-inspectability: th">
 <meta name="twitter:image" content="https://computer-security-research.github.io/assets/og.png">
 <meta name="twitter:image:alt" content="Computer Security Research">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ScholarlyArticle", "headline": "Limits of Independent Security Verification on Vendor-Locked Devices", "author": [{"@type": "Person", "name": "Patrick Schleizer"}], "datePublished": "2026-10-24", "creativeWorkStatus": "Draft", "isAccessibleForFree": true, "publisher": {"@type": "Organization", "name": "Computer Security Research"}, "url": "https://computer-security-research.github.io/owner-inspectability/", "keywords": "Android security, independent verification, mobile forensics, remote attestation, rootkit detection, malware analysis, device integrity"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ScholarlyArticle", "headline": "Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices", "author": [{"@type": "Person", "name": "Patrick Schleizer"}], "datePublished": "2026-10-24", "creativeWorkStatus": "Draft", "isAccessibleForFree": true, "publisher": {"@type": "Organization", "name": "Computer Security Research"}, "url": "https://computer-security-research.github.io/owner-inspectability/", "keywords": "owner-inspectability, Android security, independent verification, mobile forensics, remote attestation, rootkit detection, malware analysis, device integrity"}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon.png">
 <link rel="apple-touch-icon" href="../assets/favicon.png">
@@ -57,24 +58,24 @@
 <main id="main" class="article">
 <aside class="status-banner status-draft" role="note">This is a draft posted for comment. It has not been peer reviewed and may change. Cite with caution.</aside>
 <p class="status-pill-row"><span class="status-pill status-draft">Draft</span></p>
-<h1 class="title">Limits of Independent Security Verification on Vendor-Locked Devices</h1>
+<h1 class="title">Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices</h1>
 <p class="authors">Patrick Schleizer</p>
 <p class="venue">Computer Security Research (2026)</p>
 <p class="status-line">Status: Draft &ndash; not peer reviewed</p>
 <div class="actions"><a href="owner-inspectability.pdf">Download PDF</a> <a class="checksum" href="owner-inspectability.pdf.sha512" title="SHA-512 checksum" aria-label="SHA-512 checksum for PDF">&#x1F510;</a> <details class="latex-dl"><summary>LaTeX<span class="caret" aria-hidden="true">&#9662;</span></summary><div class="latex-menu"><p class="latex-menu-head">LaTeX source</p><a href="https://github.com/computer-security-research/computer-security-research.github.io/blob/master/_site/owner-inspectability/owner-inspectability.tex">Neutral (natbib) <span class="ext">.tex</span></a><a href="https://github.com/computer-security-research/computer-security-research.github.io/blob/master/_site/owner-inspectability/owner-inspectability-elsarticle.tex">Elsevier <span class="ext">-elsarticle.tex</span></a><a href="https://github.com/computer-security-research/computer-security-research.github.io/blob/master/_site/owner-inspectability/owner-inspectability-ieeetran.tex">IEEE <span class="ext">-ieeetran.tex</span></a><a href="https://github.com/computer-security-research/computer-security-research.github.io/blob/master/_site/owner-inspectability/owner-inspectability-acmart.tex">ACM <span class="ext">-acmart.tex</span></a><a href="https://github.com/computer-security-research/computer-security-research.github.io/blob/master/_site/owner-inspectability/owner-inspectability-snjnl.tex">Springer <span class="ext">-snjnl.tex</span></a></div></details> <a href="owner-inspectability.docx">Download Word</a> <a class="checksum" href="owner-inspectability.docx.sha512" title="SHA-512 checksum" aria-label="SHA-512 checksum for Word">&#x1F510;</a> <a class="sources-aid" href="sources/">Source quotes</a> <a class="sources-aid" href="https://github.com/computer-security-research/computer-security-research.github.io/blob/master/articles/owner-inspectability/paper.md">Markdown source</a></div>
 <details class="cite-this"><summary>Cite this</summary>
-<div class="cite-fmt"><span class="cite-label">IEEE</span><pre>Patrick Schleizer, &quot;Limits of Independent Security Verification on Vendor-Locked Devices,&quot; Computer Security Research, 2026. [Online]. Available: https://computer-security-research.github.io/owner-inspectability/</pre></div>
-<div class="cite-fmt"><span class="cite-label">APA</span><pre>Patrick Schleizer (2026). Limits of Independent Security Verification on Vendor-Locked Devices. Computer Security Research. https://computer-security-research.github.io/owner-inspectability/</pre></div>
+<div class="cite-fmt"><span class="cite-label">IEEE</span><pre>Patrick Schleizer, &quot;Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices,&quot; Computer Security Research, 2026. [Online]. Available: https://computer-security-research.github.io/owner-inspectability/</pre></div>
+<div class="cite-fmt"><span class="cite-label">APA</span><pre>Patrick Schleizer (2026). Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices. Computer Security Research. https://computer-security-research.github.io/owner-inspectability/</pre></div>
 <div class="cite-fmt"><span class="cite-label">BibTeX</span><pre>@misc{schleizer2026,
   author = {Patrick Schleizer},
-  title = {Limits of Independent Security Verification on Vendor-Locked Devices},
+  title = {Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices},
   howpublished = {Computer Security Research},
   year = {2026},
   url = {https://computer-security-research.github.io/owner-inspectability/}
 }</pre></div>
 <div class="cite-fmt"><span class="cite-label">RIS</span><pre>TY  - ELEC
 AU  - Patrick Schleizer
-TI  - Limits of Independent Security Verification on Vendor-Locked Devices
+TI  - Owner-Inspectability: The Limits of Independent Security Verification on Vendor-Locked Devices
 PB  - Computer Security Research
 PY  - 2026
 UR  - https://computer-security-research.github.io/owner-inspectability/
