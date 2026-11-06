@@ -1975,3 +1975,26 @@ quotes = [
   { text = "permissive su;", label = "su domain is permissive on debug builds", note = "AOSP private/su.te (platform/system/sepolicy, main); the whole file is wrapped in a userdebug_or_eng(...) guard, so no su domain exists on a user build. Verified verbatim via gitiles 2026-11-03." },
   { text = "VTS tests run in the permissive su domain on debug builds, but the HALs", label = "su is permissive while the HALs stay enforcing" },
 ]
+
+[ms-secure-boot]
+label = "UEFI Secure Boot -- verifies the boot chain only, and the owner can re-key or disable it"
+claims = [
+  { section = "Sec. 14", text = "UEFI Secure Boot verifies the boot-chain executables (firmware drivers, bootloader, OS loader), not the root filesystem." },
+  { section = "Sec. 14", text = "Secure Boot is owner-controllable: a physically present owner can edit the keys from the firmware menus, and the platform key can turn it off." },
+]
+quotes = [
+  { text = "\"When the PC starts, the firmware checks the signature of each piece of boot software, including UEFI firmware drivers (also known as Option ROMs), EFI applications, and the operating system. If the signatures are valid, the PC boots, and the firmware gives control to the operating system.\"", label = "Verifies boot-chain executables, then hands off", note = "Microsoft, Secure Boot (learn.microsoft.com/.../oem-secure-boot). Verified verbatim via curl 2026-11-06." },
+  { text = "\"use public key cryptography as per algorithm policy to verify the signatures of all images in the boot sequence, up to and including the Windows Boot Manager.\"", label = "Scope is the boot sequence up to the OS loader", note = "Same page." },
+  { text = "\"the OEM locks the firmware from editing, except for updates that are signed with the correct key or updates by a physically present user who is using firmware menus, and then generates a platform key (PK).\"", label = "A physically present owner can edit the keys via firmware menus", note = "Same page." },
+  { text = "\"The PK can be used to sign updates to the KEK or to turn off Secure Boot.\"", label = "The platform key can turn Secure Boot off", note = "Same page." },
+]
+
+[chromeos-verified-boot]
+label = "ChromeOS verified boot -- block-level cryptographic verification of a read-only root filesystem"
+claims = [
+  { section = "Sec. 14", text = "Immutable, image-based desktop systems verify the root filesystem block by block against a signed reference, as the phone does." },
+]
+quotes = [
+  { text = "\"Each block that is accessed via the transparent block device layer will be checked against a cryptographic hash which is stored in a central collection of hashes...\"", label = "Per-block hash verification of the rootfs (dm-verity's design)", note = "The Chromium Projects, Verified Boot design doc (chromium.org/.../verified-boot). Verified verbatim via curl 2026-11-06." },
+  { text = "\"While verified boot can ensure that the system image (i.e. firmware, kernel, root file system) are protected against tampering by attackers, it can't protect data that must inherently be modifiable by a running system.\"", label = "Protects firmware, kernel, and root filesystem", note = "Same page." },
+]
