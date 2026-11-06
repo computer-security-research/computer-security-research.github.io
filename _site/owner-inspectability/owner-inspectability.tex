@@ -73,35 +73,30 @@ Verification on Vendor-Locked Devices}
 \maketitle
 \begin{abstract}
 Vendor-locked devices -\/- most prominently stock Android phones, which
-come with a locked bootloader and no administrative rights -\/- are
+ship with a locked bootloader and no administrative rights -\/- are
 general-purpose computers whose owners cannot fully inspect, control, or
-verify the software they run. This paper introduces the concept of
+verify the software they run. This paper introduces
 owner-inspectability: the owner\textquotesingle s ability to examine the
-whole system from a clean, trusted vantage point and demonstrate what it
-runs to a verifier of their choosing. It adopts the
-owner\textquotesingle s perspective, treating security as the ability to
-audit the device rather than the platform\textquotesingle s ability to
-enforce policy. Today, several limitations prevent this. The owner
-cannot inspect the system from a clean environment or directly access
-its storage and memory. Application and update delivery is
-vendor-controlled, so compromise or coercion could enable targeted
-malicious installations. Hardware-backed attestation lets apps and
-services check that the device reports an unmodified, vendor-approved
-state. Modifying it for inspection therefore makes the device fail
-attestation, causing banking, payment, and similar apps that depend on
-it to refuse to run. Root access does not fully remove these
-limitations: it provides only an in-system vantage point, not control
-over the boot chain and underlying firmware, and can be deceived by a
-kernel-space rootkit. The owner is caught in a bind: inspecting the
-device requires the very modification that attestation rejects. Most
-established malware-analysis techniques are thus unavailable without
-first breaking the phone\textquotesingle s attestation guarantees,
-making the absence of findings weak evidence of integrity. The paper
-asks what capability would escape this bind: owner-controlled privileged
-inspection that preserves verified boot and attestation. It finds that
-no shipped or proposed approach provides this capability, leaving an
-open problem. The analysis focuses on stock Android but extends, to
-varying degrees, to other vendor-locked devices.
+whole system from a clean, trusted vantage point and demonstrate to a
+chosen verifier what it runs. Adopting the owner\textquotesingle s
+perspective, it systematizes the technical, forensic, and legal
+evidence. Several limitations prevent it: the owner cannot inspect from
+a clean environment or directly access storage and memory. Application
+and update delivery is vendor-controlled, so compromise or coercion
+could enable targeted malicious installations. Hardware-backed
+attestation lets apps and services check the device reports an
+unmodified, vendor-approved state, so modifying it for inspection makes
+it fail attestation, and banking and payment apps that depend on it then
+refuse to run. Root access does not fully remove these limits: it is
+only an in-system vantage point, not control of the boot chain and
+firmware, and can be deceived by a kernel-space rootkit. The owner is
+caught in a bind -\/- inspecting the device requires the very
+modification attestation rejects -\/- so against a capable adversary the
+absence of malware findings is weak evidence of integrity. It asks what
+capability would escape this bind -\/- owner-controlled privileged
+inspection that preserves verified boot and attestation -\/- and finds
+no shipped or proposed approach provides it, leaving an open problem. It
+centers on stock Android but extends to other vendor-locked devices.
 \end{abstract}
 
 \subsection{1. Introduction}\label{introduction}

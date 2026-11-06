@@ -1,12 +1,16 @@
 name: pages-deploy
 
-# Deploy the previews site to GitHub Pages in the computer-security-research org.
-# Gated to that org so the SAME file is harmless in the org-ai-assisted CI mirror
-# (it never runs there). The site is BUILT LOCALLY in the sandbox (bin/csr-build)
-# and the rendered _site (HTML + .tex + assets) is COMMITTED -- CI does NOT
-# generate the HTML. Only the binary PDFs are gitignored and rendered here at
-# deploy (journal-maker --pdf-only) into the committed tree. The committed build
-# is non-indexable (robots Disallow + per-page noindex meta) until a go-live.
+# Deploy the CSR previews site to GitHub Pages in the computer-security-research
+# org. This repo holds ONLY the generated _site (committed TEXT: HTML + .tex +
+# assets + the .sha512 checksum sidecars). The gitignored PDF/docx binaries are
+# rebuilt HERE at deploy, inside the pinned toolchain image (built from the source
+# repo's docker/Dockerfile), and VERIFIED against the committed .sha512
+# (bit-for-bit reproducibility gate) -- so the served binary provably equals the
+# author's local build, with no binary in git.
+#
+# Gated to the computer-security-research org so the same file is harmless in any
+# mirror (it never runs there). The committed build is non-indexable (robots
+# Disallow + per-page noindex meta, baked in at build time) until a go-live.
 
 "on":
   push:
@@ -22,6 +26,9 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  CSR_IMAGE: csr-build-toolchain:latest
+
 jobs:
   build-deploy:
     # Owner-gated AND master-only: a manual workflow_dispatch can name any ref,
@@ -29,17 +36,22 @@ jobs:
     # branch's content to the live site.
     if: github.repository_owner == 'computer-security-research' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - name: Check out content
+      - name: Check out artifacts (this repo, holds committed _site)
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          path: content
-          # Deploy uses the github-pages environment token, not this checkout's
-          # credential; leaving it in .git/config would only widen exposure.
+          path: artifacts
+          persist-credentials: false
+
+      - name: Check out source (articles/site.toml + docker assets)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: org-ai-assisted/computer-security-research-source
+          path: source
           persist-credentials: false
 
       - name: Check out journal-maker
@@ -56,34 +68,34 @@ jobs:
           path: dist-ai
           persist-credentials: false
 
-      - name: Install PDF + check dependencies
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends \
-            pandoc texlive-latex-recommended texlive-fonts-recommended lmodern \
-            poppler-utils qpdf citation-style-language-styles \
-            python3-bs4 python3-html5lib python3-pil python3-yaml python3-defusedxml
+      - name: Rebuild PDFs in the image + VERIFY against committed .sha512
+        run: >
+          bash source/docker/docker-build-site.sh
+          "${GITHUB_WORKSPACE}/journal-maker"
+          "${GITHUB_WORKSPACE}/source"
+          "${GITHUB_WORKSPACE}/artifacts"
+          --pdf-only --verify-sha
 
-      - name: Render PDFs into the committed site (no HTML rebuild)
-        run: |
-          journal-maker/usr/bin/journal-maker build \
-            --articles content/articles \
-            --journal content/site.toml \
-            --out content/_site \
-            --pdf-only
+      - name: Scholar / PDF / security check (in image)
+        run: >
+          docker run --rm --user "$(id -u):$(id -g)" --env HOME=/tmp --env LC_ALL=C
+          --volume "${GITHUB_WORKSPACE}/journal-maker:/jm:ro"
+          --volume "${GITHUB_WORKSPACE}/artifacts:/work:ro"
+          "${CSR_IMAGE}" /jm/usr/bin/journal-maker check /work/_site
 
-      - name: Scholar / PDF / security check
-        run: journal-maker/usr/bin/journal-maker check content/_site
+      - name: Static consistency (check_site, in image)
+        run: >
+          docker run --rm --user "$(id -u):$(id -g)" --env HOME=/tmp --env LC_ALL=C
+          --volume "${GITHUB_WORKSPACE}/dist-ai:/da:ro"
+          --volume "${GITHUB_WORKSPACE}/artifacts:/work:ro"
+          "${CSR_IMAGE}" /da/usr/share/website-tests/check_site.py /work/_site
 
-      # Fail-closed on what is actually SERVED: the deploy org never runs
-      # build.yml (owner-gated, no CI var), so gate the committed _site here too.
-      - name: Static consistency (check_site)
-        run: ./dist-ai/usr/share/website-tests/check_site.py "${GITHUB_WORKSPACE}/content/_site"
-
-      # Block active-content SVG (stored XSS on the header-less Pages origin)
-      # before it can be uploaded + deployed.
-      - name: SVG active-content safety
-        run: ./dist-ai/usr/share/website-tests/check_svg_safety.py "${GITHUB_WORKSPACE}/content/_site"
+      - name: SVG active-content safety (in image)
+        run: >
+          docker run --rm --user "$(id -u):$(id -g)" --env HOME=/tmp --env LC_ALL=C
+          --volume "${GITHUB_WORKSPACE}/dist-ai:/da:ro"
+          --volume "${GITHUB_WORKSPACE}/artifacts:/work:ro"
+          "${CSR_IMAGE}" /da/usr/share/website-tests/check_svg_safety.py /work/_site
 
       - name: Configure Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
@@ -91,7 +103,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
-          path: content/_site
+          path: artifacts/_site
 
       - name: Deploy to GitHub Pages
         id: deploy

@@ -1,9 +1,9 @@
-# The built _site is committed as text (HTML, .tex, assets) and deployed as-is;
-# the binary artifacts (PDF, Word .docx + their checksums) are kept out of git
-# and rendered at deploy time (journal-maker --pdf-only).
+# The built _site is committed as TEXT (HTML, .tex, assets) PLUS the .sha512
+# checksum sidecars. The binaries themselves (PDF, docx) are NEVER committed --
+# they are rebuilt at deploy inside the pinned toolchain image and verified
+# against the committed .sha512 (bit-for-bit). Keeping binaries out of git avoids
+# repo bloat and GitHub abuse flags.
 _site/**/*.pdf
-_site/**/*.pdf.sha512
 _site/**/*.docx
-_site/**/*.docx.sha512
 __pycache__/
 *.pyc
