@@ -1976,6 +1976,16 @@ quotes = [
   { text = "VTS tests run in the permissive su domain on debug builds, but the HALs", label = "su is permissive while the HALs stay enforcing" },
 ]
 
+[uefi-secure-boot]
+label = "UEFI Secure Boot -- authenticates boot-chain images (OS loader, option ROMs) up to the OS hand-off"
+claims = [
+  { section = "Sec. 14", text = "Secure Boot authenticates the UEFI executable images loaded during boot -- the OS loader, option ROMs, and drivers -- image by image, bounded at the hand-off to the operating system; it does not verify the operating system's own filesystem." },
+]
+quotes = [
+  { text = "\"This section describes a way to use the platform ownership model described in the previous section and the key exchange mechanism to allow the firmware to authenticate a UEFI image, such as an OS loader or an option ROM, using the digital signing mechanisms described here.\"", label = "Authenticates a UEFI image (OS loader, option ROM)", note = "UEFI Specification 2.10 Sec. 32.6.1 (uefi.org/specs/UEFI/2.10/32_Secure_Boot_and_Driver_Signing.html); the uefi.org origin is Cloudflare-gated to automated fetches, so verified verbatim against the Wayback snapshot web.archive.org/web/20261103163355id_/https://uefi.org/specs/UEFI/2.10/32_Secure_Boot_and_Driver_Signing.html on 2026-11-06." },
+  { text = "\"The hand-off between the platform firmware and the operating system is a critical part of ensuring secure boot.\"", label = "Scope ends at the firmware-to-OS hand-off", note = "Same section." },
+]
+
 [ms-secure-boot]
 label = "UEFI Secure Boot -- verifies the boot chain only, and the owner can re-key or disable it"
 claims = [
