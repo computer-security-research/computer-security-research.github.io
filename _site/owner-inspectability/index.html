@@ -1237,14 +1237,14 @@ ER  - </pre></div>
 </div>
 <h2 id="appendix-a.-grapheneos-auditor-verified-boot-key-allowlist">Appendix A. GrapheneOS Auditor verified-boot key allowlist <a class="headerlink" href="#appendix-a.-grapheneos-auditor-verified-boot-key-allowlist" aria-label="Permalink to Appendix A. GrapheneOS Auditor verified-boot key allowlist (section appendix-a.-grapheneos-auditor-verified-boot-key-allowlist)">#</a></h2>
 <p>Section <a href="#objections-and-counterarguments" aria-label="Section 12">12</a>'s claim that the released GrapheneOS Auditor recognizes only keys compiled into it rests on the app's own source. Accepted verified-boot keys are fixed <code>ImmutableMap&lt;String, DeviceInfo&gt;</code> tables keyed by the hex SHA-256 of the verified-boot key: <code>fingerprintsNonStock</code> for the self-signed state and <code>fingerprintsStock</code> for the stock state, each with a StrongBox variant. The GrapheneOS release keys are hardcoded in the self-signed table <span class="citation" data-cites="grapheneos-auditor-source"><a href="#ref-grapheneos-auditor-source" role="doc-biblioref">[127]</a></span>:</p>
-<pre><code>private static final ImmutableMap&lt;String, DeviceInfo&gt; fingerprintsNonStock = ImmutableMap
+<pre tabindex="0"><code>private static final ImmutableMap&lt;String, DeviceInfo&gt; fingerprintsNonStock = ImmutableMap
         .&lt;String, DeviceInfo&gt;builder()
         // GrapheneOS
         .put(&quot;F0A890375D1405E62EBFD87E8D3F475F948EF031BBF9DDD516D5F600A23677E8&quot;,
                 new DeviceInfo(R.string.device_pixel_6, 100, 100, false, R.string.os_graphene))
         ...</code></pre>
 <p>Verification looks the attested key up in the table for the reported boot state and rejects any key that is absent, so a build signed with a key not compiled in &ndash; including an owner's self-signed build of otherwise unmodified GrapheneOS &ndash; is refused rather than attested:</p>
-<pre><code>final RootOfTrust.VerifiedBootState verifiedBootState = rootOfTrust.verifiedBootState;
+<pre tabindex="0"><code>final RootOfTrust.VerifiedBootState verifiedBootState = rootOfTrust.verifiedBootState;
 final String verifiedBootKey = BaseEncoding.base16().encode(rootOfTrust.verifiedBootKey);
 final DeviceInfo device;
 if (verifiedBootState == RootOfTrust.VerifiedBootState.SELF_SIGNED) {
