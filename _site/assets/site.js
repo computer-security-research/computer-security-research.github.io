@@ -297,14 +297,17 @@
   (function () {
     var btn = document.querySelector(".back-to-top");
     if (!btn) { return; }
-    // Hide instantly on load, then enable the fade. Forcing a reflow between the two
-    // commits the hidden state under the base (no-opacity) transition, so opacity snaps
-    // to 0 with no fade; .btt-anim then enables the fade for later toggles only. (A lone
-    // requestAnimationFrame batches both class adds into one style pass, so with the
-    // deferred site.js the initial hide would still play as a 300ms fade-out on load.)
+    // Hide instantly on load, then enable the fade only AFTER the hidden state has painted,
+    // so opacity:0 is committed under the base (no-transition) style -- no load-time fade --
+    // WITHOUT a synchronous forced reflow (reading offsetHeight to flush the hidden state is
+    // the main-thread reflow Lighthouse flags). A lone rAF batches both class adds into one
+    // pre-paint style pass and still fades out on load, so the SECOND rAF runs a frame after
+    // btt-hidden has painted -- adding .btt-anim then changes nothing to animate, only arming
+    // the fade for later show()/hide().
     btn.classList.add("btt-hidden");
-    void btn.offsetHeight;
-    btn.classList.add("btt-anim");
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { btn.classList.add("btt-anim"); });
+    });
     function show() { btn.classList.remove("btt-hidden"); }
     // Never hide the control while it holds keyboard focus (a hide-timer or a
     // scroll-to-top must not steal focus from a keyboard user mid-activation, and
